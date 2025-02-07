@@ -1,10 +1,18 @@
 <template>
+  <UiSidebar></UiSidebar>
   <div>
-    <UiHeader></UiHeader>
-    <div class="w-full flex flex-row justify-center">
-      <div class="max-w-lg flex flex-col w-full mt-3">
+    <div class="layout">
+      <div>
         <slot />
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.layout {
+  position: relative;
+  display: grid;
+  margin-left: 250px;
+}
+</style>

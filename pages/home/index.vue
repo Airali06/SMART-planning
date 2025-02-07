@@ -35,10 +35,6 @@
 
     </div>
 
-    
- 
-
-     
     </div>  
   
 
@@ -52,7 +48,7 @@
     
     <div class="frame-2"></div>
 
-    
+
     <div class="visualizza-tutte">visualizza tutte le prenotazioni</div>
   </div>
 
