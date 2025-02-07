@@ -7,7 +7,7 @@
 <template>
 
 
-<head>
+  <head>
       <!-- Caricamento del font e dei CSS -->
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
