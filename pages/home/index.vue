@@ -1,106 +1,106 @@
-<script setup lang = "ts">
+<script setup lang="ts">
+const router = useRouter();
 </script>
 
-
 <template>
-    <head>
-      <!-- Caricamento del font e dei CSS -->
-      <link rel="preconnect" href="https://fonts.googleapis.com">
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link href="https://fonts.googleapis.com/css2?family=Sulphur+Point:wght@300;400;700&display=swap" rel="stylesheet">
-      
-    </head>
+  <head>
+    <!-- Caricamento del font e dei CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sulphur+Point:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-    
+  <body>
+    <div class="home-1">
+      <div
+        class="z-planning"
+        style="position: absolute; left: 9.6875rem; top: 5.625rem"
+      >
+        Z-Planning
+      </div>
 
-<body>
-  
-  <div class="home-1">
-  <div class="z-planning" style = "
-  position: absolute;
-  left: 9.6875rem;
-  top: 5.625rem;">Z-Planning</div>
+      <div class="prenota">Prenota</div>
 
+      <div class="frame-1">
+        <OptionPostazione
+          :add="true"
+          tipo="ScrivaniaStandard"
+          class="zoom"
+          @click="
+            router.push({ name: 'nuova_prenotazione', params: { option: 1 } })
+          "
+        ></OptionPostazione>
 
+        <OptionPostazione
+          :add="true"
+          tipo="ScrivaniaMonitor"
+          class="zoom"
+        ></OptionPostazione>
 
-  <div class="prenota">Prenota</div>
-  
-    <div class="frame-1">
-
-        <OptionScrivania class="zoom"></OptionScrivania>
-
-        <OptionScrivaniaMonitor class="zoom"></OptionScrivaniaMonitor>
-
-        <OptionSalaRiunioni class="zoom"></OptionSalaRiunioni>
-
+        <OptionPostazione
+          :add="true"
+          tipo="SalaRiunioni"
+          class="zoom"
+        ></OptionPostazione>
+      </div>
     </div>
 
-    </div>  
-  
+    <div class="in-scadenza-oggi">In scadenza oggi</div>
+    <div class="riepilogo">
+      <div class="frame-2"></div>
 
+      <div class="visualizza-tutte">visualizza tutte le prenotazioni</div>
+    </div>
 
-
-
-
-
-  <div class="in-scadenza-oggi">In scadenza oggi</div>
-  <div class="riepilogo">
-    
-    <div class="frame-2"></div>
-
-
-    <div class="visualizza-tutte">visualizza tutte le prenotazioni</div>
-  </div>
-
-  <!--<div class="frame-4"></div>-->
-
-
-  
-</body>
-
-
+    <!--<div class="frame-4"></div>-->
+  </body>
 </template>
 
 <style scoped>
-
-*{ font-family: "Sulphur Point", serif;
-    color: #002f54;
+* {
+  font-family: "Sulphur Point", serif;
+  color: #002f54;
 }
 
 a,
-   button,
-   input,
-   select,
-   h1,
-   h2,
-   h3,
-   h4,
-   h5,
-   * {
-       box-sizing: border-box;
-       margin: 0;
-       padding: 0;
-       border: none;
-       text-decoration: none;
-       background: none;
-   
-       -webkit-font-smoothing: antialiased;
-   }
-   
-   menu, ol, ul {
-       list-style-type: none;
-       margin: 0;
-       padding: 0;
-   }
+button,
+input,
+select,
+h1,
+h2,
+h3,
+h4,
+h5,
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: none;
+  text-decoration: none;
+  background: none;
 
-   .zoom{
-    transition: transform 0.3s ease-in-out;
-   }
-   .zoom:hover {
-  transform: scale(1.08);   
-    }
+  -webkit-font-smoothing: antialiased;
+}
 
-   .sulphur-point-light {
+menu,
+ol,
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.zoom {
+  transition: transform 0.3s ease-in-out;
+}
+.zoom:hover {
+  transform: scale(1.08);
+}
+
+.sulphur-point-light {
   font-family: "Sulphur Point", serif;
   font-weight: 300;
   font-style: normal;
@@ -118,7 +118,6 @@ a,
   font-style: normal;
 }
 
-
 .home-1,
 .home-1 * {
   box-sizing: border-box;
@@ -128,7 +127,6 @@ a,
   height: 52rem;
   position: relative;
   overflow: hidden;
-
 }
 .z-planning {
   background: linear-gradient(
@@ -156,8 +154,7 @@ a,
   overflow: hidden;
 }
 
-.rectangle{
-  
+.rectangle {
   border-radius: 0.625rem;
   background: #ffffff;
   box-shadow: 0rem 0rem 1.25rem 0rem rgba(0, 0, 0, 0.15);
@@ -176,12 +173,8 @@ a,
   position: absolute;
   inset: 0;
   border-radius: 0.625rem;
-  padding: 0.18rem; 
-  background: linear-gradient( 
-    90deg,
-    rgba(0, 105, 186, 1),
-    rgba(0, 47, 84, 1)
-  ); 
+  padding: 0.18rem;
+  background: linear-gradient(90deg, rgba(0, 105, 186, 1), rgba(0, 47, 84, 1));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
@@ -201,14 +194,8 @@ a,
   overflow: hidden;
 }
 
-
 .visualizza-tutte {
-  background: linear-gradient(
-    90deg,
-    rgba(0, 105, 186, 1) 0%,
-    #002f54 100%
-    
-  );
+  background: linear-gradient(90deg, rgba(0, 105, 186, 1) 0%, #002f54 100%);
   border-radius: 0.625rem;
   width: 22.3125rem;
   height: 2.125rem;
@@ -218,8 +205,6 @@ a,
   text-align: center;
   color: #ffffff;
   padding: 7px;
-
-  
 }
 
 .prenota {
@@ -247,8 +232,7 @@ a,
   height: 1.875rem;
 }
 .frame-1 {
-
-  padding: 0  27px 0 27px;
+  padding: 0 27px 0 27px;
   align-items: center;
   background: #ffffff;
   border-radius: 0.625rem;
@@ -274,6 +258,4 @@ a,
   box-shadow: 0rem 0rem 1.25rem 0rem rgba(0, 0, 0, 0.25);
   overflow: hidden;
 }
-
-
 </style>
