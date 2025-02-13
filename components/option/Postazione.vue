@@ -6,7 +6,7 @@ const props = defineProps({
 
 const tipo = props.tipo as String;
 const add = props.add as Boolean;
-console.log(add);
+
 </script>
 
 <template>

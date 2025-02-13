@@ -1,3 +1,5 @@
 <template>
-    captcha
+    <PopupElement>
+
+    </PopupElement>
 </template>

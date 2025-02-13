@@ -1,3 +1,6 @@
+<script setup lang = "ts">
+</script>
+
 <template>
 
 
@@ -9,7 +12,7 @@
 </head>
 
 
-<body>
+
 
         
 
@@ -106,7 +109,6 @@
   </div>
 
   
-</body>
 
 
 

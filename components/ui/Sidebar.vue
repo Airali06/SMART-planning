@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+const router = useRouter();
 
 const isCollapsed = ref(false);
 
@@ -7,7 +8,10 @@ const comprimi = () => {
   isCollapsed.value = !isCollapsed.value;
 };
 
-function logout() {}
+function logout() {
+
+      router.push({ name: 'index'})
+}
 </script>
 
 <template>
@@ -29,9 +33,14 @@ function logout() {}
       "
       v-if="!isCollapsed"
     >
-      <span>home</span>
+      <span @click="
+            router.push({ name: 'home'})">home </span>
+
       <span>account</span>
-      <span>nuova prenotazione</span>
+
+      <span @click="
+            router.push({ name: 'nuova_prenotazione', params: { option: 0, modifica : 0} })">nuova prenotazione</span>
+
       <span>mappa</span>
     </div>
 

@@ -1,10 +1,20 @@
 <script setup lang = "ts">
+import  { useAuth } from '../store/auth';
+const authStore = useAuth();
 
-  </script>
+const id_utente = ref(); // 0 come id utente considerato come utente vuoto
+const password = ref('');
 
 
+async function login(){
+    id_utente.value = id_utente.value; //rimozione eventuali spazi
+    await authStore.login(id_utente.value,password.value);
+    
+}
+</script>
 
-<template>
+
+<template> 
 
 
   <head>
@@ -28,17 +38,26 @@
   
         <div class="rectangle" 
           style="position: absolute; left: 50%; transform: translateX(-50%); top: 15.625rem; width: 16.5rem; height: 2.5625rem;">
-          <input type="text" style="width: 100%; height: 100%; border-radius: 10px;" />
+          
+          <!--input id utente-->
+          <input v-model = "id_utente" type="text" style="width: 100%; height: 100%; border-radius: 10px;" />
+        
+        
         </div>
         <div class="matricola">matricola</div>
   
+
         <div class="rectangle" 
           style="width: 16.5rem; height: 2.5625rem; position: absolute; left: 50%; transform: translateX(-50%); top: 20.3125rem;">
-          <input type="password" style="width: 100%; height: 100%; border-radius: 10px;" />
+          
+          <!--input id password-->
+          <input v-model = "password" type="password" style="width: 100%; height: 100%; border-radius: 10px;" />
+        
+        
         </div>
         <div class="password">password</div>
   
-        <button class="accedi" >accedi</button>
+        <button class="accedi" @click="login()">accedi</button>
       </div>
   
       <div class="z-planning">Z-Planning</div>
@@ -48,6 +67,11 @@
   
   
   <style scoped>
+
+  *{
+    
+  font-family: "Sulphur Point", serif;
+  }
 
 a, button, select, h1, h2, h3, h4, h5, * {
           box-sizing: border-box;

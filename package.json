@@ -10,12 +10,14 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "@nuxt-alt/proxy": "^2.5.8",
     "nuxt": "^3.10.0",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5"
   },
   "dependencies": {
-    "@pinia/nuxt": "^0.5.1",
+    "@nuxt/http": "^0.6.4",
+    "@pinia/nuxt": "^0.5.5",
     "pinia": "^2.1.7"
   }
 }

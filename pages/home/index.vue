@@ -30,7 +30,7 @@ const router = useRouter();
           tipo="ScrivaniaStandard"
           class="zoom"
           @click="
-            router.push({ name: 'nuova_prenotazione', params: { option: 1 } })
+            router.push({ name: 'nuova_prenotazione', params: { option: 1, modifica : 0} })
           "
         ></OptionPostazione>
 
@@ -38,12 +38,16 @@ const router = useRouter();
           :add="true"
           tipo="ScrivaniaMonitor"
           class="zoom"
+          @click="
+            router.push({ name: 'nuova_prenotazione', params: { option: 2, modifica : 0} })"
         ></OptionPostazione>
 
         <OptionPostazione
           :add="true"
           tipo="SalaRiunioni"
           class="zoom"
+          @click="
+            router.push({ name: 'nuova_prenotazione', params: { option: 1, modifica : 0} })"
         ></OptionPostazione>
       </div>
     </div>
