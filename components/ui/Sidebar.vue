@@ -1,6 +1,8 @@
 <script setup>
 import { ref } from "vue";
 const router = useRouter();
+import  { useAuth } from '../store/auth';
+const authStore = useAuth();
 
 const isCollapsed = ref(false);
 
@@ -8,9 +10,11 @@ const comprimi = () => {
   isCollapsed.value = !isCollapsed.value;
 };
 
-function logout() {
-
-      router.push({ name: 'index'})
+async function logout() {
+  await authStore.logout();
+  console.log(authStore.utente.id_utente);
+  console.log(authStore.utente.controlCode);
+      
 }
 </script>
 

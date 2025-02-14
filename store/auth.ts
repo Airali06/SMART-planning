@@ -1,10 +1,26 @@
 import type { Utente } from "./models/Utente";
 export const useAuth = defineStore("auth-store", {
   state: () => ({
-    utente: {} as Utente,
+    utente: {
+      id_utente: 0,
+      nome: "",
+      username: "",
+      cognome: "",
+      livello: 0,
+      id_coordinatore: 0,
+    } as Utente,
     sessione: {
       id_sessione: 0, // id sessione = 0 -> sessione non attiva
       scadenza: 0,
+      controlCode: 0,
+      /*controlCode:
+        serve per evitare attacchi di bruteforce al server. 
+        invio di API con numero di sessione casuale che 
+        potrebbero chiudere le sessioni e bloccarle. 
+        Il logout avviene solo se l'id_sessione è accompagnato 
+        dal giusto controlCode. Viene generato dal server in modo 
+        casuale al momento del login.
+      */
     },
     address: "http://127.0.0.1/Z-planning/api/",
   }),
@@ -15,13 +31,16 @@ export const useAuth = defineStore("auth-store", {
       //if (this.utente.id_utente != 0) return;
 
       try {
-        console.log("ciao");
+        //console.log("try");
+        //la response ricevuta come tipo string per facilitare la conversione in oggetto
         const response: string = await $fetch(this.address + "login.php", {
+          //composizione dell messaggio di request
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json", //specifica tipologia di dato inviata
           },
           body: JSON.stringify({
+            //trasforma un oggetto in JSON (json obbligatorio per mandare dati al server)
             id_utente: id,
             password: password,
             id_sessione: id,
@@ -29,13 +48,15 @@ export const useAuth = defineStore("auth-store", {
         });
 
         //const testo = (await response.text()) as string;
-        const dati = JSON.parse(response);
+        const dati = JSON.parse(response); //la risposta viene trasformata da stringa (contenete dati con struttura JSON) in oggetto ts
         console.log(dati);
 
         if (dati.errore != "") {
+          //se la response ha il campo errore impostatoviene restituito il codice di errore e termina
           return dati.errore;
         }
 
+        //riempimento utente dello store con dati ricevuti
         this.utente = {
           id_utente: dati.id_utente,
           nome: dati.nome,
@@ -45,8 +66,10 @@ export const useAuth = defineStore("auth-store", {
           id_coordinatore: dati.id_coordinatore,
         };
 
+        //setting dati di sessione
         this.sessione.scadenza = dati.scadenza * 1;
         this.sessione.id_sessione = dati.id_sessione;
+        this.sessione.controlCode = dati.controlCode;
 
         console.log(this.utente);
       } catch (e) {
@@ -54,13 +77,107 @@ export const useAuth = defineStore("auth-store", {
       }
 
       console.log(this.sessione.id_sessione);
+      console.log(this.sessione.controlCode);
 
-      // Visualizza la risposta
+      const router = useRouter();
+      router.push({ name: "home" });
     },
 
-    async controllaSessione() {},
+    async controllaSessione() {
+      /*manda una richiesta per controllare 
+      se la sessione è ancora attiva. 
+      Se è scaduta, azzera lo store Auth e torna al login */
+
+      try {
+        const response: string = (await $fetch(
+          this.address + "sessionCheck.php",
+          {
+            //composizione dell messaggio di request
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json", //specifica tipologia di dato inviata
+            },
+            body: JSON.stringify({
+              //trasforma un oggetto in JSON (json obbligatorio per mandare dati al server)
+              id_sessione: this.sessione.id_sessione,
+              controlCode: this.sessione.controlCode,
+            }),
+          }
+        )) as string;
+        console.log(response);
+
+        //tentativo di convertire forzatamente in oggetto un JSON
+        const jsonString = JSON.stringify(response);
+        const dati = JSON.parse(jsonString.toString() as string) as any; //la risposta viene trasformata da stringa (contenete dati con struttura JSON) in oggetto ts
+        console.log(dati);
+
+        if (dati.alive == "errore") {
+          //svuotamento store
+          console.log(this.sessione.controlCode);
+          this.utente = {} as Utente;
+          this.sessione.id_sessione = 0;
+          this.sessione.scadenza = 0;
+          this.sessione.controlCode = 0;
+          const router = useRouter();
+          router.push({ name: "index" });
+          alert("sessione scaduta");
+          return false;
+        }
+
+        if (dati.alive == "OK") {
+          console.log("session alive");
+          return true;
+        }
+      } catch (e) {
+        console.log("errore" + e);
+      }
+    },
 
     async logout() {
+      if (this.sessione.id_sessione == 0) return;
+
+      try {
+        const response: string = (await $fetch(this.address + "logout.php", {
+          //composizione dell messaggio di request
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json", //specifica tipologia di dato inviata
+          },
+          body: JSON.stringify({
+            //trasforma un oggetto in JSON (json obbligatorio per mandare dati al server)
+            id_sessione: this.sessione.id_sessione,
+            controlCode: this.sessione.controlCode,
+          }),
+        })) as string;
+        console.log(response);
+
+        //tentativo di convertire forzatamente in oggetto un JSON
+        const jsonString = JSON.stringify(response);
+        const dati = JSON.parse(jsonString.toString() as string) as any; //la risposta viene trasformata da stringa (contenete dati con struttura JSON) in oggetto ts
+        console.log(dati);
+
+        if (dati.logout == "OK") {
+          //svuotamento store
+          console.log(this.sessione.controlCode);
+
+          (this.utente = {
+            id_utente: 0,
+            nome: "",
+            username: "",
+            cognome: "",
+            livello: 0,
+            id_coordinatore: 0,
+          } as Utente),
+            (this.sessione.id_sessione = 0);
+          this.sessione.scadenza = 0;
+          this.sessione.controlCode = 0;
+          const router = useRouter();
+          router.push({ name: "index" });
+        }
+      } catch (e) {
+        console.log("errore" + e);
+      }
+
       return true;
     },
   },

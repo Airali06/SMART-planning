@@ -1,12 +1,9 @@
 <template>
-  <UiSidebar></UiSidebar>
-  <div>
+  
     <div class="layout">
-      <div>
+      <UiSidebar></UiSidebar>
         <slot />
-      </div>
     </div>
-  </div>
 </template>
 
 <style scoped>
