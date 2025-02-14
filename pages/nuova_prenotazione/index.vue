@@ -25,9 +25,7 @@
 
     <div class="map_container" >
 
-      
-         <img  src = "../../img/mappa1.png" style = "width: 100%;  display: block;">
-
+        <MappaPostazioni></MappaPostazioni>
 
          <span class = "effettua-prenotazione" 
          style = "  position: absolute;

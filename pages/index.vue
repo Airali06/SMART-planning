@@ -220,7 +220,7 @@ a, button, select, h1, h2, h3, h4, h5, * {
 .password {
   color: #0069ba;
   text-align: left;
-  font-family: "Sulphur Pointr", sans-serif;
+  font-family: "Sulphur Point", sans-serif;
   font-size: 1.125rem;
   line-height: 1.5rem;
   font-weight: 400;

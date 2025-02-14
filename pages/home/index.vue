@@ -146,7 +146,7 @@ ul {
   line-height: 3.5rem;
   font-weight: 700;
   margin: 4px;
-  width: 28.6875rem;
+  width: fit-content;
   height: 8.8125rem;
 }
 .riepilogo {

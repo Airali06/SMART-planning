@@ -1,8 +1,12 @@
+<script setup lang = "ts">
+
+
+</script>
+
 <template>
-  
-    <div class="layout">
+    <div class="layout"  :key="$route.fullPath">
       <UiSidebar></UiSidebar>
-        <slot />
+      <slot />
     </div>
 </template>
 

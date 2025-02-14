@@ -14,12 +14,18 @@ async function logout() {
   await authStore.logout();
   console.log(authStore.utente.id_utente);
   console.log(authStore.utente.controlCode);
-      
 }
+
+const route = useRoute();
+
+
+
+
+    
 </script>
 
 <template>
-  <div :class="['sidebar', { collapsed: isCollapsed }]">
+  <div :class="['sidebar', { collapsed: isCollapsed }]" v-if = "!(route.path === '/' || route.path === '/index')">
     <button
       class="burger"
       @click="comprimi"
