@@ -1,26 +1,25 @@
 import { useAuth } from "../store/auth";
-
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const router = useRouter();
   const authStore = useAuth();
-
-  if (to.path === "/" || to.path === "/index") {
-    return;
-  }
-
-  if ((await authStore.utente.id_utente) == 0) {
-    router.push({ name: "index" });
-    return;
-  }
-
-  if ((await authStore.sessione.id_sessione) == 0) {
-    router.push({ name: "index" });
-    return;
-  }
+  authStore.init();
 
   const loggedin = await authStore.controllaSessione();
   console.log(loggedin);
-  if (loggedin == false) {
+
+  if (
+    (to.path === "/" || to.path === "/index") &&
+    authStore.sessione.id_sessione == 0
+  ) {
+    return;
+  }
+
+  if (authStore.sessione.id_sessione == 0) {
+    router.push({ name: "index" });
+    return;
+  }
+
+  if ((await loggedin) == false) {
     router.push({ name: "index" });
     return;
   }

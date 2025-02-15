@@ -25,7 +25,25 @@ export const useAuth = defineStore("auth-store", {
     address: "http://127.0.0.1/Z-planning/api/",
   }),
   actions: {
-    init() {},
+    init() {
+      if (typeof window !== "undefined") {
+        // Puoi usare localStorage solo qui
+
+        const sessione = localStorage.getItem("sessione");
+        if (sessione) {
+          const parsedSessione = JSON.parse(sessione);
+          this.sessione = parsedSessione;
+
+          const utente = localStorage.getItem("utente") as any;
+          if (utente) {
+            const parsedUtente = JSON.parse(utente);
+            this.utente = parsedUtente;
+          }
+        }
+      } else {
+        console.log("localStorage non è disponibile nel server");
+      }
+    },
 
     async login(id: number, password: string) {
       //if (this.utente.id_utente != 0) return;
@@ -70,6 +88,7 @@ export const useAuth = defineStore("auth-store", {
         this.sessione.scadenza = dati.scadenza * 1;
         this.sessione.id_sessione = dati.id_sessione;
         this.sessione.controlCode = dati.controlCode;
+        this.setLocalStorage();
 
         console.log(this.utente);
       } catch (e) {
@@ -118,6 +137,8 @@ export const useAuth = defineStore("auth-store", {
           this.sessione.id_sessione = 0;
           this.sessione.scadenza = 0;
           this.sessione.controlCode = 0;
+          this.clearLocalStorage();
+
           const router = useRouter();
           router.push({ name: "index" });
           alert("sessione scaduta");
@@ -126,6 +147,7 @@ export const useAuth = defineStore("auth-store", {
 
         if (dati.alive == "OK") {
           console.log("session alive");
+          this.setLocalStorage();
           return true;
         }
       } catch (e) {
@@ -171,6 +193,7 @@ export const useAuth = defineStore("auth-store", {
             (this.sessione.id_sessione = 0);
           this.sessione.scadenza = 0;
           this.sessione.controlCode = 0;
+          this.clearLocalStorage();
           const router = useRouter();
           router.push({ name: "index" });
         }
@@ -179,6 +202,30 @@ export const useAuth = defineStore("auth-store", {
       }
 
       return true;
+    },
+
+    setLocalStorage() {
+      if (typeof window !== "undefined") {
+        // Puoi usare localStorage solo qui altrimenti da problemi
+        localStorage.setItem("utente", JSON.stringify(this.utente));
+        console.log(localStorage.getItem("utente"));
+        localStorage.setItem("sessione", JSON.stringify(this.sessione));
+        console.log(localStorage.getItem("utente"));
+      } else {
+        console.log("localStorage non è disponibile nel server");
+      }
+    },
+
+    clearLocalStorage() {
+      //localStorage.removeItem("utente");
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("utente");
+        console.log(localStorage.getItem("utente"));
+        localStorage.removeItem("sessione");
+        console.log(localStorage.getItem("utente"));
+      } else {
+        console.log("localStorage non è disponibile nel server");
+      }
     },
   },
 });

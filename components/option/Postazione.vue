@@ -61,7 +61,7 @@ const add = props.add as Boolean;
 
 <style scoped>
 .add {
-  padding: 2px;
+  padding: 3px;
   background: linear-gradient(
     90deg,
     rgba(0, 105, 186, 1) 0%,
@@ -72,7 +72,7 @@ const add = props.add as Boolean;
   position: absolute;
   top: 20px;
   left: -15px;
-  height: 30px;
+  height: 35px;
 }
 
 .rectangle {
@@ -94,7 +94,7 @@ const add = props.add as Boolean;
   position: absolute;
   inset: 0;
   border-radius: 0.625rem;
-  padding: 0.18rem;
+  padding: 0.17rem;
   background: linear-gradient(90deg, rgba(0, 105, 186, 1), rgba(0, 47, 84, 1));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);

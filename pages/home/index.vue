@@ -1,5 +1,13 @@
 <script setup lang="ts">
 const router = useRouter();
+import { useAuth } from "../../store/auth";
+const authStore = useAuth();
+import { usePrenotazioni } from "../../store/prenotazioni";
+const prenotazioniStore = usePrenotazioni();
+await prenotazioniStore.getPrenotazioni();
+console.log(prenotazioniStore.prenotazioni.length)
+
+
 </script>
 
 <template>
@@ -54,7 +62,17 @@ const router = useRouter();
 
     <div class="in-scadenza-oggi">In scadenza oggi</div>
     <div class="riepilogo">
-      <div class="frame-2"></div>
+
+      
+      <div class="frame-2">
+
+          <PrenotazioneElement
+          v-for="prenotazione in prenotazioniStore.prenotazioni"
+          :prenotazione= prenotazione
+          :key = prenotazioniStore.prenotazioni.length
+          > </PrenotazioneElement>
+
+      </div>
 
       <div class="visualizza-tutte">visualizza tutte le prenotazioni</div>
     </div>
@@ -196,6 +214,11 @@ ul {
   top: 1.1875rem;
   box-shadow: 0rem 0rem 1.25rem 0rem rgba(0, 0, 0, 0.15);
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+
+
 }
 
 .visualizza-tutte {

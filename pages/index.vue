@@ -1,16 +1,24 @@
 <script setup lang = "ts">
 import  { useAuth } from '../store/auth';
 const authStore = useAuth();
-
+const router = useRouter();
+console.log("prova login "+ authStore.utente.id_utente);
 const id_utente = ref(); // 0 come id utente considerato come utente vuoto
 const password = ref('');
 
+if(authStore.utente.id_utente != 0){
+  router.push({ name: "home" });
+}
 
 async function login(){
     id_utente.value = id_utente.value; //rimozione eventuali spazi
     await authStore.login(id_utente.value,password.value);
     
 }
+
+
+
+
 </script>
 
 

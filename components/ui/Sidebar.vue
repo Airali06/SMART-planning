@@ -5,6 +5,7 @@ import  { useAuth } from '../store/auth';
 const authStore = useAuth();
 
 const isCollapsed = ref(false);
+isCollapsed.value = !isCollapsed.value;
 
 const comprimi = () => {
   isCollapsed.value = !isCollapsed.value;
@@ -24,7 +25,22 @@ const route = useRoute();
     
 </script>
 
+
+
+
 <template>
+
+
+<head>
+  <!-- Caricamento del font e dei CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sulphur+Point:wght@300;400;700&display=swap" rel="stylesheet">
+  
+</head>
+
+
+
   <div :class="['sidebar', { collapsed: isCollapsed }]" v-if = "!(route.path === '/' || route.path === '/index')">
     <button
       class="burger"
@@ -60,7 +76,26 @@ const route = useRoute();
 
 <style scoped>
 /* Sidebar Normale */
+.sulphur-point-light {
+  font-family: "Sulphur Point", serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.sulphur-point-regular {
+  font-family: "Sulphur Point", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.sulphur-point-bold {
+  font-family: "Sulphur Point", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
 .sidebar {
+  font-family: "Sulphur Point", serif;
   width: 250px;
   height: 100vh;
   background: linear-gradient(90deg, rgb(2, 83, 145) 0%, rgb(1, 76, 134) 100%);

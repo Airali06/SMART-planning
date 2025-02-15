@@ -14,6 +14,6 @@
 .layout {
   position: relative;
   display: grid;
-  margin-left: 250px;
+  margin-left: 190px;
 }
 </style>
