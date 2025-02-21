@@ -11,21 +11,25 @@ const postazioniStore = usePostazioni()
 
 <template>
 <div style = "scale:0.9">
+
+
     <div class = "rectangle">
         <div style = "flex-direction: row; display: flex;">
-        <div class = "nome">{{ props.prenotazione?.id_postazione }}</div>
-        <div class = "data"></div>
-        </div>
+        <div class = "nome"><span style = "margin-left: 20px;">Postazione {{ props.prenotazione?.id_prenotazione }}</span></div>
+        <div class = "data"><span>{{ props.prenotazione?.data }}</span></div>
+        <div class = "time"><span>giornata intera</span></div>
+        <div class = "content"><span style = "margin:10px">info prenotazione</span></div>
+    </div>
 
 
 
     
-        <div style = "position: absolute; left: 25px; top: 40px;">
-            <img src = "../../img/scrivania.png" width="90px">
+        <div style = "position: absolute; left: 30px; top: 40px;">
+            <img src = "../../img/scrivania.png" width="95px">
             
         </div>
 
-        <div style = "position: absolute; left: 120px; bottom: 20px; flex-direction: column; 
+        <div style = "scale:0.8;position: absolute; left: 120px; bottom: 20px; flex-direction: column; 
         display: flex; font-weight: 700; line-height: 0.8; font-size: 18px;">
             <span>scrivania</span>
             <span style = "font-size: 25px;">standard</span>
@@ -53,10 +57,15 @@ const postazioniStore = usePostazioni()
   border-radius: 7px;
 
   position: absolute;
-  top: 12px;
+  top: 15px;
   left: 12px;
-  height: 25px;
-  width: 190px;
+  height: 27px;
+  width: 180px;
+  color: #ffffff;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  font-size: 19px;
 }
 
 .rectangle {
@@ -73,7 +82,7 @@ const postazioniStore = usePostazioni()
     justify-content: center;
     border: 0px;
 
-    width: 500px;
+    width: 520px;
     height: 120px;
   }
   
@@ -95,7 +104,46 @@ const postazioniStore = usePostazioni()
   .data{
     border-radius: 8px;
     background-color: rgb(191, 214, 233);
-    width: 160px;
-    height: 25px;
+    width: 120px;
+    height: 27px;
+    position: absolute;
+    top: 15px;
+    left: 230px;
+    padding: 3px;
+    font-weight: 800;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
+
+  .time{
+    border-radius: 8px;
+    background-color: rgb(191, 214, 233);
+    width: 130px;
+    height: 27px;
+    position: absolute;
+    top: 15px;
+    left: 370px;
+    padding: 3px;
+    font-weight: 800;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .content{
+    border-radius: 8px;
+    background-color: rgb(214, 231, 245);
+    width: 275px;
+    height: 50px;
+    position: absolute;
+    top: 55px;
+    left: 230px;
+    padding: 0px;
+    font-weight: 800;
+    display: flex;
+    
+  }
+
+
   </style>

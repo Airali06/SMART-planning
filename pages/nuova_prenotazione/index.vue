@@ -1,4 +1,6 @@
 <script setup lang = "ts">
+
+const data = ref();
 </script>
 
 <template>
@@ -92,7 +94,9 @@
     left: 890px;
     top: 417px;
     width: 249px;
-    height: 25px;">seleziona data</div>
+    height: 25px;">seleziona data
+    <input type = "date" v-model="data" style = "margin-top: 50px; height: 50px;">
+    </div>
 
     
 

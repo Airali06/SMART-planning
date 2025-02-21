@@ -5,7 +5,6 @@ import  { useAuth } from '../store/auth';
 const authStore = useAuth();
 
 const isCollapsed = ref(false);
-isCollapsed.value = !isCollapsed.value;
 
 const comprimi = () => {
   isCollapsed.value = !isCollapsed.value;

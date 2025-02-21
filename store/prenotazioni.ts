@@ -31,7 +31,6 @@ export const usePrenotazioni = defineStore("prenotazioni-store", {
         console.log(response[0]);
 
         this.prenotazioni = [...response[0]] as Array<Prenotazione>;
-
         console.log(this.prenotazioni);
       } catch (e) {
         console.log("errore" + e);
