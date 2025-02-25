@@ -141,7 +141,6 @@ export const useAuth = defineStore("auth-store", {
 
           const router = useRouter();
           router.push({ name: "index" });
-          alert("sessione scaduta");
           return false;
         }
 

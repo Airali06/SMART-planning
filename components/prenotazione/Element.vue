@@ -22,7 +22,7 @@ const postazioniStore = usePostazioni()
     </div>
 
 
-
+<!------A1------------------------------------------>
     
         <div style = "position: absolute; left: 30px; top: 40px;">
             <img src = "../../img/scrivania.png" width="95px">
@@ -34,6 +34,8 @@ const postazioniStore = usePostazioni()
             <span>scrivania</span>
             <span style = "font-size: 25px;">standard</span>
         </div>
+
+        
 
         
 

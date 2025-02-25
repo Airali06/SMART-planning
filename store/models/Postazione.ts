@@ -1,6 +1,7 @@
 export interface Postazione {
-  id: number;
-  categoria: String;
+  id_postazione: number;
+  nome: String;
+  id_categoria: String;
   descrizione: String;
   stato: number;
 }

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+
+import { usePostazioni } from "../../store/postazioni";
+const postazioniStore = usePostazioni();
+await postazioniStore.getPostazioni();
 const props = defineProps({
   add: Boolean,
   tipo: String,
@@ -9,39 +13,49 @@ da rivedere
 */
 
 
-let selezionato = 0
-const x = 0; // Coordinata X relativa al contenitore
-const y = 0;   // Coordinata Y relativa al contenitore
-  
+const selezionato = ref(0);
+const x = ref(0); // Coordinata X relativa al contenitore
+const y = ref(0);   // Coordinata Y relativa al contenitore
+const aggiorna =  ref("");
+const mostra = ref(true);
+console.log("categoria: "+postazioniStore.postazioni[selezionato.value as any].id_categoria)
 
-function seleziona(id: number){
+ function seleziona(id: number){
 
-  selezionato = id;
+  selezionato.value = id;
   console.log(id);
-}
-
-function getPopupPosition(event: MouseEvent){
-  const Popup = document.getElementById("popup") as any;
-  const rect = event.currentTarget.getBoundingClientRect();
-  const x = event.clientX - rect.left; // Coordinata X relativa al contenitore
-  const y = event.clientY - rect.top;   // Coordinata Y relativa al contenitore
-  Popup.style.left = `${x -60}px`;
-  Popup.style.top = `${y -35}px`;
   
-}
 
+  const cellaSVG = document.getElementById(id +"")
+  const Popup = document.getElementById("popup") as any;
+  if(cellaSVG && Popup){
+
+      nextTick(() => {
+        
+        const rect = cellaSVG.getBoundingClientRect() as any;
+        x.value = rect.x + rect.width / 2 -395;
+        y.value= rect.y + rect.height / 2 -385;
+        Popup.style.left = `${x.value}px`;
+        Popup.style.top = `${y.value}px`;
+        mostra.value = true;
+      });
+    }
+      //aggiorna.value += " ";
+  }
 
 </script>
 
 <template>
 
-<div style = "width: fit-content;" @click = "(event) =>getPopupPosition(event)">
+<input type = "text" v-model = "aggiorna" style = "display: none">
+
+<div style = "width: fit-content;" >
 <img  src = "../../img/mappa1.png" usemap="#mappa" style = "width: 100%">
  
 
 
       
-      <svg class="map-overlay" viewBox="0 0 960 600" >
+      <svg class="map-overlay" viewBox="0 0 960 600" id = "svgmap">
 
         <!-- tipologia B -->
       <rect id="0" x="0" y="0" width="109" height="142" @click="seleziona(0)" />
@@ -79,7 +93,8 @@ function getPopupPosition(event: MouseEvent){
         <!--  -->
 
 
-        <!-- tipologia A2 -->  <rect id="25" x="312" y="0" width="66" height="35" @click="seleziona(25)" />
+        <!-- tipologia A2 -->  
+      <rect id="25" x="312" y="0" width="66" height="35" @click="seleziona(25)" />
       <rect id="26" x="378" y="0" width="68" height="34" @click="seleziona(26)" />
       <rect id="27" x="446" y="0" width="67" height="35" @click="seleziona(27)" />
       <rect id="28" x="510" y="0" width="65" height="34" @click="seleziona(28)" />
@@ -112,10 +127,20 @@ function getPopupPosition(event: MouseEvent){
 </svg>
     
 
-<PopupElement style = "position:absolute; top:0px; left:0px" id = "popup"></PopupElement>
 
 
 
+<PopupElement 
+:id_postazione="selezionato"
+:key = "0"
+style = "position:absolute; top:0px; left:0px; scale: 2;" id = "popup"
+v-if = "mostra == true"
+>
+  <div class="x" >
+      <img src="../../img/remove.png" height="15px"/>
+
+    </div>
+</PopupElement>
 
 
 
@@ -138,12 +163,28 @@ function getPopupPosition(event: MouseEvent){
   cursor: pointer;
   pointer-events: all;
   fill: transparent;
-  stroke: red;
   stroke-width: 2;
 }
 
 .map-overlay rect:hover {
-  fill: rgba(255, 0, 0, 0.3);
+  fill: rgba(54, 196, 252, 0.3);
+  
+}
+
+.x {
+  padding: 3px;
+  background:rgba(0, 47, 84, 1);
+
+  border-radius: 10px;
+  align-items: center;
+  position: absolute;
+  top: 5px;
+  height: 27px;
+  width:  27px;
+  scale: 0.4;
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
 }
 
 
