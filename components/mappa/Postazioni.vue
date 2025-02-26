@@ -30,6 +30,8 @@ console.log("categoria: "+postazioniStore.postazioni[selezionato.value as any].i
   const Popup = document.getElementById("popup") as any;
   if(cellaSVG && Popup){
 
+    mostra.value = true;
+
       nextTick(() => {
         
         const rect = cellaSVG.getBoundingClientRect() as any;
@@ -37,7 +39,7 @@ console.log("categoria: "+postazioniStore.postazioni[selezionato.value as any].i
         y.value= rect.y + rect.height / 2 -385;
         Popup.style.left = `${x.value}px`;
         Popup.style.top = `${y.value}px`;
-        mostra.value = true;
+
       });
     }
       //aggiorna.value += " ";
