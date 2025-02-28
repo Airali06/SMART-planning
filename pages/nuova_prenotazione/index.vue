@@ -1,9 +1,13 @@
 <script setup lang = "ts">
 import { usePrenotazioni } from "../../store/prenotazioni";
 const prenotazioniStore = usePrenotazioni();
+import { usePostazioni } from "../../store/postazioni";
+const postazioniStore = usePostazioni();
+
+
 
 const data = ref();
-
+const aggiorna = ref("");
 const selezionato = ref(-1);
 await nextTick();
 const mappa = ref(null);
@@ -28,16 +32,20 @@ async function confermaPrenotazione(){
       return;
       console.log(data.value as Date);
       prenotazioniStore.nuovaPrenotazione(data.value, selezionato.value);
-
-
-
-  
+ 
 }
+
+async function occupate(){
+  await postazioniStore.checkPostazioniOccupate(data.value);
+  console.log(data.value);
+  aggiorna.value+= " ";
+
+}
+
 
 </script>
 
 <template>
-
 
 
 <head>
@@ -60,7 +68,11 @@ async function confermaPrenotazione(){
 
     <div class="map_container" >
 
-        <MappaPostazioni ref = "mappa"></MappaPostazioni>
+        <MappaPostazioni ref = "mappa"
+        :key = aggiorna
+        >
+
+        </MappaPostazioni>
 
          <span class = "effettua-prenotazione" 
          style = "  position: absolute;
@@ -128,7 +140,7 @@ async function confermaPrenotazione(){
     top: 417px;
     width: 249px;
     height: 25px;">seleziona data
-    <input type = "date" v-model="data" style = "margin-top: 50px; height: 50px;">
+    <input type = "date" v-model="data" style = "margin-top: 50px; height: 50px;" @change="occupate()">
     </div>
 
     

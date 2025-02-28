@@ -6,6 +6,7 @@ export const usePostazioni = defineStore("postazioni-store", {
   state: () => ({
     postazioni: [] as Array<Postazione>,
     categorie: [] as Array<Categoria>,
+    occupate: [] as any,
   }),
   actions: {
     init() {},
@@ -65,6 +66,31 @@ export const usePostazioni = defineStore("postazioni-store", {
 
         this.categorie = [...response[0]] as Array<Categoria>;
         console.log(this.categorie);
+      } catch (e) {
+        console.log("errore" + e);
+      }
+    },
+
+    async checkPostazioniOccupate(data: Date) {
+      const authStore = useAuth();
+      try {
+        const response = (await $fetch(
+          authStore.address + "checkPostazioniOccupate.php",
+          {
+            //composizione dell messaggio di request
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json", //specifica tipologia di dato inviata
+            },
+            body: JSON.stringify({
+              data: data,
+            }),
+          }
+        )) as any;
+        console.log("occupate");
+        console.log(response);
+
+        this.occupate = [...response];
       } catch (e) {
         console.log("errore" + e);
       }

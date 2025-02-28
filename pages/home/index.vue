@@ -65,7 +65,7 @@ console.log(prenotazioniStore.prenotazioni.length)
 
       
       <div class="frame-2">
-        <div style = "overflow-y: auto; height: 100%;">
+        <div style = "overflow-y: auto; height: 80%;">
           <PrenotazioneElement
           v-for="prenotazione in prenotazioniStore.prenotazioni"
           :prenotazione= prenotazione

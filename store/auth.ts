@@ -140,7 +140,7 @@ export const useAuth = defineStore("auth-store", {
           this.clearLocalStorage();
 
           const router = useRouter();
-          router.push({ name: "index" });
+          //router.push({ name: "index" });
           return false;
         }
 

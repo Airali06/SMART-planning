@@ -16,7 +16,7 @@ const postazioniStore = usePostazioni()
     <div class = "rectangle">
         <div style = "flex-direction: row; display: flex;">
 
-        <div class = "nome1"><span style = "margin-left: 20px;">Postazione {{ postazioniStore.postazioni[props.prenotazione?.id_postazione].nome}}</span></div>
+        <div class = "nome1"><span style = "margin-left: 20px;">Postazione {{props.prenotazione?.id_postazione}}</span></div>
         
         
         <div class = "data"><span>{{ props.prenotazione?.data }}</span></div>
