@@ -277,6 +277,7 @@ menu, ol, ul {
   font-size: 25px;
   line-height: 12px;
   font-weight: 700;
+  cursor:pointer
  
 }
 
