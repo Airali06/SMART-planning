@@ -65,12 +65,13 @@ console.log(prenotazioniStore.prenotazioni.length)
 
       
       <div class="frame-2">
-
+        <div style = "overflow-y: auto; height: 100%;">
           <PrenotazioneElement
           v-for="prenotazione in prenotazioniStore.prenotazioni"
           :prenotazione= prenotazione
           :key = prenotazioniStore.prenotazioni.length
           > </PrenotazioneElement>
+        </div>
 
       </div>
 
@@ -205,6 +206,8 @@ ul {
 }
 
 .frame-2 {
+
+  
   background: #ffffff;
   border-radius: 0.625rem;
   width: 32.875rem;

@@ -37,7 +37,7 @@ export const usePrenotazioni = defineStore("prenotazioni-store", {
       }
     },
 
-    async nuovaPrenotazione(data: number, id_postazione: number) {
+    async nuovaPrenotazione(data: Date, id_postazione: number) {
       const authStore = useAuth();
 
       try {

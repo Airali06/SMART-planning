@@ -15,7 +15,10 @@ const postazioniStore = usePostazioni()
 
     <div class = "rectangle">
         <div style = "flex-direction: row; display: flex;">
-        <div class = "nome"><span style = "margin-left: 20px;">Postazione {{ props.prenotazione?.id_prenotazione }}</span></div>
+
+        <div class = "nome1"><span style = "margin-left: 20px;">Postazione {{ postazioniStore.postazioni[props.prenotazione?.id_postazione].nome}}</span></div>
+        
+        
         <div class = "data"><span>{{ props.prenotazione?.data }}</span></div>
         <div class = "time"><span>giornata intera</span></div>
         <div class = "content"><span style = "margin:10px">info prenotazione</span></div>
@@ -48,7 +51,7 @@ const postazioniStore = usePostazioni()
 
 <style scooped>
 
-.nome {
+.nome1 {
   padding: 3px;
   margin-left: 10px;
   background: linear-gradient(

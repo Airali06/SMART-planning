@@ -1,5 +1,6 @@
 <script setup lang="ts">
-
+import { ref as vueRef } from "vue";
+import { defineExpose } from 'vue';
 import { usePostazioni } from "../../store/postazioni";
 const postazioniStore = usePostazioni();
 await postazioniStore.getPostazioni();
@@ -20,11 +21,18 @@ const aggiorna =  ref("");
 const mostra = ref(true);
 console.log("categoria: "+postazioniStore.postazioni[selezionato.value as any].id_categoria)
 
+
+
+
  function seleziona(id: number){
 
   selezionato.value = id;
+  if (typeof window !== "undefined") {
+        localStorage.setItem("scelta", JSON.stringify(selezionato.value));
+      } else {
+        console.log("localStorage non è disponibile nel server");
+      }
   console.log(id);
-  
 
   const cellaSVG = document.getElementById(id +"")
   const Popup = document.getElementById("popup") as any;

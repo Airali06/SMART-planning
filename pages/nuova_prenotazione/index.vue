@@ -1,6 +1,39 @@
 <script setup lang = "ts">
+import { usePrenotazioni } from "../../store/prenotazioni";
+const prenotazioniStore = usePrenotazioni();
 
 const data = ref();
+
+const selezionato = ref(-1);
+await nextTick();
+const mappa = ref(null);
+
+async function confermaPrenotazione(){
+
+  if (typeof window !== "undefined") {
+        // Puoi usare localStorage solo qui
+
+        const scelta = localStorage.getItem("scelta");
+        if (scelta) {
+          const parsed = JSON.parse(scelta);
+          selezionato.value = parsed;
+          console.log(selezionato.value);
+        }
+      } else {
+        console.log("localStorage non è disponibile nel server");
+      }
+  
+
+      if(selezionato.value == -1)
+      return;
+      console.log(data.value as Date);
+      prenotazioniStore.nuovaPrenotazione(data.value, selezionato.value);
+
+
+
+  
+}
+
 </script>
 
 <template>
@@ -27,7 +60,7 @@ const data = ref();
 
     <div class="map_container" >
 
-        <MappaPostazioni></MappaPostazioni>
+        <MappaPostazioni ref = "mappa"></MappaPostazioni>
 
          <span class = "effettua-prenotazione" 
          style = "  position: absolute;
@@ -106,7 +139,7 @@ const data = ref();
 
     
 
-    <button class="conferma">conferma prenotazione</button>
+    <button class="conferma" @click="confermaPrenotazione()">conferma prenotazione</button>
    
   </div>
 
@@ -190,6 +223,7 @@ menu, ol, ul {
   box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15);
 }
 .rectangle-6 {
+  
   background: #ffffff;
   border-radius: 10px;
   width: 350px;
