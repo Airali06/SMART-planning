@@ -235,6 +235,7 @@ ul {
   text-align: center;
   color: #ffffff;
   padding: 7px;
+  cursor:pointer
 }
 
 .prenota {

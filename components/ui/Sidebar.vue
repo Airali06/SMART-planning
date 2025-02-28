@@ -58,15 +58,17 @@ const route = useRoute();
       "
       v-if="!isCollapsed"
     >
-      <span @click="
+      <span style="cursor:pointer"
+          @click="
             router.push({ name: 'home'})">home </span>
 
-      <span>account</span>
+      <span style="cursor:pointer">account</span>
 
-      <span @click="
+      <span style="cursor:pointer"
+          @click="
             router.push({ name: 'nuova_prenotazione', params: { option: 0, modifica : 0} })">nuova prenotazione</span>
 
-      <span>mappa</span>
+      <span style="cursor:pointer">mappa</span>
     </div>
 
     <button class="logout" v-if="!isCollapsed" @click="logout()">logout</button>
@@ -148,6 +150,7 @@ const route = useRoute();
   font-size: 20px;
   display: block;
   margin-top: 50px;
+  cursor:pointer
 }
 
 span {
