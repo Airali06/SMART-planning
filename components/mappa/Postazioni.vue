@@ -27,19 +27,24 @@ const mostra = ref(true);
 console.log("categoria: "+postazioniStore.postazioni[selezionato.value as any].id_categoria)
 
 // GESTIONE POSTAZIONI OCCUPATE
+import { onMounted, nextTick } from 'vue';
 
-nextTick(() => {
-        
-    postazioniStore.occupate.forEach(element => {
-    const cellaSVG = document.getElementById(element.id_postazione-1+"")
-    if(cellaSVG){
-      cellaSVG.setAttribute("style", "fill: rgba(255, 0, 0, 0.3);;");
-      console.log("passo")
+onMounted(() => {
+  nextTick(() => {
+    for (const element of postazioniStore.occupate) {
+    console.log("element"+element);
+    const cellaSVG = document.getElementById((element).toString());
+    if (cellaSVG) {
+      console.log("Elemento trovato:", cellaSVG);
+      cellaSVG.style.fill = "rgba(255, 0, 0, 0.3)";
+    } else {
+      console.log("Elemento non trovato per id:", element);
     }
+  }
 
   });
-
 });
+
 
 ///SELEZIONE E POSIZIONMATO POPUP
 
@@ -178,6 +183,7 @@ v-if = "mostra == true"
 
   </div>
 </template>
+
 
 <style scooped>
 

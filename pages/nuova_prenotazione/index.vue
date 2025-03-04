@@ -36,9 +36,15 @@ async function confermaPrenotazione(){
 }
 
 async function occupate(){
-  await postazioniStore.checkPostazioniOccupate(data.value);
-  console.log(data.value);
-  aggiorna.value+= " ";
+  // Parse the date to a proper Date object, in case it's not already.
+  const selectedDate = new Date(data.value); 
+
+  // Call the checkPostazioniOccupate with the Date object
+  await postazioniStore.checkPostazioniOccupate(selectedDate);
+  //console.log("Checked postazioni occupate for date:", selectedDate);
+
+  // Update the aggiorna value to trigger a re-render, if necessary
+  aggiorna.value += " "; // You can modify this to reflect meaningful updates
 
 }
 

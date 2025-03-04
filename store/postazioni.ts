@@ -72,27 +72,37 @@ export const usePostazioni = defineStore("postazioni-store", {
     },
 
     async checkPostazioniOccupate(data: Date) {
+      const formattedDate = data.toISOString().split("T")[0];
+      console.log(formattedDate); // Format to 'YYYY-MM-DD'
       const authStore = useAuth();
+
       try {
         const response = (await $fetch(
           authStore.address + "checkPostazioniOccupate.php",
           {
-            //composizione dell messaggio di request
             method: "POST",
             headers: {
-              "Content-Type": "application/json", //specifica tipologia di dato inviata
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              data: data,
+              data: formattedDate,
             }),
           }
         )) as any;
-        console.log("occupate");
-        console.log(response);
 
-        this.occupate = [...response];
+        console.log("Response:", response);
+
+        if (response.stato === "occupate") {
+          // Here, we expect response.occupate to be an array of occupied postazioni
+          this.occupate = response.occupate;
+          console.log("Postazioni occupate:", this.occupate);
+        } else {
+          // If no postazioni are occupied
+          this.occupate = [];
+          console.log("No postazioni occupied on this date.");
+        }
       } catch (e) {
-        console.log("errore" + e);
+        console.error("Errore nella richiesta:", e);
       }
     },
   },
