@@ -1,11 +1,15 @@
 <script setup lang = "ts">
+import type { Postazione } from '~/store/models/Postazione';
 import type { Prenotazione } from '~/store/models/Prenotazione';
 import { usePostazioni } from '~/store/postazioni';
 const props = defineProps({
   prenotazione: {} as PropType<Prenotazione>,
 });
 
-const postazioniStore = usePostazioni()
+const  postazioniStore = await usePostazioni()
+const postazione = postazioniStore.getPostazione(props.prenotazione as Prenotazione) as Postazione;
+const categoria = postazioniStore.getCategoria(postazione as Postazione);
+//console.log(postazione, categoria)
 </script>
 
 
@@ -16,7 +20,7 @@ const postazioniStore = usePostazioni()
     <div class = "rectangle">
         <div style = "flex-direction: row; display: flex;">
 
-        <div class = "nome1"><span style = "margin-left: 20px;">Postazione {{props.prenotazione?.id_postazione}}</span></div>
+        <div class = "nome1"><span style = "margin-left: 20px;">Postazione {{postazione.nome}}</span></div>
         
         
         <div class = "data"><span>{{ props.prenotazione?.data }}</span></div>
@@ -27,18 +31,66 @@ const postazioniStore = usePostazioni()
 
 <!------A1------------------------------------------>
     
-        <div style = "position: absolute; left: 30px; top: 40px;">
+        <div style = "position: absolute; left: 30px; top: 40px;" v-if = "categoria.id_categoria == 'A1'">
             <img src = "../../img/scrivania.png" width="95px">
             
         </div>
 
         <div style = "scale:0.8;position: absolute; left: 120px; bottom: 20px; flex-direction: column; 
-        display: flex; font-weight: 700; line-height: 0.8; font-size: 18px;">
+        display: flex; font-weight: 700; line-height: 0.8; font-size: 18px;"
+        v-if = "categoria.id_categoria == 'A1'"
+        >
             <span>scrivania</span>
             <span style = "font-size: 25px;">standard</span>
         </div>
 
-        
+<!------A2------------------------------------------>
+    
+<div style = "position: absolute; left: 35px; top: 53px;" v-if = "categoria.id_categoria == 'A2'">
+            <img src = "../../img/scrivania_con_monitor.png" width="65px">
+            
+        </div>
+
+        <div style = "scale:0.8;position: absolute; left: 95px; bottom: 20px; flex-direction: column; 
+        display: flex; font-weight: 700; line-height: 0.8; font-size: 18px;"
+        v-if = "categoria.id_categoria == 'A2'"
+        >
+            <span>scrivania</span>
+            <span style = "font-size: 25px;">con Monitor</span>
+        </div>
+
+<!------B------------------------------------------>
+    
+<div style = "position: absolute; left: 30px; top: 40px;" v-if = "categoria.id_categoria == 'B'">
+            <img src = "../../img/sala_riunioni.png" width="95px">
+            
+        </div>
+
+        <div style = "scale:0.8;position: absolute; left: 120px; bottom: 20px; flex-direction: column; 
+        display: flex; font-weight: 700; line-height: 0.8; font-size: 18px;"
+        v-if = "categoria.id_categoria == 'B'"
+        >
+            <span>sala</span>
+            <span style = "font-size: 25px;">Riunioni</span>
+        </div>
+<!------C-----------------------------------------
+    
+
+
+<div style = "position: absolute; left: 30px; top: 40px;" v-if = "categoria.id_categoria == 'C'">
+            <img src = "../../img/scrivania.png" width="95px">
+            
+        </div>
+
+        <div style = "scale:0.8;position: absolute; left: 120px; bottom: 20px; flex-direction: column; 
+        display: flex; font-weight: 700; line-height: 0.8; font-size: 18px;"
+        v-if = "categoria.id_categoria == 'C'"
+        >
+            <span>scrivania</span>
+            <span style = "font-size: 25px;">standard</span>
+        </div>
+
+      -->        
 
         
 

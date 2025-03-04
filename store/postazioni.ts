@@ -1,4 +1,5 @@
 import type { Postazione } from "./models/Postazione";
+import type { Prenotazione } from "./models/Prenotazione";
 import type { Categoria } from "./models/Categoria";
 import { useAuth } from "./auth";
 
@@ -104,6 +105,28 @@ export const usePostazioni = defineStore("postazioni-store", {
       } catch (e) {
         console.error("Errore nella richiesta:", e);
       }
+    },
+
+    getCategoria(postazione: Postazione) {
+      const categoria = this.categorie.find(
+        (obj) => obj.id_categoria === postazione.id_categoria
+      );
+      return { ...categoria };
+    },
+
+    getPostazione(prenotazione: Prenotazione) {
+      const postazione = this.postazioni.find(
+        (obj) => obj.id_postazione === prenotazione.id_postazione
+      );
+      return { ...postazione };
+    },
+
+    getPostazioneById(id: Number) {
+      const postazione = this.postazioni.find(
+        (obj) => obj.id_postazione === id
+      );
+      console.log(postazione);
+      return { ...postazione };
     },
   },
 });

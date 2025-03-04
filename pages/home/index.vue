@@ -3,8 +3,12 @@ const router = useRouter();
 import { useAuth } from "../../store/auth";
 const authStore = useAuth();
 import { usePrenotazioni } from "../../store/prenotazioni";
+import { usePostazioni } from "../../store/postazioni";
 const prenotazioniStore = usePrenotazioni();
 await prenotazioniStore.getPrenotazioni();
+const postazioniStore = usePostazioni();
+await postazioniStore.getPostazioni();
+await postazioniStore.getCategorie();
 console.log(prenotazioniStore.prenotazioni.length)
 
 

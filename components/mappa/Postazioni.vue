@@ -1,9 +1,16 @@
 <script setup lang="ts">
 import { ref as vueRef } from "vue";
 import { defineExpose } from 'vue';
+import type { Postazione } from "~/store/models/Postazione";
+import { usePrenotazioni } from "../../store/prenotazioni";
 import { usePostazioni } from "../../store/postazioni";
+const prenotazioniStore = usePrenotazioni();
+await prenotazioniStore.getPrenotazioni();
 const postazioniStore = usePostazioni();
 await postazioniStore.getPostazioni();
+await postazioniStore.getCategorie();
+
+
 const props = defineProps({
   add: Boolean,
   tipo: String,
@@ -13,27 +20,39 @@ const props = defineProps({
 /*
 da rivedere
 */
-
-
-
-
-
-
+const categoria_scelta = ref("A1");
 const selezionato = ref(0);
-const x = ref(0); // Coordinata X relativa al contenitore
-const y = ref(0);   // Coordinata Y relativa al contenitore
+const x = ref(); // Coordinata X relativa al contenitore
+const y = ref();   // Coordinata Y relativa al contenitore
 const aggiorna =  ref("");
 const mostra = ref(true);
 console.log("categoria: "+postazioniStore.postazioni[selezionato.value as any].id_categoria)
+let click2 = false;
 
 // GESTIONE POSTAZIONI OCCUPATE
 import { onMounted, nextTick } from 'vue';
 
 onMounted(() => {
+  if (typeof window !== "undefined") {
+        // Puoi usare localStorage solo qui
+
+        const scelta = localStorage.getItem("scelta");
+        if (scelta) {
+          const parsedSessione = JSON.parse(scelta);
+          selezionato.value = parsedSessione;
+          seleziona(selezionato.value);
+
+      } else {
+        console.log("localStorage non è disponibile nel server");
+      }
+  }
+
+
   nextTick(() => {
     for (const element of postazioniStore.occupate) {
     console.log("element"+element);
     const cellaSVG = document.getElementById((element).toString());
+    mostra.value = true;
     if (cellaSVG) {
       console.log("Elemento trovato:", cellaSVG);
       cellaSVG.style.fill = "rgba(255, 0, 0, 0.3)";
@@ -42,41 +61,78 @@ onMounted(() => {
     }
   }
 
+  
+  
   });
 });
 
 
-///SELEZIONE E POSIZIONMATO POPUP
+///SELEZIONE E POSIZIONAMENTO POPUP
 
  function seleziona(id: number){
+  
+ 
 
   selezionato.value = id;
+
+
+  //da rivedere
+  const postazione = postazioniStore.getPostazioneById(id) as Postazione;
+  const categoria = postazioniStore.getCategoria(postazione as Postazione);
+  console.log("categoria",categoria);
+  //selezionaCategoria(categoria.id_categoria);
+
+
   if (typeof window !== "undefined") {
         localStorage.setItem("scelta", JSON.stringify(selezionato.value));
       } else {
         console.log("localStorage non è disponibile nel server");
       }
+
   console.log(id);
-
   const cellaSVG = document.getElementById(id +"")
-  
+ 
   const Popup = document.getElementById("popup") as any;
+  mostra.value = true;
   if(cellaSVG && Popup){
-   
-
-    mostra.value = true;
 
       nextTick(() => {
-        
+        mostra.value = false;
         const rect = cellaSVG.getBoundingClientRect() as any;
         x.value = rect.x + rect.width / 2 -395;
         y.value= rect.y + rect.height / 2 -385;
         Popup.style.left = `${x.value}px`;
         Popup.style.top = `${y.value}px`;
+        aggiorna.value+=" ";
+        mostra.value = true;
+
+
 
       });
+
     }
-      //aggiorna.value += " ";
+
+    mostra.value = true;
+  }
+
+
+  /////////////SELEZIONA CATEGORIA
+
+  function selezionaCategoria(id: String){
+
+    nextTick(() => {
+    for (const element of postazioniStore.postazioni) {
+    console.log("element"+element);
+    //const cellaSVG = document.getElementById((element).toString());
+    //mostra.value = true;
+    //if (cellaSVG) {
+    //  console.log("Elemento trovato:", cellaSVG);
+    //  cellaSVG.style.fill = "rgba(255, 0, 0, 0.3)";
+    //} else {
+    //  console.log("Elemento non trovato per id:", element);
+    //}
+  }
+  });
   }
 
 </script>
@@ -94,17 +150,16 @@ onMounted(() => {
       <svg class="map-overlay" viewBox="0 0 960 600" id = "svgmap">
 
         <!-- tipologia B -->
-      <rect style="" id="0" x="0" y="0" width="109" height="142" @click="seleziona(0)" />
+      <rect style="" id="0" x="0" y="0" width="109" height="142" @click=" seleziona(0)" />
       <rect style="" id="1" x="2" y="143" width="107" height="151" @click="seleziona(1)" />
       <rect style="" id="2" x="833" y="0" width="125" height="174" @click="seleziona(2)" />
       <rect style="" id="3" x="833" y="176" width="125" height="188" @click="seleziona(3)" />
       <rect style="" id="4" x="832" y="362" width="126" height="173" @click="seleziona(4)" />
-   
       <!--  -->
 
 
         <!-- tipologia A1 -->
-        <rect style="" id="5" x="185" y="127" width="34" height="64" @click="seleziona(5)"/>
+        <rect style="" id="5" x="185" y="127" width="34" height="64" @click="seleziona(5);"/>
         <rect style="" id="6" x="184" y="193" width="35" height="68" @click="seleziona(6)" />
         <rect style="" id="7" x="183" y="259" width="36" height="67" @click="seleziona(7)" />
         <rect style="" id="8" x="184" y="325" width="36" height="67" @click="seleziona(8)" />
@@ -172,7 +227,7 @@ onMounted(() => {
 style = "position:absolute; top:0px; left:0px; scale: 2;" id = "popup"
 v-if = "mostra == true"
 >
-  <div class="x" >
+  <div class="x" @click="mostra = false">
       <img src="../../img/remove.png" height="15px"/>
 
     </div>
