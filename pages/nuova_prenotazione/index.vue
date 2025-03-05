@@ -5,10 +5,14 @@ import { usePostazioni } from "../../store/postazioni";
 const postazioniStore = usePostazioni();
 
 
-
+const route = useRoute();
+const categoria = ref("A1");
+console.log("parametri: ",route.query.option)
+categoria.value = route.query.option as any;
 const data = ref();
 const aggiorna = ref("");
 const selezionato = ref(-1);
+
 await nextTick();
 const mappa = ref(null);
 
@@ -76,6 +80,7 @@ async function occupate(){
 
         <MappaPostazioni ref = "mappa"
         :key = aggiorna
+        :tipo="categoria"
         >
 
         </MappaPostazioni>
@@ -117,12 +122,16 @@ async function occupate(){
           :add="false"
           tipo="ScrivaniaStandard"
           style = "scale: 0.77; height: 115px;"
+          @click = "categoria = 'A1'; aggiorna += ' '"
+          :style="{ transform: categoria == 'A1' ? 'scale(1.25)' : 'scale(1)' }"
         ></OptionPostazione>
 
         <OptionPostazione
           :add="false"
           tipo="ScrivaniaMonitor"
           style = "scale: 0.77; height: 115px;"
+          @click = "categoria = 'A2'; aggiorna += ' '"
+          :style="{ transform: categoria == 'A2' ? 'scale(1.25)' : 'scale(1)' }"
           
         ></OptionPostazione>
 
@@ -130,6 +139,8 @@ async function occupate(){
           :add="false"
           tipo="SalaRiunioni"
           style = "scale: 0.77; height: 115px;"
+          @click = "categoria = 'B'; aggiorna += ' '"
+           :style="{ transform: categoria == 'B' ? 'scale(1.25)' : 'scale(1)' }"
         ></OptionPostazione>
       
     </div>

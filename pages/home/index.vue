@@ -42,7 +42,7 @@ console.log(prenotazioniStore.prenotazioni.length)
           tipo="ScrivaniaStandard"
           class="zoom"
           @click="
-            router.push({ name: 'nuova_prenotazione', params: { option: 1, modifica : 0} })
+            router.push({ name: 'nuova_prenotazione', query: { option: 'A1', modifica : 0} })
           "
         ></OptionPostazione>
 
@@ -51,7 +51,7 @@ console.log(prenotazioniStore.prenotazioni.length)
           tipo="ScrivaniaMonitor"
           class="zoom"
           @click="
-            router.push({ name: 'nuova_prenotazione', params: { option: 2, modifica : 0} })"
+            router.push({ name: 'nuova_prenotazione', query: { option: 'A2', modifica : 0} })"
         ></OptionPostazione>
 
         <OptionPostazione
@@ -59,7 +59,7 @@ console.log(prenotazioniStore.prenotazioni.length)
           tipo="SalaRiunioni"
           class="zoom"
           @click="
-            router.push({ name: 'nuova_prenotazione', params: { option: 1, modifica : 0} })"
+            router.push({ name: 'nuova_prenotazione', query: { option: 'B', modifica : 0} })"
         ></OptionPostazione>
       </div>
     </div>
