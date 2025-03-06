@@ -20,7 +20,7 @@ const props = defineProps({
 /*
 da rivedere
 */
-const categoria_scelta = ref("A1");
+
 const selezionato = ref(0);
 const x = ref(); // Coordinata X relativa al contenitore
 const y = ref();   // Coordinata Y relativa al contenitore
@@ -49,6 +49,7 @@ onMounted(() => {
 
 
   nextTick(() => {
+    selezionaCategoria(props.tipo as String);
     for (const element of postazioniStore.occupate) {
     console.log("element"+element);
     const cellaSVG = document.getElementById((element).toString());
@@ -56,12 +57,13 @@ onMounted(() => {
     if (cellaSVG) {
       console.log("Elemento trovato:", cellaSVG);
       cellaSVG.style.fill = "rgba(255, 0, 0, 0.3)";
+      
     } else {
       console.log("Elemento non trovato per id:", element);
     }
-  }
 
-  
+   
+  }
   
   });
 });
@@ -118,21 +120,24 @@ onMounted(() => {
 
   /////////////SELEZIONA CATEGORIA
 
-  function selezionaCategoria(id: String){
+  function selezionaCategoria(id: String){//passa l'id della categoria
+  let cellaSVG;
 
-    nextTick(() => {
-    for (const element of postazioniStore.postazioni) {
-    console.log("element"+element);
-    //const cellaSVG = document.getElementById((element).toString());
-    //mostra.value = true;
-    //if (cellaSVG) {
-    //  console.log("Elemento trovato:", cellaSVG);
-    //  cellaSVG.style.fill = "rgba(255, 0, 0, 0.3)";
-    //} else {
-    //  console.log("Elemento non trovato per id:", element);
-    //}
-  }
-  });
+ 
+      for (const element of postazioniStore.postazioni) {
+            //console.log("element"+element.id_categoria);
+            cellaSVG = document.getElementById(element.id_postazione-1 + "");
+            
+
+            if (element.id_categoria == id) {
+              //console.log("Elemento trovato:", "cellaSVG");
+              if(cellaSVG)
+              cellaSVG.style.fill = "rgba(54, 196, 252, 0.1)";
+            } else {
+              console.log("gh'è no");
+            }
+      }
+  
   }
 
 </script>

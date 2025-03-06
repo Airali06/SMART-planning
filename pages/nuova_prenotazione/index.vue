@@ -5,10 +5,14 @@ import { usePostazioni } from "../../store/postazioni";
 const postazioniStore = usePostazioni();
 
 
-
+const route = useRoute();
+const categoria = ref("A1");
+console.log("parametri: ",route.query.option)
+categoria.value = route.query.option as any;
 const data = ref();
 const aggiorna = ref("");
 const selezionato = ref(-1);
+
 await nextTick();
 const mappa = ref(null);
 
@@ -74,11 +78,17 @@ async function occupate(){
 
     <div class="map_container" >
 
+      <img src = "../../img/mappa1.png" width="703px" style = "position : absolute; z-index: 0; top: 25px;">
+
         <MappaPostazioni ref = "mappa"
         :key = aggiorna
+        :tipo="categoria"
+        style="z-index: 100"
         >
 
         </MappaPostazioni>
+
+
 
          <span class = "effettua-prenotazione" 
          style = "  position: absolute;
@@ -117,12 +127,16 @@ async function occupate(){
           :add="false"
           tipo="ScrivaniaStandard"
           style = "scale: 0.77; height: 115px;"
+          @click = "categoria = 'A1'; aggiorna += ' '"
+          :style="{ transform: categoria == 'A1' ? 'scale(1.26)' : 'scale(1)' }"
         ></OptionPostazione>
 
         <OptionPostazione
           :add="false"
           tipo="ScrivaniaMonitor"
           style = "scale: 0.77; height: 115px;"
+          @click = "categoria = 'A2'; aggiorna += ' '"
+          :style="{ transform: categoria == 'A2' ? 'scale(1.26)' : 'scale(1)' }"
           
         ></OptionPostazione>
 
@@ -130,6 +144,8 @@ async function occupate(){
           :add="false"
           tipo="SalaRiunioni"
           style = "scale: 0.77; height: 115px;"
+          @click = "categoria = 'B'; aggiorna += ' '"
+           :style="{ transform: categoria == 'B' ? 'scale(1.26)' : 'scale(1)' }"
         ></OptionPostazione>
       
     </div>
@@ -143,10 +159,14 @@ async function occupate(){
     <div class="seleziona"
     style = "  position: absolute;
     left: 890px;
-    top: 417px;
+    top: 430px;
     width: 249px;
     height: 25px;">seleziona data
-    <input type = "date" v-model="data" style = "margin-top: 50px; height: 50px;" @change="occupate()">
+
+    <input type = "date" v-model="data" 
+    class = "rectangle"
+    style = "margin-top: 40px; font-size: 25px; font-weight: 700; height: 50px; width: 340px;" 
+    @change="occupate()">
     </div>
 
     

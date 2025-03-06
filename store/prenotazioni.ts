@@ -66,5 +66,10 @@ export const usePrenotazioni = defineStore("prenotazioni-store", {
         console.log("errore" + e);
       }
     },
+
+    filtraData(data: Date) {
+      let filtrato = this.prenotazioni.filter((obj) => obj.data == data);
+      return filtrato;
+    },
   },
 });
