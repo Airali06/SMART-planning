@@ -15,6 +15,10 @@ console.log(prenotazioniStore.prenotazioni.length)
 </script>
 
 <template>
+
+  <div style = "margin-left: 300px; position: relative;">
+
+
   <head>
     <!-- Caricamento del font e dei CSS -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -69,21 +73,25 @@ console.log(prenotazioniStore.prenotazioni.length)
 
       
       <div class="frame-2">
-        <div style = "overflow-y: auto; height: 80%;">
+        <div class = "scorrimento">
           <PrenotazioneElement
           v-for="prenotazione in prenotazioniStore.prenotazioni"
           :prenotazione= prenotazione
           :key = prenotazioniStore.prenotazioni.length
+          style="margin-top: 10px;"
           > </PrenotazioneElement>
         </div>
 
       </div>
 
-      <div class="visualizza-tutte">visualizza tutte le prenotazioni</div>
+      <div class="visualizza-tutte" @click="router.push({ name: 'account', query: { option: 1}})">visualizza tutte le prenotazioni</div>
     </div>
 
     <!--<div class="frame-4"></div>-->
   </body>
+
+</div>
+
 </template>
 
 <style scoped>
@@ -110,6 +118,33 @@ h5,
   background: none;
 
   -webkit-font-smoothing: antialiased;
+}
+
+.scorrimento{
+  overflow-y: auto; height: 80%;
+}
+
+.scorrimento::-webkit-scrollbar{
+   width: 15px;
+   border: 4px;
+  border-color: #CCE1F1;
+}
+
+.scorrimento::-webkit-scrollbar-track {
+  background: #CCE1F1; /* Colore di sfondo */
+  border-radius: 10px;
+  border: 4px;
+}
+
+.scorrimento::-webkit-scrollbar-thumb {
+  background:#00345c;
+  border-radius: 10px;
+  border: 4px;
+  border-color: #edccf1;
+}
+
+.scorrimento::-webkit-scrollbar-thumb:hover {
+  background:#001c31;
 }
 
 menu,
@@ -214,7 +249,8 @@ ul {
   
   background: #ffffff;
   border-radius: 0.625rem;
-  width: 32.875rem;
+  padding-right: 20px;
+  width: 550px;
   height: 23.5rem;
   position: absolute;
   left: 1.25rem;
@@ -239,7 +275,13 @@ ul {
   text-align: center;
   color: #ffffff;
   padding: 7px;
-  cursor:pointer
+  cursor:pointer;
+  transition: transform 0.3s ease-in-out;
+}
+
+.visualizza-tutte:hover {
+  transform: scale(1.04);
+  background: linear-gradient(90deg, rgb(0, 82, 145) 0%, #002038 100%);
 }
 
 .prenota {
@@ -273,7 +315,7 @@ ul {
   border-radius: 0.625rem;
   display: flex;
   justify-content: space-between;
-  width: 32.875rem;
+  width: 550px;
   height: 9.9375rem;
   position: absolute;
   left: 9.5rem;

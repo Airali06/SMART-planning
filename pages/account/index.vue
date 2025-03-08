@@ -4,10 +4,36 @@ import { useAuth } from "../../store/auth";
 const authStore = useAuth();
 import { usePrenotazioni } from "../../store/prenotazioni";
 import { usePostazioni } from "../../store/postazioni";
+import type { Prenotazione } from "~/store/models/Prenotazione";
 const prenotazioniStore = usePrenotazioni();
 const postazioniStore = usePostazioni();
 
+let filtrato = [] as Array<Prenotazione>;
 
+const opzione = ref(0);
+const route = useRoute();
+
+
+if(route.query.option){//prendo i parametri passati alla pagina
+  opzione.value = route.query.option as any;
+  selezionaOpzione(opzione.value);
+}
+
+function selezionaOpzione(n : number){
+  //sceglie cosa visualizzare (oggi, tutte, calendario)
+  //0 = oggi
+  //1 = tutte
+  //2 = calendario
+  opzione.value= n;
+  if(n == 0)
+  filtrato = prenotazioniStore.filtraData(new Date());
+  if(n == 1)
+  filtrato = prenotazioniStore.prenotazioni;
+  if(n == 2)
+  filtrato = [];
+
+
+}
 </script>
 
 <template>
@@ -22,122 +48,136 @@ const postazioniStore = usePostazioni();
   </head>
     
       
-      <div class="account">
+      <div style="margin-left: auto; margin-right: auto;" >
         <div class="header">
     
-          <div style = "display: flex; display: box;">
+          <div style = "display: flex; display: box; width: fit-content; position: relative;">
             <img class="profile-1" src="../../img/profilo.png" />
             <img class="rectangle-27" src="../../img/rectangle.svg" />
-          </div>
-    
-        </div>
-    
-        <div style = "display: box; justify-items: center; width: 100%; margin-top: 27px;">
-          <div class="menu">
-            <div class="menu-rect">in scadenza oggi</div>
-            <div class="menu-rect">tutte le prenotazioni</div>
-            <div class="menu-rect">calendario</div>
-          </div>
-        </div>
-       
-    
-        <div class="in-scadenza-oggi">In scadenza oggi</div>
-       
-        <div class="calendario">calendario</div>
-        <div class="tutte-le-prenotazioni">tutte le prenotazioni</div>
 
+
+            <div class = "informazioni">
+                <span style="font-size: 30px;">{{ authStore.utente.cognome +" "+ authStore.utente.nome}}</span>
+                <span>matricola</span>
+                <span>{{ authStore.utente.id_utente}}</span>
+                <span>password</span>
+                <span>********</span>
+
+            </div>
+          </div>
+    
+        </div>
+    
+        <div style = "display: box; justify-items: center; width: 100%; margin-top: 27px; position: relative;">
+          <div class="menu">
+            <div class="menu-rect" 
+            :style="opzione == 0 ? 'background: linear-gradient(90deg,rgba(0, 105, 186, 1) 0%,rgba(0, 47, 84, 1) 100%); color: white': ''"
+            @click="selezionaOpzione(0)"
+            >in scadenza oggi</div>
+
+
+            <div class="menu-rect"
+            :style="opzione == 1 ? 'background: linear-gradient(90deg,rgba(0, 105, 186, 1) 0%,rgba(0, 47, 84, 1) 100%); color: white' : ''"
+            @click="selezionaOpzione(1)"
+            >tutte le prenotazioni</div>
+
+            <div class="menu-rect" 
+            :style="opzione == 2 ? 'background: linear-gradient(90deg,rgba(0, 105, 186, 1) 0%,rgba(0, 47, 84, 1) 100%); color: white' : ''"
+            @click="selezionaOpzione(2)"
+            >calendario</div>
+
+          </div>
+        
+     
+       
+    <div class = "area-prenotazioni">
+        <PrenotazioneElement
+        v-for = "prenotazione in filtrato"
+        :prenotazione="prenotazione"
+        style="margin: 10px; color: #00345c;"
+        >
+
+        </PrenotazioneElement>
+        <div v-if = "filtrato.length == 0" 
+        style="align-self: center; justify-self: center; color: #00345c; font-size: 20px;"> nessuna prenotazione </div>
 
       </div>
+    </div>
+  </div> 
       
     </template>
     
     
     
 <style scooped>
-      /*a,
-      button,
-      input,
-      select,
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      * {
-          box-sizing: border-box;
-          margin: 0;
-          padding: 0;
-          border: none;
-          text-decoration: none;
-          background: none;
-      
-          -webkit-font-smoothing: antialiased;
-      }*/
-      
-      /*menu, ol, ul {
-          list-style-type: none;
-          margin: 0;
-          padding: 0;
-      } */
 
-      /*.account,
-.account * {
-  box-sizing: border-box;
+*{
+  font-family: "Sulphur Point", serif;
 }
-.account {
-  background: #ffffff;
-  height: 832px;
-  position: relative;
-  overflow: hidden;
-}*/
+
+.area-prenotazioni{
+  overflow-y: auto; 
+  height: 430px; 
+  width: 560px; 
+  margin-top: 30px;
+}
+
+.area-prenotazioni::-webkit-scrollbar{
+   width: 15px;
+   border: 4px;
+  border-color: #CCE1F1;
+}
+
+.area-prenotazioni::-webkit-scrollbar-track {
+  background: #CCE1F1; /* Colore di sfondo */
+  border-radius: 10px;
+  border: 4px;
+}
+
+.area-prenotazioni::-webkit-scrollbar-thumb {
+  background:#00345c;
+  border-radius: 10px;
+  border: 4px;
+  border-color: #edccf1;
+}
+
+.area-prenotazioni::-webkit-scrollbar-thumb:hover {
+  background:#001c31;
+}
+
 
 .header{
   display: box;
   justify-items: center;
   background: #ffffff;
   padding: 45px;
-  width: 100%;
   height: 240px;
   box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15);
 }
 
-
-
-/*.rectangle-25 {
-  background: linear-gradient(
-    90deg,
-    rgba(0, 105, 186, 1) 0%,
-    rgba(0, 47, 84, 1) 100%
-  );
-  border-radius: 11px;
-  width: 166px;
-  height: 36px;
-}*/
 .profile-1 {
   width: 210px;
   height: 210px;
   padding: 10px;
-  border: 1px solid black;
-  
 }
+
 .rectangle-27 {
   border-radius: 0px;
   width: 339px;
   height: 204px;
   padding: 10px;
-  border: 1px solid black;
   overflow: visible;
+  margin-left: -30px;
 }
 .menu {
   background: #CCE1F1;
   border-radius: 0.625rem;
-  width: 540px;
+  width: 580px;
   height: 35px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  
   /*box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15);*/
 }
 .menu-rect{
@@ -148,12 +188,11 @@ const postazioniStore = usePostazioni();
   font-size: 16px;
   line-height: 24px;  
   font-weight: 1000;
-  width: 160px;
-  height: 32px;
+  width: 178px;
+  height: 35px;
 
   border-radius: 0.625rem;
   background: #CCE1F1;
-  box-shadow: 0rem 0rem 1.25rem 0rem rgba(0, 0, 0, 0.15);
   position: relative;
   padding: 2px;
   z-index: 0;
@@ -162,60 +201,28 @@ const postazioniStore = usePostazioni();
   align-items: center;
   align-content: center;
   justify-content: center;
+
 }
-/*.menu-rect::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 0.625rem;
-  padding: 0.18rem; 
-  background: linear-gradient(90deg, rgba(0, 105, 186, 1), rgba(0, 47, 84, 1));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  z-index: -1;
-}*/
-.in-scadenza-oggi {
-  color: #ffffff;
-  text-align: center;
-  font-family: "SulphurPoint-Bold", sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 700;
-  width: 203px;
-  height: 30px;
-}
-/*.rectangle-121 {
-  background: rgba(255, 255, 255, 0);
-  border-radius: 10px;
-  border-width: 2px;
-  border-style: solid;
-  border-image: linear-gradient(
-    269.79deg,
-    rgba(0, 47, 84, 1) 0%,
-    rgba(0, 105, 186, 1) 100%
-  );
-  border-image-slice: 1;
-  width: 189px;
-  height: 36px;
-  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15);
-}
-.rectangle-122 {
-  background: rgba(255, 255, 255, 0);
-  border-radius: 10px;
-  border-width: 2px;
-  border-style: solid;
-  border-image: linear-gradient(
-    269.79deg,
-    rgba(0, 47, 84, 1) 0%,
-    rgba(0, 105, 186, 1) 100%
-  );
-  border-image-slice: 1;
-  width: 121px;
-  height: 36px;
-  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15);
-}*/ 
+
+
+.menu-rect::before {
+    content: "";
+    border: 0px;
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    padding: 0.2rem;
+    background: linear-gradient(90deg, rgba(0, 105, 186, 1), rgba(0, 47, 84, 1));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: -1;
+  }
+
+
+
+
 .calendario {
   color: #002f54;
   text-align: left;
@@ -236,121 +243,14 @@ const postazioniStore = usePostazioni();
   width: 203px;
   height: 30px;
 }
-/*.group-11 {
-  position: absolute;
-  inset: 0;
-}
-.matricola {
-  color: #002f54;
-  text-align: left;
-  font-family: "SulphurPoint-Bold", sans-serif;
-  font-size: 14px;
-  line-height: 24px;
-  font-weight: 700;
-  top: 122px;
-  width: 203px;
-  height: 30px;
-}*/
-/*.mary-reds {
-  color: #002f54;
-  text-align: left;
-  font-family: "SulphurPoint-Bold", sans-serif;
-  font-size: 14px;
-  line-height: 24px;
-  font-weight: 700;
-  position: absolute;
-  left: 677px;
-  top: 201px;
-  width: 203px;
-  height: 30px;
-}
-.coordinatore {
-  color: #002f54;
-  text-align: left;
-  font-family: "SulphurPoint-Bold", sans-serif;
-  font-size: 10px;
-  line-height: 24px;
-  font-weight: 700;
-  width: 203px;
-  height: 20px;
-}*/
-/*.fd-5-gkj-39-gd {
-  color: #002f54;
-  text-align: left;
-  font-family: "SulphurPoint-Bold", sans-serif;
-  font-size: 20px;
-  line-height: 24px;
-  font-weight: 700;
-  width: 203px;
-  height: 38px;
-}*/
-/*.div {
-  color: #002f54;
-  text-align: left;
-  font-family: "SulphurPoint-Bold", sans-serif;
-  font-size: 20px;
-  line-height: 24px;
-  font-weight: 700;
-  width: 203px;
-  height: 38px;
-}*/
-/*.gianni-gialli {
-  color: #002f54;
-  text-align: left;
-  font-family: "SulphurPoint-Bold", sans-serif;
-  font-size: 30px;
-  line-height: 24px;
-  font-weight: 700;
-  width: 203px;
-}*/
-/*.rectangle-38 {
-  border-radius: 0px;
-  width: 105px;
-  height: 30px;
-  overflow: visible;
-}
-.edit-2 {
-  width: 19px;
-  height: 19px;
-  object-fit: cover;
-}*/
-/*.matricola2 {
-  color: #ffffff;
-  text-align: left;
-  font-family: "SulphurPoint-Bold", sans-serif;
-  font-size: 14px;
-  line-height: 24px;
-  font-weight: 700;
-  width: 203px;
-  height: 30px;
-}*/
 
-.rectangle {
-  border-radius: 0.625rem;
-  background: #CCE1F1;
-  box-shadow: 0rem 0rem 1.25rem 0rem rgba(0, 0, 0, 0.15);
-  position: relative;
-  padding: 2px;
-  z-index: 0;
-  display: block;
-  justify-items: center;
-  align-items: center;
-  align-content: center;
-  justify-content: center;
-}
-
-/*.rectangle::before {
-  content: "";
+.informazioni{
+  color: #002f54;
+  display: flex;
+  flex-direction: column;
   position: absolute;
-  inset: 0;
-  border-radius: 0.625rem;
-  padding: 0.17rem;
-  background: linear-gradient(90deg, rgba(0, 105, 186, 1), rgba(0, 47, 84, 1));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  z-index: -1;
-}*/
-
+  top: 55px;
+  right: 105px;
+  font-weight: 700;
+}
 </style>

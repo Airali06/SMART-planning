@@ -6,10 +6,21 @@ const props = defineProps({
   prenotazione: {} as PropType<Prenotazione>,
 });
 
+const router = useRouter();
 const  postazioniStore = await usePostazioni()
 const postazione = postazioniStore.getPostazione(props.prenotazione as Prenotazione) as Postazione;
 const categoria = postazioniStore.getCategoria(postazione as Postazione);
 //console.log(postazione, categoria)
+
+function seleziona(){
+  if (typeof window !== "undefined") {
+        localStorage.setItem("scelta", JSON.stringify(props.prenotazione?.id_postazione));//sballato di uno in più
+        router.push({ name: 'mappa'});
+      } else {
+        console.log("localStorage non è disponibile nel server");
+      }
+
+}
 </script>
 
 
@@ -17,7 +28,7 @@ const categoria = postazioniStore.getCategoria(postazione as Postazione);
 <div style = "scale:0.9">
 
 
-    <div class = "rectangle">
+    <div class = "rectangle" style="background-color: white;">
         <div style = "flex-direction: row; display: flex;">
 
         <div class = "nome1"><span style = "margin-left: 20px;">Postazione {{postazione.nome}}</span></div>
@@ -26,6 +37,12 @@ const categoria = postazioniStore.getCategoria(postazione as Postazione);
         <div class = "data"><span>{{ props.prenotazione?.data }}</span></div>
         <div class = "time"><span>giornata intera</span></div>
         <div class = "content"><span style = "margin:10px">info prenotazione</span></div>
+
+        
+    </div>
+
+    <div class = "visualizza-sulla-mappa" @click="seleziona()">
+            visualizza sulla mappa
     </div>
 
 
@@ -102,6 +119,28 @@ const categoria = postazioniStore.getCategoria(postazione as Postazione);
 </template>
 
 <style scooped>
+
+.visualizza-sulla-mappa{
+  position: absolute; 
+  background-color: rgb(5, 109, 189); 
+  border-radius: 7px; 
+  bottom: -13px; 
+  padding: 4px;
+  padding-top: 6px;
+  width: 165px;
+  right: 50px;
+  height: 18px;
+  color: #ffffff;
+  font-size: 12px;
+  text-align: center;
+  display: block;
+  font-weight: 200;
+  letter-spacing: 1px;
+}
+.visualizza-sulla-mappa:hover{
+  
+  background-color: rgb(4, 84, 145); 
+}
 
 .nome1 {
   padding: 3px;

@@ -57,6 +57,9 @@ async function occupate(){
 
 <template>
 
+<div style = "margin-left: 300px; position: relative;">
+
+
 
 <head>
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -184,7 +187,7 @@ async function occupate(){
   
 
 
-
+</div>
 </template>
 
 <style scoped>

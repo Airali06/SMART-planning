@@ -27,7 +27,7 @@ const y = ref();   // Coordinata Y relativa al contenitore
 const aggiorna =  ref("");
 const mostra = ref(true);
 console.log("categoria: "+postazioniStore.postazioni[selezionato.value as any].id_categoria)
-let click2 = false;
+
 
 // GESTIONE POSTAZIONI OCCUPATE
 import { onMounted, nextTick } from 'vue';
@@ -101,7 +101,7 @@ onMounted(() => {
       nextTick(() => {
         mostra.value = false;
         const rect = cellaSVG.getBoundingClientRect() as any;
-        x.value = rect.x + rect.width / 2 -395;
+        x.value = rect.x + rect.width / 2 -505;
         y.value= rect.y + rect.height / 2 -385;
         Popup.style.left = `${x.value}px`;
         Popup.style.top = `${y.value}px`;
@@ -146,13 +146,13 @@ onMounted(() => {
 
 <input type = "text" v-model = "aggiorna" style = "display: none">
 
-<div style = "width: fit-content;" >
-<img  src = "../../img/mappa1.png" usemap="#mappa" style = "width: 100%">
+<div style = "width: fit-content; width: 100%;" >
+<img  src = "../../img/mappa1.png" usemap="#svgmap" style = "width: 100%">
  
 
 
       
-      <svg class="map-overlay" viewBox="0 0 960 600" id = "svgmap">
+      <svg class="map-overlay" viewBox="0 0 958 548" id = "svgmap">
 
         <!-- tipologia B -->
       <rect style="" id="0" x="0" y="0" width="109" height="142" @click=" seleziona(0)" />
@@ -249,7 +249,7 @@ v-if = "mostra == true"
 
 .map-overlay {
   position: absolute;
-  top: 19px;
+  top: 0px;
   left: 0;
   width: 100%;
   height: 100%;

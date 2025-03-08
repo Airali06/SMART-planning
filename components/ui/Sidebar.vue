@@ -62,7 +62,7 @@ const route = useRoute();
           @click="
             router.push({ name: 'home'})">home </span>
 
-      <span style="cursor:pointer">account</span>
+      <span  @click="router.push({ name: 'account'})" style="cursor:pointer">account</span>
 
       <span style="cursor:pointer"
           @click="
