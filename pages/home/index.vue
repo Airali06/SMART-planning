@@ -12,6 +12,22 @@ await postazioniStore.getCategorie();
 console.log(prenotazioniStore.prenotazioni.length)
 
 
+const today = new Date();
+const yy = String(today.getFullYear()); 
+const mm = String(today.getMonth() + 1).padStart(2, '0');
+const dd = String(today.getDate()).padStart(2, '0');
+const formattedDate = yy+"-"+mm+"-"+dd;
+const aggiorna = ref("");
+let in_scadenza_oggi = prenotazioniStore.filtraData(formattedDate);
+console.log("in scadenza oggi ",in_scadenza_oggi);
+
+
+async function ricarica(){
+  //filtrato.splice(0,filtrato.length);
+  in_scadenza_oggi = prenotazioniStore.filtraData(formattedDate);
+  aggiorna.value += " ";
+}
+
 </script>
 
 <template>
@@ -29,7 +45,7 @@ console.log(prenotazioniStore.prenotazioni.length)
     />
   </head>
 
-  <body>
+ 
     <div class="home-1">
       <div
         class="z-planning"
@@ -75,9 +91,10 @@ console.log(prenotazioniStore.prenotazioni.length)
       <div class="frame-2">
         <div class = "scorrimento">
           <PrenotazioneElement
-          v-for="prenotazione in prenotazioniStore.prenotazioni"
+          v-for="prenotazione in in_scadenza_oggi"
           :prenotazione= prenotazione
-          :key = prenotazioniStore.prenotazioni.length
+          :key = aggiorna
+          @notifica="ricarica()"
           style="margin-top: 10px;"
           > </PrenotazioneElement>
         </div>
@@ -87,10 +104,16 @@ console.log(prenotazioniStore.prenotazioni.length)
       <div class="visualizza-tutte" @click="router.push({ name: 'account', query: { option: 1}})">visualizza tutte le prenotazioni</div>
     </div>
 
+    <div style = "position: absolute; left: 690px;  top: 385px; transform: scale(0.87);">
+      <CalendarioProva></CalendarioProva>
+    </div>
     <!--<div class="frame-4"></div>-->
-  </body>
+  
+    
+<div @click = "router.push({ name: 'prova'})">prova</div>
 
 </div>
+
 
 </template>
 
@@ -249,10 +272,11 @@ ul {
   
   background: #ffffff;
   border-radius: 0.625rem;
-  padding-right: 20px;
-  width: 550px;
+  
+  width: 520px;
   height: 23.5rem;
   position: absolute;
+  padding-right: 20px;
   left: 1.25rem;
   top: 1.1875rem;
   box-shadow: 0rem 0rem 1.25rem 0rem rgba(0, 0, 0, 0.15);
@@ -315,7 +339,7 @@ ul {
   border-radius: 0.625rem;
   display: flex;
   justify-content: space-between;
-  width: 550px;
+  width: 520px;
   height: 9.9375rem;
   position: absolute;
   left: 9.5rem;

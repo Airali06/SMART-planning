@@ -13,7 +13,7 @@ const add = props.add as Boolean;
   <div class="rectangle" style="width: 130px; height: 125px">
     <img
       src="../../img/sala_riunioni.png"
-      height="70px"
+      height="65px"
       style="display: block; margin-top: 5px"
       v-if="tipo == 'SalaRiunioni'"
     />
@@ -27,7 +27,7 @@ const add = props.add as Boolean;
 
     <img
       src="../../img/scrivania.png"
-      height="80px"
+      height="75px"
       style="display: block; margin-top: 5px"
       v-if="tipo == 'ScrivaniaStandard'"
     />
@@ -41,7 +41,7 @@ const add = props.add as Boolean;
 
     <img
       src="../../img/scrivania_con_monitor.png"
-      height="65px"
+      height="60px"
       style="display: block; margin-top: 5px"
       v-if="tipo == 'ScrivaniaMonitor'"
     />

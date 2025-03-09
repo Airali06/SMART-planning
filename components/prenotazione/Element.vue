@@ -2,6 +2,7 @@
 import type { Postazione } from '~/store/models/Postazione';
 import type { Prenotazione } from '~/store/models/Prenotazione';
 import { usePostazioni } from '~/store/postazioni';
+import { usePrenotazioni } from '~/store/prenotazioni';
 const props = defineProps({
   prenotazione: {} as PropType<Prenotazione>,
 });
@@ -10,7 +11,34 @@ const router = useRouter();
 const  postazioniStore = await usePostazioni()
 const postazione = postazioniStore.getPostazione(props.prenotazione as Prenotazione) as Postazione;
 const categoria = postazioniStore.getCategoria(postazione as Postazione);
-//console.log(postazione, categoria)
+const prenotazioniStore = usePrenotazioni();
+let elimina = false;
+let caricamento = false;
+const aggiorna = ref("");
+
+
+//--------------NOTIFICA-------------------------------------------
+/*
+  quando una prenotazione viene eliminata il componente invia
+  alla pagina in cui è richiamato una notifica che avvisa che 
+  bisogna aggiornare l'elenco delle prenotazioni
+
+*/
+import { defineEmits } from "vue";
+const emit = defineEmits(["notifica"]);
+const notifica = () => {
+  emit("notifica","eliminata");
+};
+
+//-----------------------------------------------------------------
+
+//---------------FORMATTAZIONE DELLA DATA---------------------
+const today = new Date(props.prenotazione?.data+"");
+const yy = String(today.getFullYear());
+const mm = String(today.getMonth() + 1).padStart(2, '0');
+const dd = String(today.getDate()).padStart(2, '0');
+let data = dd+"/"+mm+"/"+yy;
+//-----------------------------------------------------------
 
 function seleziona(){
   if (typeof window !== "undefined") {
@@ -21,20 +49,31 @@ function seleziona(){
       }
 
 }
+
+async function elimina_prenotazione(){
+  caricamento = true;
+  aggiorna.value += " ";
+  await prenotazioniStore.eliminaPrenotazione(props.prenotazione?.id_prenotazione as number);
+  await nextTick();
+  notifica();
+  caricamento = false;
+  
+}
 </script>
 
 
 <template>
-<div style = "scale:0.9">
+  <input type = "text" v-model = "aggiorna" style = "display:none">
+<div style = "scale:0.9; margin-bottom: 5px;">
 
 
-    <div class = "rectangle" style="background-color: white;">
-        <div style = "flex-direction: row; display: flex;">
+    <div class = "rectangle" style="background-color: white;" v-if = "!elimina">
+        <div style = "flex-direction: row; display: flex;" >
 
-        <div class = "nome1"><span style = "margin-left: 20px;">Postazione {{postazione.nome}}</span></div>
+        <div class = "nome1" style = "color: #ffffff;"><span style = "margin-left: 20px;">Postazione {{postazione.nome}}</span></div>
         
         
-        <div class = "data"><span>{{ props.prenotazione?.data }}</span></div>
+        <div class = "data"><span>{{ data }}</span></div>
         <div class = "time"><span>giornata intera</span></div>
         <div class = "content"><span style = "margin:10px">info prenotazione</span></div>
 
@@ -45,11 +84,21 @@ function seleziona(){
             visualizza sulla mappa
     </div>
 
+    <div class = "modifica">
+            <img src = "../../img/edit.png" style = "width: 20px;">
+    </div>
 
+    <div class = "bin" @click="elimina = true; aggiorna+= ' '">
+      <img src = "../../img/delete.png" style = "width: 20px;">
+    </div>
+
+  
+ 
+ 
 <!------A1------------------------------------------>
     
-        <div style = "position: absolute; left: 30px; top: 40px;" v-if = "categoria.id_categoria == 'A1'">
-            <img src = "../../img/scrivania.png" width="95px">
+        <div style = "position: absolute; left: 30px; top: 45px;" v-if = "categoria.id_categoria == 'A1'">
+            <img src = "../../img/scrivania.png" width="80px">
             
         </div>
 
@@ -64,7 +113,7 @@ function seleziona(){
 <!------A2------------------------------------------>
     
 <div style = "position: absolute; left: 35px; top: 53px;" v-if = "categoria.id_categoria == 'A2'">
-            <img src = "../../img/scrivania_con_monitor.png" width="65px">
+            <img src = "../../img/scrivania_con_monitor.png" width="60px">
             
         </div>
 
@@ -79,7 +128,7 @@ function seleziona(){
 <!------B------------------------------------------>
     
 <div style = "position: absolute; left: 30px; top: 40px;" v-if = "categoria.id_categoria == 'B'">
-            <img src = "../../img/sala_riunioni.png" width="95px">
+            <img src = "../../img/sala_riunioni.png" width="90px">
             
         </div>
 
@@ -114,11 +163,31 @@ function seleziona(){
     
     </div>
     
+
+    <!---------------------ELIMINAZIONE---PRENOTAZIONE------------------------------------------------>
+    <div class = "rectangle" style="background-color: white;" v-if = "elimina && !caricamento">
+            <span style = "font-weight: 700; font-size: 20px;">Eliminare questa prenotazione ?</span>
+            <div>prenotazione per il {{ data }}, postazione {{postazione.nome}}</div>
+            <div style = "display: flex; flex-direction: row; margin-top: 4px;">
+                <div class = "elimina" @click = "elimina_prenotazione()">Elimina</div>
+                <div class = "annulla" @click = "elimina = false; aggiorna+= ' '">Annulla</div>
+            </div>
+
+            
+    </div>
+
+    
+    <div v-if = "caricamento == true" class = " rectangle" style="background-color: white;">
+        <div style = "transform: scale(0.5);">
+        <CaricamentoElement style = "transform: scale(0.5);"></CaricamentoElement>
+      </div>
+    </div>
+
 </div>
 
 </template>
 
-<style scooped>
+<style scoped>
 
 .visualizza-sulla-mappa{
   position: absolute; 
@@ -128,8 +197,8 @@ function seleziona(){
   padding: 4px;
   padding-top: 6px;
   width: 165px;
-  right: 50px;
-  height: 18px;
+  right: 100px;
+  height: 20px;
   color: #ffffff;
   font-size: 12px;
   text-align: center;
@@ -137,6 +206,44 @@ function seleziona(){
   font-weight: 200;
   letter-spacing: 1px;
 }
+
+.bin{
+  position: absolute; 
+  background-color: rgb(0, 45, 80); 
+  border-radius: 7px; 
+  bottom: -13px; 
+  padding: 4px;
+  padding-top: 6px;
+  width: 25px;
+  right: 20px;
+  height: 20px;
+  color: #ffffff;
+  font-size: 12px;
+  text-align: center;
+  display: block;
+  font-weight: 200;
+  letter-spacing: 1px;
+}
+
+.modifica{
+  position: absolute; 
+  background-color: rgb(0, 80, 141); 
+  border-radius: 7px; 
+  bottom: -13px; 
+  padding: 4px;
+  padding-top: 6px;
+  width: 25px;
+  right: 60px;
+  height: 20px;
+  color: #ffffff;
+  font-size: 12px;
+  text-align: center;
+  display: block;
+  font-weight: 200;
+  letter-spacing: 1px;
+}
+
+
 .visualizza-sulla-mappa:hover{
   
   background-color: rgb(4, 84, 145); 
@@ -165,6 +272,7 @@ function seleziona(){
 }
 
 .rectangle {
+  color: #00345c;
     border-radius: 10px;
     background: #ffffff;
     box-shadow: 0rem 0rem 1.25rem 0rem rgba(0, 0, 0, 0.15);
@@ -239,6 +347,30 @@ function seleziona(){
     font-weight: 800;
     display: flex;
     
+  }
+
+  .elimina{
+      background: linear-gradient(
+      90deg,
+      rgb(0, 85, 150) 0%,
+      rgba(0, 47, 84, 1) 100%
+    );
+    border-radius: 7px;
+    color: #ffffff;
+    font-weight: 700;
+    padding: 5px;
+    width: 120px;
+    text-align: center;
+  }
+
+  .annulla{
+    border-radius: 7px;
+    background-color: rgb(191, 214, 233);
+    font-weight: 700;
+    padding: 5px;
+    width: 120px;
+    text-align: center;
+    margin-left: 15px;
   }
 
 

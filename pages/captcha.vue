@@ -1,5 +1,0 @@
-<template>
-    <PopupElement>
-
-    </PopupElement>
-</template>

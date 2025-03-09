@@ -31,6 +31,7 @@ export const usePrenotazioni = defineStore("prenotazioni-store", {
         console.log(response[0]);
 
         this.prenotazioni = [...response[0]] as Array<Prenotazione>;
+        this.ordinaData();
         console.log(this.prenotazioni);
       } catch (e) {
         console.log("errore" + e);
@@ -60,16 +61,59 @@ export const usePrenotazioni = defineStore("prenotazioni-store", {
 
         console.log(response[0]);
         this.getPrenotazioni();
-
+        this.ordinaData();
         console.log(this.prenotazioni);
       } catch (e) {
         console.log("errore" + e);
       }
     },
 
-    filtraData(data: Date) {
-      let filtrato = this.prenotazioni.filter((obj) => obj.data == data);
+    async eliminaPrenotazione(id: number) {
+      console.log("elimino");
+      const authStore = useAuth();
+
+      try {
+        const response = (await $fetch(
+          authStore.address + "eliminaPrenotazione.php",
+          {
+            //composizione dell messaggio di request
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json", //specifica tipologia di dato inviata
+            },
+            body: JSON.stringify({
+              //trasforma un oggetto in JSON (json obbligatorio per mandare dati al server)
+              id_prenotazione: id,
+            }),
+          }
+        )) as any;
+
+        //this.ordinaData();
+        const index = this.prenotazioni.findIndex(
+          (item) => item.id_prenotazione == id
+        );
+        console.log("indice", index);
+        this.prenotazioni.splice(index, 1);
+      } catch (e) {
+        console.log("errore" + e);
+      }
+
+      this.getPrenotazioni();
+    },
+
+    filtraData(data: string) {
+      console.log(data);
+      let filtrato = this.prenotazioni.filter((obj) => obj.data + "" == data);
       return filtrato;
+    },
+
+    ordinaData() {
+      this.prenotazioni = [...this.prenotazioni]
+        .slice()
+        .sort(
+          (a, b) =>
+            new Date(b.data + "").getTime() - new Date(a.data + "").getTime()
+        );
     },
   },
 });

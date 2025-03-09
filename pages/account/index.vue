@@ -6,37 +6,55 @@ import { usePrenotazioni } from "../../store/prenotazioni";
 import { usePostazioni } from "../../store/postazioni";
 import type { Prenotazione } from "~/store/models/Prenotazione";
 const prenotazioniStore = usePrenotazioni();
+prenotazioniStore.ordinaData();
 const postazioniStore = usePostazioni();
 
 let filtrato = [] as Array<Prenotazione>;
 
+  const aggiorna = ref();
 const opzione = ref(0);
 const route = useRoute();
-
-
 if(route.query.option){//prendo i parametri passati alla pagina
   opzione.value = route.query.option as any;
-  selezionaOpzione(opzione.value);
 }
+selezionaOpzione(opzione.value);
 
 function selezionaOpzione(n : number){
   //sceglie cosa visualizzare (oggi, tutte, calendario)
   //0 = oggi
   //1 = tutte
   //2 = calendario
+  const today = new Date();
+  const yy = String(today.getFullYear()); 
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  const formattedDate = yy+"-"+mm+"-"+dd;
+  filtrato = [];
+
   opzione.value= n;
   if(n == 0)
-  filtrato = prenotazioniStore.filtraData(new Date());
+  filtrato = prenotazioniStore.filtraData(formattedDate);
   if(n == 1)
   filtrato = prenotazioniStore.prenotazioni;
   if(n == 2)
   filtrato = [];
-
-
 }
+
+async function ricarica(){
+  //filtrato.splice(0,filtrato.length);
+  filtrato = prenotazioniStore.prenotazioni;
+  console.log(prenotazioniStore.prenotazioni);
+  selezionaOpzione(opzione.value);
+  aggiorna.value+=" ";
+}
+  
+
 </script>
 
+
 <template>
+
+<input type = "text" v-model = "aggiorna" style = "display:none">
     <head>
     <!-- Caricamento del font e dei CSS -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -90,18 +108,22 @@ function selezionaOpzione(n : number){
         
      
        
-    <div class = "area-prenotazioni">
-        <PrenotazioneElement
+    <div class = "area-prenotazioni" v-if = "opzione != 2">
+        <PrenotazioneElement @notifica = "ricarica()"
         v-for = "prenotazione in filtrato"
         :prenotazione="prenotazione"
         style="margin: 10px; color: #00345c;"
+        :key = aggiorna
         >
-
         </PrenotazioneElement>
-        <div v-if = "filtrato.length == 0" 
+        <div v-if = "filtrato.length == 0 && opzione != 2" 
         style="align-self: center; justify-self: center; color: #00345c; font-size: 20px;"> nessuna prenotazione </div>
 
       </div>
+
+      <div style = "transform: scale(1.05); margin-top: 40px;" v-if = "opzione == 2">
+          <CalendarioProva :key = aggiorna></CalendarioProva>
+        </div>
     </div>
   </div> 
       
@@ -113,6 +135,7 @@ function selezionaOpzione(n : number){
 
 *{
   font-family: "Sulphur Point", serif;
+  
 }
 
 .area-prenotazioni{
