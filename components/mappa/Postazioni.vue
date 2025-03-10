@@ -245,7 +245,7 @@ v-if = "mostra == true"
 </template>
 
 
-<style scooped>
+<style scoped>
 
 .map-overlay {
   position: absolute;

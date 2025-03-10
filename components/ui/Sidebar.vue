@@ -73,6 +73,8 @@ const route = useRoute();
     </div>
 
     <button class="logout" v-if="!isCollapsed" @click="logout()">logout</button>
+
+    <div class = "z-planning" :class="{ rotated: isCollapsed }">Z-Planning</div>
   </div>
 </template>
 
@@ -152,6 +154,35 @@ const route = useRoute();
   display: block;
   margin-top: 50px;
   cursor:pointer
+}
+
+.z-planning{
+  background: linear-gradient(
+    90deg,
+    rgb(232, 245, 255) 0%,
+    rgb(188, 222, 248) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: left;
+  font-size: 2.3rem;
+  line-height: 3.5rem;
+  font-weight: 200;
+  margin: 4px;
+  width: 200px;
+  height: 8.8125rem;
+  position:absolute;
+  bottom: -30px;
+  left: 50px;
+  transition: transform 0.4s ease-in-out;
+}
+
+.rotated {
+  transform: rotate(-90deg);
+  position: absolute;
+  left: -15px;
+  bottom: 90px;
 }
 
 span {

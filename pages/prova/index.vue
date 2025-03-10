@@ -4,6 +4,7 @@
         <DipendenteElement></DipendenteElement>
         <CalendarioProva></CalendarioProva>
         <CaricamentoElement></CaricamentoElement>
+        <CaricamentoPopup></CaricamentoPopup>
 
     </div>
 </template>

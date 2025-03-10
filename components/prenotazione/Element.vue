@@ -15,7 +15,15 @@ const prenotazioniStore = usePrenotazioni();
 let elimina = false;
 let caricamento = false;
 const aggiorna = ref("");
+const scaduta = ref(false);
 
+
+const oggi = ref(new Date().toISOString().split('T')[0]);
+
+if(new Date(oggi.value+ "T00:00:00") > new Date(props.prenotazione?.data+ "T00:00:00")){
+  scaduta.value = true;
+}
+console.log(props.prenotazione?.id_prenotazione, scaduta.value)
 
 //--------------NOTIFICA-------------------------------------------
 /*
@@ -64,7 +72,7 @@ async function elimina_prenotazione(){
 
 <template>
   <input type = "text" v-model = "aggiorna" style = "display:none">
-<div style = "scale:0.9; margin-bottom: 5px;">
+<div style = "scale:0.9; margin-bottom: 5px;" :style="{ opacity: scaduta ? 0.7 : 1}">
 
 
     <div class = "rectangle" style="background-color: white;" v-if = "!elimina">
@@ -84,11 +92,11 @@ async function elimina_prenotazione(){
             visualizza sulla mappa
     </div>
 
-    <div class = "modifica">
+    <div class = "modifica" v-if = "!scaduta">
             <img src = "../../img/edit.png" style = "width: 20px;">
     </div>
 
-    <div class = "bin" @click="elimina = true; aggiorna+= ' '">
+    <div class = "bin" @click="elimina = true; aggiorna+= ' '" v-if = "!scaduta">
       <img src = "../../img/delete.png" style = "width: 20px;">
     </div>
 
@@ -128,7 +136,7 @@ async function elimina_prenotazione(){
 <!------B------------------------------------------>
     
 <div style = "position: absolute; left: 30px; top: 40px;" v-if = "categoria.id_categoria == 'B'">
-            <img src = "../../img/sala_riunioni.png" width="90px">
+            <img src = "../../img/sala_riunioni.png" width="60px" style = "margin-top: 12px">
             
         </div>
 

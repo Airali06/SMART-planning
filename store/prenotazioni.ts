@@ -40,6 +40,7 @@ export const usePrenotazioni = defineStore("prenotazioni-store", {
 
     async nuovaPrenotazione(data: Date, id_postazione: number) {
       const authStore = useAuth();
+      const router = useRouter();
 
       try {
         const response = (await $fetch(
@@ -63,6 +64,7 @@ export const usePrenotazioni = defineStore("prenotazioni-store", {
         this.getPrenotazioni();
         this.ordinaData();
         console.log(this.prenotazioni);
+        router.push({ name: "home" });
       } catch (e) {
         console.log("errore" + e);
       }
@@ -108,7 +110,7 @@ export const usePrenotazioni = defineStore("prenotazioni-store", {
     },
 
     ordinaData() {
-      this.prenotazioni = [...this.prenotazioni]
+      this.prenotazioni = this.prenotazioni
         .slice()
         .sort(
           (a, b) =>

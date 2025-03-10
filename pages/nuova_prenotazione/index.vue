@@ -6,17 +6,22 @@ const postazioniStore = usePostazioni();
 
 
 const route = useRoute();
+const router = useRouter();
 const categoria = ref("A1");
 console.log("parametri: ",route.query.option)
 categoria.value = route.query.option as any;
-const data = ref();
+const data = ref(''/*new Date().toISOString().split('T')[0]*/); // Ottieni la data odierna in formato YYYY-MM-DD
 const aggiorna = ref("");
 const selezionato = ref(-1);
+const caricamento = ref(false);
+const errore = ref("");
 
 await nextTick();
 const mappa = ref(null);
 
+
 async function confermaPrenotazione(){
+
 
   if (typeof window !== "undefined") {
         // Puoi usare localStorage solo qui
@@ -30,35 +35,66 @@ async function confermaPrenotazione(){
       } else {
         console.log("localStorage non è disponibile nel server");
       }
+
+      if(prenotazioniStore.filtraData(data.value).length > 0){
+          console.log("-----------TROPPE PRENOTAZIONI------------")
+          errore.value += "- hai già una prenotazione per questa data\n";
+        }
+
+      if(data.value == ''){
+          console.log("-----------NESSUNA DATA SELEZIONATA------------")
+          errore.value += "- nessuna data selezionata\n"
+        }
+      
+      console.log("OCCUPATE",postazioniStore.occupate, selezionato.value)
+        if(postazioniStore.occupate.some(n => n === selezionato.value+'') == true){
+          console.log("---------------E' OCCUPATA--------------------")
+          errore.value += "- hai selezionato una postazione occupata\n";
+        }
+
+        if(errore.value.length > 0){
+          return;
+        }
+
+        
+      
   
 
       if(selezionato.value == -1)
       return;
-      console.log(data.value as Date);
-      prenotazioniStore.nuovaPrenotazione(data.value, selezionato.value);
+
+      caricamento.value = true;
+      aggiorna.value += " ";
+      await prenotazioniStore.nuovaPrenotazione(data.value, selezionato.value);
  
 }
 
 async function occupate(){
-  // Parse the date to a proper Date object, in case it's not already.
   const selectedDate = new Date(data.value); 
-
-  // Call the checkPostazioniOccupate with the Date object
   await postazioniStore.checkPostazioniOccupate(selectedDate);
-  //console.log("Checked postazioni occupate for date:", selectedDate);
-
-  // Update the aggiorna value to trigger a re-render, if necessary
-  aggiorna.value += " "; // You can modify this to reflect meaningful updates
-
+  aggiorna.value += " ";
 }
 
 
 </script>
 
 <template>
+<input type = "text" v-model = "aggiorna" style = "display: none;">
+
+<div class = "overlay" v-if = "caricamento">
+      <CaricamentoPopup
+      :caricamento=caricamento
+      messaggio_caricamento="Inserimento prenotazione in corso"
+      :key = aggiorna
+      style = "margin-top: 300px;"
+      >
+      </CaricamentoPopup>
+</div>
 
 <div style = "margin-left: 300px; position: relative;">
-
+<div>
+  
+</div>
 
 
 <head>
@@ -181,13 +217,37 @@ async function occupate(){
     
 
     <button class="conferma" @click="confermaPrenotazione()">conferma prenotazione</button>
-   
+
+ 
+
+    
+  
   </div>
 
   
 
 
 </div>
+
+
+
+<div v-if = "errore != '' "class = "overlay" style = "position: absolute; left: 0px;">
+        <div v-if = "errore != ''" class = "errore" style = "position: absolute;left:710px; top: 300px">
+                <div style = "display: flex; flex-direction: row;">
+                  <span style = "font-size: 25px; font-weight: 700; margin-top: 5px;">Prenotazione non valida!</span>
+                  <img src = "../../img/warning.png" style = "width: 35px; height: 35px; margin-left: 10px;">
+                </div>
+
+
+            <div style = "font-size: 16px; width: 300px; padding-left: 20px;padding-right: 20px;">{{ errore }}</div>
+
+              <div class="x" @click="errore = ''">
+                <img src="../../img/remove.png" height="50px"/>
+              </div>
+        </div>
+</div>
+
+
 </template>
 
 <style scoped>
@@ -239,7 +299,69 @@ menu, ol, ul {
     margin: 0;
     padding: 0;
 }
+.errore{
+  border-radius: 0.925rem;
+  
+  background:#ffffff;
+  box-shadow: 0rem 0rem 1.25rem 0rem rgba(0, 0, 0, 0.15);
+  position: relative;
+  padding: 2px;
+  z-index: 0;
+  width: 400px;
+  height: 200px;
+  display: block;
+  justify-items: center;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  display: block;
+}
 
+.errore::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 0.925rem;
+  padding: 0.3rem;
+  background: linear-gradient(90deg, rgba(0, 105, 186, 1), rgba(0, 47, 84, 1));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: 100;
+}
+
+.x {
+  padding: 5px;
+  background:rgba(0, 47, 84, 1);
+
+  border-radius: 25px;
+  align-items: center;
+  position: absolute;
+  top: -35px;
+  right: -35px;
+  height: 85px;
+  width:  85px;
+  scale: 0.4;
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  z-index: 1000;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 105, 186, 0.2); /* Azzurro semitrasparente */
+    z-index: 1000; /* Assicura che sia sopra gli altri elementi */
+    display: block;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+}
 
 .rectangle {
   border-radius: 0.625rem;

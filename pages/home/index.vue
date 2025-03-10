@@ -18,6 +18,7 @@ const mm = String(today.getMonth() + 1).padStart(2, '0');
 const dd = String(today.getDate()).padStart(2, '0');
 const formattedDate = yy+"-"+mm+"-"+dd;
 const aggiorna = ref("");
+
 let in_scadenza_oggi = prenotazioniStore.filtraData(formattedDate);
 console.log("in scadenza oggi ",in_scadenza_oggi);
 
@@ -144,7 +145,9 @@ h5,
 }
 
 .scorrimento{
-  overflow-y: auto; height: 80%;
+  overflow-y: auto; 
+  height: 80%;
+  width: 515px;
 }
 
 .scorrimento::-webkit-scrollbar{

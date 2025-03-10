@@ -1,7 +1,10 @@
 import { useAuth } from "../store/auth";
+import { usePostazioni } from "../store/postazioni";
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const router = useRouter();
   const authStore = useAuth();
+  const postazioniStore = usePostazioni();
+  postazioniStore.occupate.splice(0, postazioniStore.occupate.length);
   authStore.init();
 
   const loggedin = await authStore.controllaSessione();

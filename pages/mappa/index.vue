@@ -9,7 +9,7 @@ const aggiorna = ref("");
 const selectedDate = new Date(); 
 await postazioniStore.checkPostazioniOccupate(selectedDate);
 const giorni = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
-let data = giorni[selectedDate.getDay()] +"\t-\t" +selectedDate.getDate()+"/"+selectedDate.getMonth()+"/"+ selectedDate.getFullYear();
+let data = giorni[selectedDate.getDay()] +"\t-\t" +selectedDate.getDate()+"/"+(selectedDate.getMonth()as number*1+1)+"/"+ selectedDate.getFullYear();
 
 
 await nextTick();

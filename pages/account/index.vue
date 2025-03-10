@@ -24,26 +24,32 @@ function selezionaOpzione(n : number){
   //0 = oggi
   //1 = tutte
   //2 = calendario
+
   const today = new Date();
   const yy = String(today.getFullYear()); 
   const mm = String(today.getMonth() + 1).padStart(2, '0');
   const dd = String(today.getDate()).padStart(2, '0');
   const formattedDate = yy+"-"+mm+"-"+dd;
+  prenotazioniStore.ordinaData();
   filtrato = [];
 
   opzione.value= n;
   if(n == 0)
   filtrato = prenotazioniStore.filtraData(formattedDate);
-  if(n == 1)
+  if(n == 1){
+    prenotazioniStore.ordinaData();
   filtrato = prenotazioniStore.prenotazioni;
+  }
   if(n == 2)
   filtrato = [];
+  aggiorna.value+=" ";
 }
 
 async function ricarica(){
   //filtrato.splice(0,filtrato.length);
   filtrato = prenotazioniStore.prenotazioni;
   console.log(prenotazioniStore.prenotazioni);
+  prenotazioniStore.ordinaData();
   selezionaOpzione(opzione.value);
   aggiorna.value+=" ";
 }
