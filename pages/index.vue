@@ -36,12 +36,12 @@ async function login(){
 
     <div class="login">
       <div class="sfondo-login-frame">
-        <img src="../img/sfondo.png" width="700px" />
+        <img src="../img/sfondo.png" width="700px" style="opacity: 0.6;"/>
       </div>
   
       <div class="login-frame">
         <div class="login2">Login</div>
-        <img class="profile-1" src="../img/profilo.png" />
+        <img class="profile-1" src="../img/profilo.png" style = "transform: scale(1.2);"/>
         <div class="div">?</div>
   
         <div class="rectangle" 
@@ -144,7 +144,7 @@ a, button, select, h1, h2, h3, h4, h5, * {
   left: 50%;
   translate: -50% -50%;
   top: 50%;
-  box-shadow: 0rem 0rem 2.5rem 0rem rgba(0, 86, 152, 0.32);
+  box-shadow: 0rem 0rem 2.6rem 0rem rgba(0, 86, 152, 0.32);
   overflow: hidden;
 }
 .login2 {

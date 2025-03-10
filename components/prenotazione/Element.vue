@@ -135,17 +135,17 @@ async function elimina_prenotazione(){
 
 <!------B------------------------------------------>
     
-<div style = "position: absolute; left: 30px; top: 40px;" v-if = "categoria.id_categoria == 'B'">
+<div style = "position: absolute; left: 35px; top: 40px;" v-if = "categoria.id_categoria == 'B'">
             <img src = "../../img/sala_riunioni.png" width="60px" style = "margin-top: 12px">
             
         </div>
 
-        <div style = "scale:0.8;position: absolute; left: 120px; bottom: 20px; flex-direction: column; 
+        <div style = "scale:0.8;position: absolute; left: 100px; bottom: 20px; flex-direction: column; 
         display: flex; font-weight: 700; line-height: 0.8; font-size: 18px;"
         v-if = "categoria.id_categoria == 'B'"
         >
             <span>sala</span>
-            <span style = "font-size: 25px;">Riunioni</span>
+            <span style = "font-size: 26px;">Riunioni</span>
         </div>
 <!------C-----------------------------------------
     

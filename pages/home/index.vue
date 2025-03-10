@@ -19,6 +19,7 @@ const dd = String(today.getDate()).padStart(2, '0');
 const formattedDate = yy+"-"+mm+"-"+dd;
 const aggiorna = ref("");
 
+
 let in_scadenza_oggi = prenotazioniStore.filtraData(formattedDate);
 console.log("in scadenza oggi ",in_scadenza_oggi);
 
@@ -45,6 +46,7 @@ async function ricarica(){
       rel="stylesheet"
     />
   </head>
+
 
  
     <div class="home-1">
@@ -111,7 +113,7 @@ async function ricarica(){
     <!--<div class="frame-4"></div>-->
   
     
-<div @click = "router.push({ name: 'prova'})">prova</div>
+<div @click = "router.push({ name: 'prova'})" style = "color:lightblue">prova</div>
 
 </div>
 
@@ -171,6 +173,20 @@ h5,
 
 .scorrimento::-webkit-scrollbar-thumb:hover {
   background:#001c31;
+}
+
+.overlay {
+    position: absolute;
+
+    top: 0;
+    left: 300px;
+    width: 100vw;
+    height: 100vh; /* Azzurro semitrasparente */
+    z-index: 1000; /* Assicura che sia sopra gli altri elementi */
+    display: block;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
 }
 
 menu,

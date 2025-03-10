@@ -44,11 +44,11 @@ async function filtra(){
 
         </PrenotazioneElement>
 
-        <div v-if = "filtrato.length == 0 && data != ''" class = "testo">
+        <div v-if = "filtrato.length == 0 && data != ''" class = "testo" style = "color: #00467c;">
         nessuna prenotazione
 
     </div>
-    <div v-if = "data == ''" class = "testo">
+    <div v-if = "data == ''" class = "testo" style = "color: #00467c;">
         seleziona una data
     </div>
     </div>
