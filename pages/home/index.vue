@@ -11,6 +11,7 @@ await postazioniStore.getPostazioni();
 await postazioniStore.getCategorie();
 console.log(prenotazioniStore.prenotazioni.length)
 
+await nextTick();
 
 const today = new Date();
 const yy = String(today.getFullYear()); 
@@ -20,13 +21,13 @@ const formattedDate = yy+"-"+mm+"-"+dd;
 const aggiorna = ref("");
 
 
-let in_scadenza_oggi = prenotazioniStore.filtraData(formattedDate);
+let in_scadenza_oggi = await prenotazioniStore.filtraData(formattedDate);
 console.log("in scadenza oggi ",in_scadenza_oggi);
 
 
 async function ricarica(){
   //filtrato.splice(0,filtrato.length);
-  in_scadenza_oggi = prenotazioniStore.filtraData(formattedDate);
+  in_scadenza_oggi = await prenotazioniStore.filtraData(formattedDate);
   aggiorna.value += " ";
 }
 

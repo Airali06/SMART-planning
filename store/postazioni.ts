@@ -33,7 +33,7 @@ export const usePostazioni = defineStore("postazioni-store", {
             body: JSON.stringify({}),
           })
         ) as any;
-        console.log(response[0]);
+        //console.log(response[0]);
 
         this.postazioni = [...response[0]] as Array<Postazione>;
         console.log(this.postazioni);

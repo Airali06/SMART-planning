@@ -32,7 +32,7 @@ export const usePrenotazioni = defineStore("prenotazioni-store", {
 
         this.prenotazioni = [...response[0]] as Array<Prenotazione>;
         this.ordinaData();
-        console.log(this.prenotazioni);
+        //console.log(this.prenotazioni);
       } catch (e) {
         console.log("errore" + e);
       }
@@ -60,7 +60,7 @@ export const usePrenotazioni = defineStore("prenotazioni-store", {
           }
         )) as any;
 
-        console.log(response[0]);
+        //console.log(response[0]);
         this.getPrenotazioni();
         this.ordinaData();
         console.log(this.prenotazioni);
@@ -68,6 +68,42 @@ export const usePrenotazioni = defineStore("prenotazioni-store", {
       } catch (e) {
         console.log("errore" + e);
       }
+    },
+
+    async modificaPrenotazione(prenotazione: Prenotazione) {
+      const authStore = useAuth();
+      const router = useRouter();
+
+      console.log("STO MODIFICANDO---------------------------------------");
+
+      try {
+        console.log("Dati inviati:", prenotazione);
+
+        const response = await $fetch(
+          authStore.address + "/updatePrenotazione.php",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id_prenotazione: prenotazione.id_prenotazione,
+              data: prenotazione.data,
+              id_postazione: prenotazione.id_postazione,
+              n_modifiche: prenotazione.n_modifiche,
+            }),
+          } as any
+        );
+
+        console.log("Risposta dal server:", response);
+      } catch (error) {
+        console.error("Errore durante la richiesta:", error);
+      }
+
+      this.getPrenotazioni();
+      this.ordinaData();
+      console.log(this.prenotazioni);
+      router.push({ name: "home" });
     },
 
     async eliminaPrenotazione(id: number) {
@@ -116,6 +152,14 @@ export const usePrenotazioni = defineStore("prenotazioni-store", {
           (a, b) =>
             new Date(b.data + "").getTime() - new Date(a.data + "").getTime()
         );
+    },
+
+    getPrenotazioneById(id: number) {
+      const prenotazione = this.prenotazioni.find(
+        (obj) => obj.id_prenotazione == id
+      );
+      console.log(prenotazione);
+      return { ...prenotazione };
     },
   },
 });

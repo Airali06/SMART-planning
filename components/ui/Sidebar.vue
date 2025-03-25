@@ -66,7 +66,7 @@ const route = useRoute();
 
       <span style="cursor:pointer"
           @click="
-            router.push({ name: 'nuova_prenotazione', params: { option: 0, modifica : 0} })">nuova prenotazione</span>
+            router.push({ name: 'nuova_prenotazione', params: { option: 0, idDaModificare : ''} })">nuova prenotazione</span>
 
       <span style="cursor:pointer" @click="
             router.push({ name: 'mappa'})">mappa</span>

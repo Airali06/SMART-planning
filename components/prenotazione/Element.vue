@@ -84,7 +84,7 @@ async function elimina_prenotazione(){
         <div class = "data"><span>{{ data }}</span></div>
         <div class = "time"><span>giornata intera</span></div>
         <div class = "content"><span style = "margin:10px">info prenotazione</span></div>
-
+ 
         
     </div>
 
@@ -92,7 +92,7 @@ async function elimina_prenotazione(){
             visualizza sulla mappa
     </div>
 
-    <div class = "modifica" v-if = "!scaduta">
+    <div class = "modifica" v-if = "!scaduta"  @click="router.push({ name: 'modifica_prenotazione', query: { option: 0, idDaModificare : props.prenotazione?.id_prenotazione} })">
             <img src = "../../img/edit.png" style = "width: 20px;">
     </div>
 
