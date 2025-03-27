@@ -38,8 +38,8 @@ onMounted(() => {
 
         const scelta = localStorage.getItem("scelta");
         if (scelta) {
-          const parsedSessione = JSON.parse(scelta);
-          selezionato.value = parsedSessione;
+          const parsed = JSON.parse(scelta);
+          selezionato.value = parsed;
           seleziona(selezionato.value);
 
       } else {
@@ -126,7 +126,7 @@ onMounted(() => {
  
       for (const element of postazioniStore.postazioni) {
             //console.log("element"+element.id_categoria);
-            cellaSVG = document.getElementById(element.id_postazione-1 + "");
+            cellaSVG = document.getElementById(element.id_postazione + "");
             
 
             if (element.id_categoria == id) {
@@ -155,8 +155,8 @@ onMounted(() => {
       <svg class="map-overlay" viewBox="0 0 958 548" id = "svgmap">
 
         <!-- tipologia B -->
-      <rect style="" id="0" x="0" y="0" width="109" height="142" @click=" seleziona(0)" />
-      <rect style="" id="1" x="2" y="143" width="107" height="151" @click="seleziona(1)" />
+      <rect style="" id="0" x="0" y="0" width="109" height="142" @click=" seleziona(0)"/>
+      <rect style="" id="1" d="M 10 10 H 190 V 80 A 20 20 0 0 1 170 100 H 10 Z"x="2" y="143" width="107" height="151" @click="seleziona(1)" />
       <rect style="" id="2" x="833" y="0" width="125" height="174" @click="seleziona(2)" />
       <rect style="" id="3" x="833" y="176" width="125" height="188" @click="seleziona(3)" />
       <rect style="" id="4" x="832" y="362" width="126" height="173" @click="seleziona(4)" />

@@ -111,6 +111,13 @@ async function occupate(){
 
   <div class="prenota-1">
 
+    <MappaParcheggio
+        :key = aggiorna
+        style="z-index: 100; position: absolute; top"
+        v-if = "categoria == 'C'"
+        >
+        </MappaParcheggio>
+
 
 
 
@@ -120,12 +127,16 @@ async function occupate(){
       <img src = "../../img/mappa1.png" width="703px" style = "position : absolute; z-index: 0; top: 25px;">
 
         <MappaPostazioni ref = "mappa"
+        
         :key = aggiorna
         :tipo="categoria"
-        style="z-index: 100"
+        style="z-index: 10"
+        v-if = "categoria != 'C'"
         >
 
         </MappaPostazioni>
+
+        
 
 
 

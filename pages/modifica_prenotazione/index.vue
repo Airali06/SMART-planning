@@ -102,8 +102,8 @@ async function modificaPrenotazione(){
           return;
         }
 
-        prenotazioneDaModificare.data = data.value;
-        prenotazioneDaModificare.id_postazione = selezionato.value;
+        prenotazioneDaModificare.data = data.value as any;
+        prenotazioneDaModificare.id_postazione = selezionato.value+1;
 
       if(selezionato.value == -1)
       return;
