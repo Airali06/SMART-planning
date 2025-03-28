@@ -101,6 +101,31 @@ const props = defineProps({
         </div>
 
 
+ <!------C------------------------------------------>
+<div  
+        v-if = "postazioniStore.postazioni[id_postazione as any].id_categoria == 'C'"
+        style = " display: flex; flex-direction: row; position: absolute; top: 21px; left: 10px">
+            <div style = "">
+                <img src = "../../img/parcheggio.png" width="24px">
+                
+            </div>
+
+            <div 
+            style = "scale:0.8; 
+            flex-direction: column; 
+            display: flex; 
+            font-weight: 700; 
+            line-height: 0.9; 
+            font-size: 8px;
+            margin-top: 10px;
+            ">
+                <span>parcheggio</span>
+                <span style = "font-size: 13px;">
+                    Riservato</span>
+            </div>
+        </div>
+
+
 
 
         <div style = "position: absolute; top: -9px; right:27px">

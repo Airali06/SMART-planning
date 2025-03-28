@@ -147,6 +147,22 @@ async function elimina_prenotazione(){
             <span>sala</span>
             <span style = "font-size: 26px;">Riunioni</span>
         </div>
+
+<!------C------------------------------------------>
+    
+<div style = "position: absolute; left: 35px; top: 40px;" v-if = "categoria.id_categoria == 'C'">
+            <img src = "../../img/parcheggio.png" width="60px" style = "margin-top: 12px">
+            
+        </div>
+
+        <div style = "scale:0.8;position: absolute; left: 100px; bottom: 17px; flex-direction: column; 
+        display: flex; font-weight: 700; line-height: 0.95; font-size: 18px;"
+        v-if = "categoria.id_categoria == 'C'"
+        >
+            <span>parcheggio</span>
+            <span style = "font-size: 26px;">Riservato</span>
+        </div>
+
 <!------C-----------------------------------------
     
 

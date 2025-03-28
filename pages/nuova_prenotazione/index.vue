@@ -3,7 +3,8 @@ import { usePrenotazioni } from "../../store/prenotazioni";
 const prenotazioniStore = usePrenotazioni();
 import { usePostazioni } from "../../store/postazioni";
 const postazioniStore = usePostazioni();
-
+import { useAuth } from "../../store/auth";
+const authStore = useAuth();
 
 const route = useRoute();
 const router = useRouter();
@@ -122,20 +123,21 @@ async function occupate(){
 
 
 
-    <div class="map_container" >
+    <div class="map_container" 
+    >
 
-      <img src = "../../img/mappa1.png" width="703px" style = "position : absolute; z-index: 0; top: 25px;">
+      <img v-if = "categoria != 'C'" src = "../../img/mappa1.png" width="703px" style = "position : absolute; z-index: 0; top: 25px;">
 
+      <div v-if = "categoria != 'C'">
         <MappaPostazioni ref = "mappa"
         
         :key = aggiorna
         :tipo="categoria"
         style="z-index: 10"
-        v-if = "categoria != 'C'"
         >
 
         </MappaPostazioni>
-
+      </div>
         
 
 
@@ -161,17 +163,17 @@ async function occupate(){
 
 
 
-    <div class="rectangle-6">
+    <div class="rectangle-6" 
+    :style="{ width: authStore.utente.livello == 2 ? '465px' : '350px', transform: authStore.utente.livello == 2 ? 'scale(0.9)' : 'scale(1)'}"
+    >
 
       <div class="seleziona" 
         style = "
         position: absolute;
         left: 5px;
         top: -35px;
-        width: 249px;
         height: 25px">seleziona tipologia</div>
-
-      
+    
 
         <OptionPostazione
           :add="false"
@@ -196,6 +198,15 @@ async function occupate(){
           style = "scale: 0.77; height: 115px;"
           @click = "categoria = 'B'; aggiorna += ' '"
            :style="{ transform: categoria == 'B' ? 'scale(1.26)' : 'scale(1)' }"
+        ></OptionPostazione>
+
+        <OptionPostazione
+        v-if="authStore.utente.livello == 2"
+          :add="false"
+          tipo="Parcheggio"
+          style = "scale: 0.77; height: 115px;"
+          @click = "categoria = 'C'; aggiorna += ' '"
+           :style="{ transform: categoria == 'C' ? 'scale(1.26)' : 'scale(1)' }"
         ></OptionPostazione>
       
     </div>
@@ -429,7 +440,6 @@ menu, ol, ul {
   
   background: #ffffff;
   border-radius: 10px;
-  width: 350px;
   height: 120px;
   display: flex;
   position: absolute;

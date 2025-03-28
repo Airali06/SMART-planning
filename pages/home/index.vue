@@ -61,30 +61,53 @@ async function ricarica(){
       <div class="prenota">Prenota</div>
 
       <div class="frame-1">
-        <OptionPostazione
-          :add="true"
-          tipo="ScrivaniaStandard"
-          class="zoom"
-          @click="
-            router.push({ name: 'nuova_prenotazione', query: { option: 'A1', modifica : 0} })
-          "
-        ></OptionPostazione>
 
-        <OptionPostazione
-          :add="true"
-          tipo="ScrivaniaMonitor"
-          class="zoom"
-          @click="
-            router.push({ name: 'nuova_prenotazione', query: { option: 'A2', modifica : 0} })"
-        ></OptionPostazione>
+          <div class="zoom">
+            <OptionPostazione
+              :add="true"
+              tipo="ScrivaniaStandard"
+              :style="{ transform: authStore.utente.livello == 2 ? 'scale(0.76)' : 'scale(1)' }"
+              @click="
+                router.push({ name: 'nuova_prenotazione', query: { option: 'A1', modifica : 0} })
+              "
+            ></OptionPostazione>
+          </div>
 
-        <OptionPostazione
-          :add="true"
-          tipo="SalaRiunioni"
-          class="zoom"
-          @click="
-            router.push({ name: 'nuova_prenotazione', query: { option: 'B', modifica : 0} })"
-        ></OptionPostazione>
+          <div class="zoom">
+            <OptionPostazione
+              :add="true"
+              tipo="ScrivaniaMonitor"
+              :style="{ transform: authStore.utente.livello == 2 ? 'scale(0.76)' : 'scale(1)' }"
+              @click="
+                router.push({ name: 'nuova_prenotazione', query: { option: 'A2', modifica : 0} })"
+            ></OptionPostazione>
+          </div>
+
+          <div class="zoom">
+            <OptionPostazione
+              :add="true"
+              tipo="SalaRiunioni"
+              :style="{ transform: authStore.utente.livello == 2 ? 'scale(0.76)' : 'scale(1)' }"
+             
+              @click="
+                router.push({ name: 'nuova_prenotazione', query: { option: 'B', modifica : 0} })"
+            ></OptionPostazione>
+          </div>
+
+          <div class="zoom"
+            v-if = "authStore.utente.livello == 2">
+            <OptionPostazione 
+            v-if = "authStore.utente.livello == 2"
+            tipo="Parcheggio" 
+            :style="{ transform: authStore.utente.livello == 2 ? 'scale(0.76)' : 'scale(1)' }"
+            :add = "true"
+            @click="
+                router.push({ name: 'nuova_prenotazione', query: { option: 'C', modifica : 0} })"
+            
+
+           
+            ></OptionPostazione>
+        </div>
       </div>
     </div>
 
@@ -99,6 +122,7 @@ async function ricarica(){
           :prenotazione= prenotazione
           :key = aggiorna
           @notifica="ricarica()"
+          
           style="margin-top: 10px;"
           > </PrenotazioneElement>
         </div>
@@ -199,6 +223,7 @@ ul {
 }
 
 .zoom {
+  margin: -3px;
   transition: transform 0.3s ease-in-out;
 }
 .zoom:hover {

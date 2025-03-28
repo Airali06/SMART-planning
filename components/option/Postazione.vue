@@ -53,6 +53,20 @@ const add = props.add as Boolean;
       <span style="font-size: 20px">Monitor</span>
     </div>
 
+    <img
+      src="../../img/parcheggio.png"
+      height="60px"
+      style="display: block; margin-top: 5px"
+      v-if="tipo == 'Parcheggio'"
+    />
+    <div
+      style="line-height: 0.8; margin-top: 4px"
+      v-if="tipo == 'Parcheggio'"
+    >
+      Parcheggio<br />
+      <span style="font-size: 20px">Riservato</span>
+    </div>
+
     <div class="add" v-if="add == true">
       <img src="../../img/add.png" height="30px" />
     </div>
