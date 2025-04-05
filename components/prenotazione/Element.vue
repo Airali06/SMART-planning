@@ -3,10 +3,12 @@ import type { Postazione } from '~/store/models/Postazione';
 import type { Prenotazione } from '~/store/models/Prenotazione';
 import { usePostazioni } from '~/store/postazioni';
 import { usePrenotazioni } from '~/store/prenotazioni';
+import  { useAuth } from '../../store/auth';
+
 const props = defineProps({
   prenotazione: {} as PropType<Prenotazione>,
 });
-
+const authStore = useAuth();
 const router = useRouter();
 const  postazioniStore = await usePostazioni()
 const postazione = postazioniStore.getPostazione(props.prenotazione as Prenotazione) as Postazione;
@@ -92,11 +94,12 @@ async function elimina_prenotazione(){
             visualizza sulla mappa
     </div>
 
-    <div class = "modifica" v-if = "!scaduta"  @click="router.push({ name: 'modifica_prenotazione', query: { option: 0, idDaModificare : props.prenotazione?.id_prenotazione} })">
+
+    <div class = "modifica" v-if = "!scaduta && props.prenotazione?.id_utente  == authStore.utente.id_utente"  @click="router.push({ name: 'modifica_prenotazione', query: { option: 0, idDaModificare : props.prenotazione?.id_prenotazione} })">
             <img src = "../../img/edit.png" style = "width: 20px;">
     </div>
 
-    <div class = "bin" @click="elimina = true; aggiorna+= ' '" v-if = "!scaduta">
+    <div class = "bin" @click="elimina = true; aggiorna+= ' '" v-if = "!scaduta && props.prenotazione?.id_utente  == authStore.utente.id_utente">
       <img src = "../../img/delete.png" style = "width: 20px;">
     </div>
 

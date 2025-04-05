@@ -46,5 +46,32 @@ export const useDipendenti = defineStore("dipendenti-store", {
 
       return filtrato;
     },
+
+    async getPrenotazioniDipendente(id: string) {
+      const authStore = useAuth();
+      try {
+        const response = Array<Prenotazione>(
+          await $fetch(authStore.address + "getPrenotazioni.php", {
+            //composizione dell messaggio di request
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json", //specifica tipologia di dato inviata
+            },
+            body: JSON.stringify({
+              //trasforma un oggetto in JSON (json obbligatorio per mandare dati al server)
+              id_utente: id,
+            }),
+          })
+        ) as any;
+        return response[0];
+      } catch (e) {
+        console.log("errore" + e);
+      }
+    },
+    getDipendenteById(id: number) {
+      const dipendente = this.dipendenti.find((obj) => obj.id_utente == id);
+      console.log(dipendente);
+      return { ...dipendente };
+    },
   },
 });

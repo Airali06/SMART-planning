@@ -68,7 +68,7 @@ const route = useRoute();
           @click="
             router.push({ name: 'nuova_prenotazione', params: { option: 0, idDaModificare : ''} })">nuova prenotazione</span>
 
-      <span style="cursor:pointer" @click="
+      <span v-if = "authStore.utente.livello == 2" style="cursor:pointer" @click="
             router.push({ name: 'dipendenti'})">dipendenti</span>
 
       <span style="cursor:pointer" @click="

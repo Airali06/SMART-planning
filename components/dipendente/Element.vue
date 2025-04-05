@@ -3,6 +3,7 @@ import type { Utente } from '~/store/models/Utente';
 const props = defineProps({
   dipendnente: {} as PropType<Utente>,
 });
+const router = useRouter();
 </script>
 
 
@@ -19,7 +20,7 @@ const props = defineProps({
                 <span style = "font-size: 24px; font-weight: 700;">{{ props.dipendnente?.username }}</span>
                 <span>matricola</span>
                 <span style = "font-size: 18px; font-weight: 700; margin-top: -5px">{{ props.dipendnente?.id_utente }}</span>
-                <div class = "button"> visualizza prenotazioni</div>
+                <div class = "button" @click="router.push({path:'/dipendenti/visualizza_dipendente', query: { utente: props.dipendnente?.id_utente} })"> visualizza prenotazioni</div>
             </div>
 
             <img src = "../../img/profilo.png" style = "position: absolute; left: -70px; top: 43px; height: 140px;">

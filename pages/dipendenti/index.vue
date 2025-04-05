@@ -92,9 +92,6 @@ function cerca(){
     margin-left: 25px;
     margin-right: 25px;
 }
-.dipendente-element:nth-child(2n+1) {
-  clear: both; /* Forza il ritorno a capo dopo ogni due elementi */
-}
 
 .scorrimento{
     padding-left: 20px;
