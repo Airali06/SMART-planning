@@ -125,7 +125,7 @@ export const usePostazioni = defineStore("postazioni-store", {
       const postazione = this.postazioni.find(
         (obj) => obj.id_postazione === id
       );
-      console.log(postazione);
+      //console.log(postazione);
       return { ...postazione };
     },
   },

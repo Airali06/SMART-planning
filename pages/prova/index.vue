@@ -1,3 +1,9 @@
+<script setup lang = "ts">
+import { usePrenotazioni } from '~/store/prenotazioni';
+import  { useAuth } from '../../store/auth';
+const prenotazioniStore = usePrenotazioni();
+</script>
+
 <template>
 
     <div style = "margin-left: 500px;">
@@ -9,6 +15,7 @@
         <OptionPostazione 
         tipo="Parcheggio" 
         :add = true></OptionPostazione>
+        <PrenotazioneAdmin :prenotazione="prenotazioniStore.prenotazioni[0]"></PrenotazioneAdmin>
 
     </div>
 </template>

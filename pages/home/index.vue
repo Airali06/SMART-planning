@@ -2,6 +2,13 @@
 const router = useRouter();
 import { useAuth } from "../../store/auth";
 const authStore = useAuth();
+
+
+if (await authStore.utente.livello == 3) {
+    router.push({ name: "admin" });
+}
+
+
 import { usePrenotazioni } from "../../store/prenotazioni";
 import { usePostazioni } from "../../store/postazioni";
 const prenotazioniStore = usePrenotazioni();

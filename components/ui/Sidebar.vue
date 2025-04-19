@@ -58,21 +58,38 @@ const route = useRoute();
       "
       v-if="!isCollapsed"
     >
-      <span style="cursor:pointer"
-          @click="
-            router.push({ name: 'home'})">home </span>
 
-      <span  @click="router.push({ name: 'account'})" style="cursor:pointer">account</span>
 
-      <span style="cursor:pointer"
-          @click="
-            router.push({ name: 'nuova_prenotazione', params: { option: 0, idDaModificare : ''} })">nuova prenotazione</span>
 
-      <span v-if = "authStore.utente.livello == 2" style="cursor:pointer" @click="
-            router.push({ name: 'dipendenti'})">dipendenti</span>
+      <div v-if = "authStore.utente.livello < 3">
+                  <span style="cursor:pointer"
+                      @click="
+                        router.push({ name: 'home'})">home </span>
 
-      <span style="cursor:pointer" @click="
-            router.push({ name: 'mappa'})">mappa</span>
+                  <span  @click="router.push({ name: 'account'})" style="cursor:pointer">account</span>
+
+                  <span style="cursor:pointer"
+                      @click="
+                        router.push({ name: 'nuova_prenotazione', params: { option: 0, idDaModificare : ''} })">nuova prenotazione</span>
+
+                  <span v-if = "authStore.utente.livello == 2" style="cursor:pointer" @click="
+                        router.push({ name: 'dipendenti'})">dipendenti</span>
+
+                  <span style="cursor:pointer" @click="
+                        router.push({ name: 'mappa'})">mappa</span>
+      </div>
+
+      <div v-if = "authStore.utente.livello == 3" style = "display: flex; flex-direction: column;">
+
+        <span style="cursor:pointer"  @click="router.push({ name: 'admin'})">home </span>
+        
+        <span style="cursor:pointer"  @click="router.push({path:'/admin/gestione_prenotazioni'})">gestione prenotazioni </span>
+
+        <span style="cursor:pointer"  @click="router.push({path:'/admin/gestione_dipendente'})">gestione prenotazioni </span>
+      </div>
+
+
+
     </div>
 
     <button class="logout" v-if="!isCollapsed" @click="logout()">logout</button>

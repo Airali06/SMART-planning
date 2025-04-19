@@ -1,6 +1,7 @@
 import type { Prenotazione } from "./models/Prenotazione";
 import { useAuth } from "./auth";
 import type { Postazione } from "./models/Postazione";
+import { usePostazioni } from "./postazioni";
 
 export const usePrenotazioni = defineStore("prenotazioni-store", {
   state: () => ({
@@ -11,12 +12,16 @@ export const usePrenotazioni = defineStore("prenotazioni-store", {
 
     async getPrenotazioni() {
       const authStore = useAuth();
-
+      let ape = "getPrenotazioni.php";
       if ((await authStore.controllaSessione()) == false) return;
+
+      if (authStore.utente.livello == 3) {
+        ape = "getPrenotazioniAdmin.php";
+      }
 
       try {
         const response = Array<Prenotazione>(
-          await $fetch(authStore.address + "getPrenotazioni.php", {
+          await $fetch(authStore.address + ape, {
             //composizione dell messaggio di request
             method: "POST",
             headers: {
@@ -28,6 +33,7 @@ export const usePrenotazioni = defineStore("prenotazioni-store", {
             }),
           })
         ) as any;
+
         console.log(response[0]);
 
         this.prenotazioni = [...response[0]] as Array<Prenotazione>;
@@ -142,6 +148,21 @@ export const usePrenotazioni = defineStore("prenotazioni-store", {
     filtraData(data: string) {
       console.log(data);
       let filtrato = this.prenotazioni.filter((obj) => obj.data + "" == data);
+      return filtrato;
+    },
+
+    filtraCategoria(categoria: string) {
+      const postazioniStore = usePostazioni();
+      let filtrato = [] as Array<Prenotazione>;
+      this.prenotazioni.forEach((prenotazione) => {
+        if (
+          postazioniStore.getCategoria(
+            postazioniStore.getPostazione(prenotazione) as Postazione
+          ).id_categoria == categoria
+        ) {
+          filtrato.push(prenotazione);
+        }
+      });
       return filtrato;
     },
 
