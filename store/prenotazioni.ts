@@ -182,5 +182,53 @@ export const usePrenotazioni = defineStore("prenotazioni-store", {
       console.log(prenotazione);
       return { ...prenotazione };
     },
+
+    async abilita(id_prenotazione: string) {
+      const authStore = useAuth();
+      try {
+        const response = await $fetch(
+          authStore.address + "/abilitaPrenotazione.php",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id_prenotazione,
+            }),
+          } as any
+        );
+
+        console.log("Risposta dal server:", response);
+      } catch (error) {
+        console.error("Errore durante la richiesta:", error);
+      }
+
+      await this.getPrenotazioni();
+    },
+
+    async disabilita(id_prenotazione: string) {
+      const authStore = useAuth();
+      try {
+        const response = await $fetch(
+          authStore.address + "/disabilitaPrenotazione.php",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id_prenotazione,
+            }),
+          } as any
+        );
+
+        console.log("Risposta dal server:", response);
+      } catch (error) {
+        console.error("Errore durante la richiesta:", error);
+      }
+
+      await this.getPrenotazioni();
+    },
   },
 });

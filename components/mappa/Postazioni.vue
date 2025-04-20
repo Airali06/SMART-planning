@@ -10,6 +10,12 @@ const postazioniStore = usePostazioni();
 await postazioniStore.getPostazioni();
 await postazioniStore.getCategorie();
 
+import { defineEmits } from "vue";
+const emit = defineEmits(["notifica"]);
+const cambio = () => {
+  emit("notifica","cambio");
+};
+let mounting  = true;
 
 const props = defineProps({
   add: Boolean,
@@ -35,7 +41,7 @@ import { onMounted, nextTick } from 'vue';
 onMounted(() => {
   if (typeof window !== "undefined") {
         // Puoi usare localStorage solo qui
-
+        mounting  = true;
         const scelta = localStorage.getItem("scelta");
         if (scelta) {
           const parsed = JSON.parse(scelta);
@@ -45,6 +51,8 @@ onMounted(() => {
       } else {
         console.log("localStorage non è disponibile nel server");
       }
+
+      mounting  = false;
   }
 
 
@@ -107,13 +115,13 @@ onMounted(() => {
         Popup.style.top = `${y.value}px`;
         aggiorna.value+=" ";
         mostra.value = true;
-
+        
 
 
       });
 
     }
-
+  
     mostra.value = true;
   }
 

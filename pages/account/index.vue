@@ -137,7 +137,7 @@ async function ricarica(){
     
     
     
-<style scooped>
+<style scoped>
 
 *{
   font-family: "Sulphur Point", serif;

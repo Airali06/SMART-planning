@@ -14,13 +14,16 @@ const route = useRoute();
 const aggiorna = ref();
 let prenotazioniDipendente = [] as Array<Prenotazione>;
 let dipendente = {} as Utente;
-
 if(route.query.utente != ""){
     prenotazioniDipendente = await dipendentiStore.getPrenotazioniDipendente(route.query.utente as any) as any;
     dipendente = dipendentiStore.getDipendenteById(route.query.utente as any) as Utente;
     console.log(prenotazioniDipendente, "PRENOTAZIONI DIPENDENTE")
 }
 
+async function ricarica(){
+  prenotazioniDipendente = await dipendentiStore.getPrenotazioniDipendente(route.query.utente as any) as any;
+  aggiorna.value += " ";
+}
 
 
 
@@ -28,7 +31,7 @@ if(route.query.utente != ""){
 
 
 <template>
-
+ <input type = "text" v-model = "aggiorna" style = "display: none">
 <input type = "text" v-model = "aggiorna" style = "display:none">
  
     
@@ -56,13 +59,22 @@ if(route.query.utente != ""){
         <div style = "display: box; justify-items: center; width: 100%; margin-top: 27px; position: relative;">
        
             <div class = "area-prenotazioni">
-                <PrenotazioneElement
+                <PrenotazioneElement v-if = "authStore.utente.livello == 2"
                 v-for = "prenotazione in prenotazioniDipendente"
                 :prenotazione="prenotazione"
                 style="margin: 10px; color: #00345c;"
                 :key = aggiorna
                 >
                 </PrenotazioneElement>
+
+                <PrenotazioneAdmin @notifica = "ricarica()"
+                v-if = "authStore.utente.livello == 3"
+                v-for = "prenotazione in prenotazioniDipendente"
+                :prenotazione="prenotazione"
+                style="margin: 10px; color: #00345c;"
+                :key = aggiorna
+                >
+                </PrenotazioneAdmin>
             </div>
   </div> 
 </div> 
@@ -80,8 +92,8 @@ if(route.query.utente != ""){
 
 .area-prenotazioni{
   overflow-y: auto; 
-  height: 430px; 
-  width: 560px; 
+  height: 470px; 
+  width: 660px; 
   margin-top: 30px;
 }
 

@@ -61,7 +61,7 @@ const route = useRoute();
 
 
 
-      <div v-if = "authStore.utente.livello < 3">
+      <div v-if = "authStore.utente.livello < 3" style = "display: flex; flex-direction: column;">
                   <span style="cursor:pointer"
                       @click="
                         router.push({ name: 'home'})">home </span>
@@ -85,7 +85,7 @@ const route = useRoute();
         
         <span style="cursor:pointer"  @click="router.push({path:'/admin/gestione_prenotazioni'})">gestione prenotazioni </span>
 
-        <span style="cursor:pointer"  @click="router.push({path:'/admin/gestione_dipendente'})">gestione prenotazioni </span>
+        <span style="cursor:pointer"  @click="router.push({path:'/admin/gestione_postazioni'})">gestione postazioni </span>
       </div>
 
 

@@ -148,7 +148,7 @@ function seleziona(id: number){
         <tr>
           
           <td class = "psinistra" id ="61" @click = "seleziona(61)"><img src="../../img/car.png" style = "display: none" class = "sximg" id = "61occupato"/></td>
-          <td class = "pdestra" id ="62" @click = "seleziona(62)"><img src="../../img/car.png" style = "display: none" class = "dximg" id = "61occupato"/></td>
+          <td class = "pdestra" id ="62" @click = "seleziona(62)"><img src="../../img/car.png" style = "display: none" class = "dximg" id = "62occupato"/></td>
         </tr>
         <tr>
           

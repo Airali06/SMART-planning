@@ -16,8 +16,10 @@ const  postazioniStore = await usePostazioni()
 const postazione = postazioniStore.getPostazione(props.prenotazione as Prenotazione) as Postazione;
 const categoria = postazioniStore.getCategoria(postazione as Postazione);
 const prenotazioniStore = usePrenotazioni();
+
 let elimina = false;
 let caricamento = false;
+
 const aggiorna = ref("");
 const scaduta = ref(false);
 
@@ -70,8 +72,30 @@ async function elimina_prenotazione(){
   await nextTick();
   notifica();
   caricamento = false;
-  
+  aggiorna.value += " ";
 }
+
+async function cambiaStato(){
+  if(props.prenotazione?.flag as any > 1){
+    return;
+  }
+
+  caricamento = true;
+  aggiorna.value += " ";
+
+  if(props.prenotazione?.flag as any == 1){
+    await prenotazioniStore.abilita(props.prenotazione?.id_prenotazione+"");
+  }else if(props.prenotazione?.flag as any == 0){
+    await prenotazioniStore.disabilita(props.prenotazione?.id_prenotazione+"");
+
+  }
+  await prenotazioniStore.getPrenotazioni();
+  await nextTick();
+  notifica();
+  caricamento = false;
+  aggiorna.value += " ";
+}
+
 </script>
 
 
@@ -83,7 +107,7 @@ async function elimina_prenotazione(){
 <div style = "scale:0.9; margin-bottom: 5px;">
 
 
-    <div class = "rectangle" style="background-color: white;" v-if = "!elimina">
+    <div class = "rectangle" style="background-color: white;" v-if = "!elimina && !caricamento">
         <div style = "flex-direction: row; display: flex;" >
 
         <div class = "nome1" style = "color: #ffffff;"><span style = "margin-left: 20px;">Postazione {{postazione.nome}}</span></div>
@@ -94,6 +118,11 @@ async function elimina_prenotazione(){
         <div class = "content"><span style = "margin:10px">info prenotazione</span></div>
  
         
+    </div>
+
+    <div :key = "aggiorna" class = "disabilita" @click="cambiaStato()">
+            <div :key = "aggiorna" v-if = "prenotazione?.flag == 1">abilita</div>
+            <div :key = "aggiorna" v-if = "prenotazione?.flag == 0">disabilita</div>
     </div>
 
     <div class = "visualizza-sulla-mappa" @click="seleziona()">
@@ -216,7 +245,7 @@ async function elimina_prenotazione(){
       </div>
     </div>
 
-    <div @click="router.push({path:'/dipendenti/visualizza_dipendente', query: { utente: utente.id_utente} })">
+    <div @click="router.push({path:'/dipendenti/visualizza_dipendente', query: { utente: utente.id_utente} })" v-if = "elimina == false && caricamento == false">
       <img src = "../../img/profilo.png" width="80px" style = "position: absolute; top: 20px; left: 50px">
       <div style = "position: absolute; width: 140px; left: 20px; bottom: 25px; text-align: center;">{{ utente.username }}</div>
     </div>
@@ -230,6 +259,7 @@ async function elimina_prenotazione(){
 
 
 .visualizza-sulla-mappa{
+  cursor: pointer;
   position: absolute; 
   background-color: rgb(5, 109, 189); 
   border-radius: 7px; 
@@ -247,7 +277,32 @@ async function elimina_prenotazione(){
   letter-spacing: 1px;
 }
 
+.disabilita{
+  
+  cursor: pointer;
+  position: absolute; 
+  background-color: rgb(60, 157, 231); 
+  border-radius: 7px; 
+  bottom: -13px; 
+  padding: 4px;
+  padding-top: 6px;
+  width: 145px;
+  right: 281px;
+  height: 20px;
+  color: #ffffff;
+  font-size: 12px;
+  text-align: center;
+  display: block;
+  font-weight: 200;
+  letter-spacing: 1px;
+}
+
+.disabilita:hover{
+  background-color: rgb(27, 128, 206); 
+}
+
 .bin{
+  cursor: pointer;
   position: absolute; 
   background-color: rgb(0, 45, 80); 
   border-radius: 7px; 
@@ -390,6 +445,7 @@ async function elimina_prenotazione(){
   }
 
   .elimina{
+    cursor: pointer;
       background: linear-gradient(
       90deg,
       rgb(0, 85, 150) 0%,

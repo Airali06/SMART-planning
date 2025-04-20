@@ -22,19 +22,19 @@ import { useAuth } from "../../store/auth";
         <img src = "../../img/impostazioni_utente.png" width="40px" class = "icon">
     </div>
 
-    <div class = "rectangle">
+    <div class = "rectangle" @click="router.push({path:'/admin/gestione_postazioni'})">
         Gestione
         <span style = "font-weight: 700; font-size: 26px;">Postazioni</span>
         <img src = "../../img/mappa.png" width="35px" class = "icon">
     </div>
 
-    <div class = "rectangle">
+    <div class = "rectangle" @click="router.push({path:'/admin/gestione_prenotazioni'})">
         Gestione
         <span style = "font-weight: 700; font-size: 26px;">Prenotazioni</span>
         <img src = "../../img/calendario.png" width="30px" class = "icon">
     </div>
 
-    <div class = "rectangle">
+    <div class = "rectangle" @click="router.push({path:'/admin/nuovo_dipendente'})">
         Aggiungi
         <span style = "font-weight: 700; font-size: 26px;"> Utenti</span>
         <img src = "../../img/aggiungi_utente.png" width="30px" class = "icon">

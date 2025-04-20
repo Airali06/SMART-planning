@@ -37,9 +37,12 @@ function selezionaCategoria(n : string){
 function selezionaStato(n : number){
     if(stato_selezionato == n){
         stato_selezionato = -1;
-        return;
+    }else{
+      stato_selezionato = n;
     }
-    stato_selezionato = n;
+    
+    aggiorna.value+= " ";
+    filtra();
 }
 
 
@@ -91,12 +94,29 @@ function filtra(){
 
 }
 
+async function ricarica(){
+  //filtrato.splice(0,filtrato.length);
+
+
+  console.log("sto ricaricando");
+
+  //--------------reset forzato per forzare il render
+  await nextTick();
+  filtra();
+  aggiorna.value+=" ";
+
+}
+
 function reset(){
     data.value = "";
     categoria_selezionata = "";
-    stato_selezionato = 0;
     filtrato = [...prenotazioniStore.prenotazioni];
     aggiorna.value+=" ";
+}
+
+async function reloadPrenotazioni(){
+  reset();
+  await prenotazioniStore.getPrenotazioni();
 }
 
 </script>
@@ -105,23 +125,48 @@ function reset(){
 
     <input type = "text" v-model = "aggiorna" style = "display: none">
 
-    <div style = "justify-self: center; width: fit-content; display: flex; flex-direction: row;">
+    <div style = "justify-self: center; width: fit-content; display: flex; flex-direction: row; margin-top: 80px">
 
-        <div class = "scorrimento" style = "transform: scale(0.8); width: 680px">
-  
-                <PrenotazioneAdmin
-                v-for = "prenotazione in filtrato"
-                :key = aggiorna
-                :prenotazione= prenotazione
-                >
+      <div style = "display: flex; flex-direction: column;">
 
-                </PrenotazioneAdmin>
+                <div class = "titolo">
+                    <span style = "font-size: 30px">Gestione</span>
+                    <span>Prenotazioni</span>
+                </div>
+
+                <div class = "counter" style = "position: relative;">
+                  <img src = "../../../img/ricarica.png" width="35px" style = "position: absolute; z-index: 50; left: -50px; cursor: pointer" @click="reloadPrenotazioni()">
+                    <span class = "n-prenotazioni" style = "font-size: 23px; color : #ffffff; width: 30px;">{{ filtrato.length }}</span>
+                    <span >prenotazioni trovate</span>
+                </div>
+
+          <div class = "scorrimento" style = "transform: scale(1); width: 680px; margin-top: 10px; height: 550px;">
+
+                  <PrenotazioneAdmin @notifica = "ricarica()"
+                  v-for = "prenotazione in filtrato"
+                  :key = aggiorna
+                  :prenotazione= prenotazione
+                  >
+
+                  </PrenotazioneAdmin>
+                  <div style = "justify-self: center; font-size: 25px;" v-if = "filtrato.length == 0">nessuna prenotazione trovata</div>
+          </div>
         </div>
 
-            <div style = "margin-top: 130px;">
+
+
+            <div style = "margin-top: 140px;">
+
+              <div style = "margin-left: 40px; font-weight: 700; font-size: 28px; margin-bottom: 15px">
+                filtra prenotazioni
+              </div>
+
+              <div style = "margin-left: 40px; font-weight: 400; font-size: 20px;">
+                filtra categoria
+              </div>
                
 
-                    <div style  ="display:flex; flex-wrap: wrap; width: 330px; height: fit-content; transform: scale(0.8);">
+                    <div style  ="display:flex; flex-wrap: wrap; width: 330px; height: fit-content; transform: scale(0.8); margin-top: -20px">
                         
                         <OptionPostazione
                         @click = "selezionaCategoria('A1')"
@@ -156,11 +201,36 @@ function reset(){
                         ></OptionPostazione>
                     </div>
 
-                    <input type = "date" class = "data1" @change="filtra()" v-model = "data" style = "margin-top: 35px; font-size: 25px; font-weight: 700; height: 50px; width: 340px; margin-left: -20px;" >
+                    <div style = "margin-left: 40px; font-weight: 400; font-size: 20px; margin-top: -20px">
+                        filtra data
+                    </div>
+
+                    <input type = "date" class = "data1" @change="filtra()" v-model = "data" style = "margin-top: 0px; font-size: 25px; font-weight: 700; height: 50px; width: 340px; margin-left: -20px;" >
                     
+
+                    <div style = "margin-left: 40px; font-weight: 400; font-size: 20px; margin-top: 5px">
+                        filtra stato
+                    </div>
+
+
+            <div class="rectangle" style = "display: flex; flex-direction: row; margin-top: 10px;;">
+                  <div class="menu-rect" 
+                  :style="stato_selezionato == 0 ? 'background: linear-gradient(90deg,rgba(0, 105, 186, 1) 0%,rgba(0, 47, 84, 1) 100%); color: white': ''"
+                  @click="selezionaStato(0)"
+                  >abilitate</div>
+
+
+                  <div class="menu-rect"
+                  :style="stato_selezionato == 1 ? 'background: linear-gradient(90deg,rgba(0, 105, 186, 1) 0%,rgba(0, 47, 84, 1) 100%); color: white' : ''"
+                  @click="selezionaStato(1)"
+                  >disabilitate</div>
+          </div>
+
+
+
                     
-                    <div class = "rectangle" @click = "reset()">
-                        reset
+                    <div class = "reset" @click = "reset()" style = "margin-top: 25px;">
+                        annulla filtri
                     </div>
             
                 </div>
@@ -173,6 +243,72 @@ function reset(){
   font-family: "Sulphur Point", serif;
   color: #002f54;
 }
+
+.titolo{
+  background: linear-gradient(
+    90deg,
+    rgba(0, 105, 186, 1) 0%,
+    rgba(0, 47, 84, 1) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 60px;
+  display: flex;
+  flex-direction: column;
+  margin: 0px;
+  margin-left: 90px;
+}
+
+.counter{
+  font-size: 20px;
+  margin-left: 90px;
+  margin-top: 20px;;
+
+  
+}
+
+
+.menu-rect{
+  color: #002F54;
+  text-align: center;
+  font-family: "Sulphur Point", serif;
+  font-style: normal;
+  font-size: 16px;
+  line-height: 24px;  
+  font-weight: 1000;
+  margin-left: 7px;
+  margin-right: 7px;
+  width: 95px;
+  height: 30px;
+
+  border-radius: 0.625rem;
+  position: relative;
+  padding: 2px;
+  z-index: 0;
+  display: block;
+  justify-items: center;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+
+}
+
+.menu-rect::before {
+    content: "";
+    border: 0px;
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    padding: 0.13rem;
+    background: linear-gradient(90deg, rgba(0, 105, 186, 1), rgb(0, 60, 105));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: -1;
+
+  }
 
 
 .data1 {
@@ -209,6 +345,32 @@ function reset(){
     z-index: -1;
   }
 
+  .reset{
+    margin-top: 20px;
+    background: linear-gradient(
+    90deg,
+    rgba(0, 105, 186, 1) 0%,
+    rgba(0, 47, 84, 1) 100%
+  );
+    color: white;
+    border-radius: 10px;
+    position: relative;
+    padding: 6px;
+    z-index: 0;
+    display: block;
+    justify-items: center;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    border: 0px;
+    width: 230px;
+    height: fit-content;
+    text-align: center;
+    margin-left: 36px;
+    font-weight: 700;
+
+  }
+
   .rectangle{
     color: #00467c;
     border-radius: 10px;
@@ -236,7 +398,7 @@ function reset(){
     position: absolute;
     inset: 0;
     border-radius: 10px;
-    padding: 0.23rem;
+    padding: 0.13rem;
     background: linear-gradient(90deg, rgba(0, 105, 186, 1), rgb(0, 60, 105));
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -248,7 +410,7 @@ function reset(){
 
 .scorrimento{
   overflow-y: auto; 
-  height: 80%;
+  height: 70%;
   width: 515px;
 }
 
@@ -279,5 +441,21 @@ function reset(){
     height: 45.5rem;
     width: fit-content;
 }
+
+
+.n-prenotazioni{
+    background: linear-gradient(
+    90deg,
+    rgba(0, 105, 186, 1) 0%,
+    rgba(0, 47, 84, 1) 100%
+  );
+    color: white;
+    border-radius: 10px;
+    padding: 5px;
+    padding-left: 7px;
+    padding-right: 7px;
+    margin-right: 13px;
+
+  }
 
 </style>
