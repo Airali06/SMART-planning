@@ -1,12 +1,10 @@
 cose da fare
--pagina account utenti
-----------sistemare la sidebar (ogni tanto si blocca a caso...)
-----------in prenotazioni inserire una funzione che filtri quelle di oggi
-----------sistemazione formato data nella visualizzazione delle prenotazioni (solo in visualizzazione, matenere YYMMDD per tutto il resto) 
--visualizzazione degli utenti dei coordinatori (creare componente con informazioni base senza grafica)
--inserire la ricerca con parola, matricola o username (usare regex)
--popolare il database di utenti in modo da facilitare i controlli
-----------mappa parcheggio (senza popup per ora)
-----------modifica prenotazione (nella stessa pagina della nuova prenotazione ma con parametri)
 
--La parte ADMIN la lasciamo alla fine
+-aggiunta calendario
+-sistemare i controlli su modifica prenotazione
+-implementare captcha
+-implementare  modifica password
+-nuovo utente
+-modifica utente
+-aggiungere tasto aggiorna in tutte le pagine
+-documentazione

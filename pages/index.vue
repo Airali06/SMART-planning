@@ -250,7 +250,7 @@ a, button, select, h1, h2, h3, h4, h5, * {
   height: 2.5625rem;
   position: absolute;
   left: 50%;
-  transform: translateX(-50%); /* Corretto l'uso di translate */
+  transform: translateX(-50%);
   top: 24.5625rem;
   box-shadow: 0rem 0rem 1.25rem 0rem rgba(0, 0, 0, 0.15);
   color: #ffffff;

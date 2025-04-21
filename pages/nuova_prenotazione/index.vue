@@ -2,6 +2,7 @@
 import { usePrenotazioni } from "../../store/prenotazioni";
 const prenotazioniStore = usePrenotazioni();
 import { usePostazioni } from "../../store/postazioni";
+import type { Postazione } from "~/store/models/Postazione";
 const postazioniStore = usePostazioni();
 import { useAuth } from "../../store/auth";
 const authStore = useAuth();
@@ -45,6 +46,11 @@ async function confermaPrenotazione(){
       if(data.value == ''){
           console.log("-----------NESSUNA DATA SELEZIONATA------------")
           errore.value += "- nessuna data selezionata\n"
+        }
+      
+     if(postazioniStore.postazioni.find(n => n.id_postazione == selezionato.value)?.stato+"" == "1"){
+          console.log("-----------postazione non disponibile------------")
+          errore.value += "- postazione non disponibile";
         }
       
       console.log("OCCUPATE",postazioniStore.occupate, selezionato.value)

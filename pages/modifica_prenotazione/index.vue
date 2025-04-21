@@ -84,6 +84,11 @@ async function modificaPrenotazione(){
           console.log("-----------NESSUNA DATA SELEZIONATA------------")
           errore.value += "- nessuna data selezionata\n"
         }
+        
+        if(postazioniStore.postazioni.find(n => n.id_postazione == selezionato.value)?.stato+"" == "1"){
+          console.log("-----------postazione non disponibile------------")
+          errore.value += "- postazione non disponibile";
+        }
 
 
         
