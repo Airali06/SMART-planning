@@ -15,11 +15,11 @@ const add = props.add as Boolean;
       src="../../img/sala_riunioni.png"
       height="65px"
       style="display: block; margin-top: 5px"
-      v-if="tipo == 'SalaRiunioni'"
+      v-if="tipo == 'SalaRiunioni' || tipo == 'B'"
     />
     <div
       style="line-height: 0.8; margin-top: 8px"
-      v-if="tipo == 'SalaRiunioni'"
+      v-if="tipo == 'SalaRiunioni' || tipo == 'B'"
     >
       sala
       <span style="font-size: 20px">Riunioni</span>
@@ -29,11 +29,11 @@ const add = props.add as Boolean;
       src="../../img/scrivania.png"
       height="75px"
       style="display: block; margin-top: 5px"
-      v-if="tipo == 'ScrivaniaStandard'"
+      v-if="tipo == 'ScrivaniaStandard' || tipo == 'A1'"
     />
     <div
       style="line-height: 0.8; margin-top: -8px"
-      v-if="tipo == 'ScrivaniaStandard'"
+      v-if="tipo == 'ScrivaniaStandard' || tipo == 'A1'"
     >
       scrivania<br />
       <span style="font-size: 20px">Standard</span>
@@ -43,11 +43,11 @@ const add = props.add as Boolean;
       src="../../img/scrivania_con_monitor.png"
       height="60px"
       style="display: block; margin-top: 5px"
-      v-if="tipo == 'ScrivaniaMonitor'"
+      v-if="tipo == 'ScrivaniaMonitor' || tipo == 'A2'"
     />
     <div
       style="line-height: 0.8; margin-top: 4px"
-      v-if="tipo == 'ScrivaniaMonitor'"
+      v-if="tipo == 'ScrivaniaMonitor' || tipo == 'A2'"
     >
       scrivania<br />con
       <span style="font-size: 20px">Monitor</span>
@@ -57,11 +57,11 @@ const add = props.add as Boolean;
       src="../../img/parcheggio.png"
       height="60px"
       style="display: block; margin-top: 5px"
-      v-if="tipo == 'Parcheggio'"
+      v-if="tipo == 'Parcheggio' || tipo == 'C'"
     />
     <div
       style="line-height: 0.8; margin-top: 4px"
-      v-if="tipo == 'Parcheggio'"
+      v-if="tipo == 'Parcheggio' || tipo == 'C'"
     >
       Parcheggio<br />
       <span style="font-size: 20px">Riservato</span>

@@ -13,8 +13,8 @@ const categoria = ref("A1");
 console.log("parametri: ",route.query.option)
 categoria.value = route.query.option as any;
 const data = ref(''/*new Date().toISOString().split('T')[0]*/); // Ottieni la data odierna in formato YYYY-MM-DD
-const aggiorna = ref("");
-const update = ref("");
+const aggiorna = ref(""); // serve a far ricaricare i componenti mappa e parcheggio da capo
+const update = ref("");// fa aggiornare solo parti della pagina che non richiedono l reload completo
 const selezionato = ref(-1);
 const caricamento = ref(false);
 const errore = ref("");
@@ -28,7 +28,7 @@ postazione = postazioniStore.getPostazioneById(scelta as any) as Postazione;
 
 
  async function prendiSelezione(){
-    console.log("CAMBIOOOOOOOOOOOOOO");
+    //console.log("CAMBIOOOOOOOOOOOOOO");
     if (typeof window !== "undefined") {
       scelta = localStorage.getItem("scelta") as any;
     }
@@ -37,6 +37,23 @@ postazione = postazioniStore.getPostazioneById(scelta as any) as Postazione;
   postazione = postazioniStore.getPostazioneById(scelta as any) as Postazione;
 }
 
+
+
+async function cambiaStato(){
+caricamento.value = true;
+  if(postazione.stato*1 as number == 1){
+    await postazioniStore.abilita(postazione.id_postazione+"");
+  }else if(postazione.stato*1 as number == 0){
+    await postazioniStore.disabilita(postazione.id_postazione+"");
+  }
+  await nextTick();
+  aggiorna.value += " ";
+  prendiSelezione();
+  update.value = "";
+  update.value = " ";
+  await nextTick();
+  caricamento.value = false;
+}
 
 </script>
 
@@ -47,7 +64,7 @@ postazione = postazioniStore.getPostazioneById(scelta as any) as Postazione;
 <div class = "overlay" v-if = "caricamento" >
       <CaricamentoPopup
       :caricamento=caricamento
-      messaggio_caricamento="Inserimento prenotazione in corso"
+      messaggio_caricamento="modifica stato postazione in corso"
       :key = aggiorna
       style = "margin-top: 300px;"
       >
@@ -171,25 +188,52 @@ postazione = postazioniStore.getPostazioneById(scelta as any) as Postazione;
     height: 25px;">info postazione
 
     <div class = "rectangle-7">
-      <span>id {{ postazione.id_postazione }}</span>
-      <span>postazione {{ postazione.nome }}</span>
-      <span>categoria {{ postazione.id_categoria }}</span>
-      <span>stato: 
-        <span v-if= "postazione.stato == 0">abilitato</span>
-        <span v-if= "postazione.stato == 1">disabilitato</span>
+
+      <span class = "nome-postazione" style = "">
+        postazione {{ postazione.nome }}
       </span>
+
+      <span style = "margin-top: 10px;">
+        id {{ postazione.id_postazione }}</span>
+      <span>categoria {{ postazione.id_categoria }}</span>
       <span>{{ postazione.descrizione }}</span>
+
+      
+
+      <div style = "display:flex; flex-direction: column;">
+       
+          <div style = "display:flex; flex-direction: row;">
+            <span>stato: </span>
+            <span v-if= "postazione.stato == 0">abilitato</span>
+            <span v-if= "postazione.stato == 1">disabilitato</span>
+          </div>
+        
+
+        <div class = "cambia-stato" @click="cambiaStato()" :key = "update">
+          <div v-if = "postazione.stato == 1" style = "color: white;" > abilita postazione</div>
+          <div v-if = "postazione.stato == 0" style = "color: white;"> disabilita postazione</div>
+      </div> 
+    </div>
+
+      <div style = "position: absolute; right: -170px; top: 68px; transform: scale(1);">
+        <OptionPostazione
+          :add="false"
+          :key = postazione.id_categoria
+          :tipo= postazione.id_categoria
+          style = "scale: 1;;"
+          @click = "categoria = 'C'; aggiorna += ' '"
+         ></OptionPostazione>
+      </div>
+
+
+
+
     </div>
 
 
     </div>
 
     
-
-
-    
-
-
     
   
   </div>
@@ -269,6 +313,51 @@ menu, ol, ul {
     margin: 0;
     padding: 0;
 }
+
+.nome-postazione{
+  background: linear-gradient(
+    90deg,
+    rgba(0, 105, 186, 1) 0%,
+    rgba(0, 47, 84, 1) 100%
+  );
+
+  border: 0px;
+  padding: 7px;
+  padding-left: 25px;
+  color: white;
+  border-radius: 10px;
+  width: 230px;
+  font-family: "Sulphur Point", serif;
+  font-weight: 700;
+  font-size: 20px;
+  display: block;
+  margin-top: 5px;
+}
+
+
+.cambia-stato{
+  background:    rgb(88, 159, 213);
+
+  border: 0px;
+  padding:3px;
+  justify-content: center;
+  justify-items: center;
+  display: block;
+  color: white;
+  border-radius: 8px;
+  width: 160px;
+  font-family: "Sulphur Point", serif;
+  font-weight: 700;
+  font-size: 15px;
+  display: block;
+  margin-top: 5px;
+  height: 25px;
+}
+.cambia-stato:hover{
+  background:    rgb(58, 125, 176);
+  cursor: pointer;
+}
+
 .errore{
   border-radius: 0.925rem;
   
@@ -286,6 +375,47 @@ menu, ol, ul {
   justify-content: center;
   display: block;
 }
+
+.menu-rect{
+  color: #002F54;
+  text-align: center;
+  font-family: "Sulphur Point", serif;
+  font-style: normal;
+  font-size: 16px;
+  line-height: 24px;  
+  font-weight: 1000;
+  margin-left: 7px;
+  margin-right: 7px;
+  width: 95px;
+  height: 30px;
+
+  border-radius: 0.625rem;
+  position: relative;
+  padding: 2px;
+  z-index: 0;
+  display: block;
+  justify-items: center;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+
+}
+
+.menu-rect::before {
+    content: "";
+    border: 0px;
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    padding: 0.13rem;
+    background: linear-gradient(90deg, rgba(0, 105, 186, 1), rgb(0, 60, 105));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: -1;
+
+  }
 
 .errore::before {
   content: "";
@@ -402,7 +532,7 @@ menu, ol, ul {
   margin-top: 30px;
   background: #ffffff;
   border-radius: 10px;
-  height: 120px;
+  height: 264px;
   display: flex;
   width: 460px;
   box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15);

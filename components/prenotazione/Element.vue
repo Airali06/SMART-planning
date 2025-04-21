@@ -85,8 +85,11 @@ async function elimina_prenotazione(){
         
         <div class = "data"><span>{{ data }}</span></div>
         <div class = "time"><span>giornata intera</span></div>
-        <div class = "content"><span style = "margin:10px">info prenotazione</span></div>
- 
+        <div class = "content" v-if = " prenotazione?.flag == 0"><span style = "margin:10px" >info prenotazione</span></div>
+        <div class = "disabilitata" v-if = " prenotazione?.flag >= 1">
+          <span style = "width:max-content; text-align: center;" v-if="prenotazione?.flag == 1">questa prenotazione è stata disabilitata</span>
+          <span style = "width:max-content; text-align: center;" v-if="prenotazione?.flag == 2">la postazione non è al momento disponibile</span>
+        </div>
         
     </div>
 
@@ -95,11 +98,11 @@ async function elimina_prenotazione(){
     </div>
 
 
-    <div class = "modifica" v-if = "!scaduta && props.prenotazione?.id_utente  == authStore.utente.id_utente"  @click="router.push({ name: 'modifica_prenotazione', query: { option: 0, idDaModificare : props.prenotazione?.id_prenotazione} })">
+    <div class = "modifica" v-if = "!scaduta && props.prenotazione?.id_utente  == authStore.utente.id_utente && prenotazione?.flag == 0"  @click="router.push({ name: 'modifica_prenotazione', query: { option: 0, idDaModificare : props.prenotazione?.id_prenotazione} })">
             <img src = "../../img/edit.png" style = "width: 20px;">
     </div>
 
-    <div class = "bin" @click="elimina = true; aggiorna+= ' '" v-if = "!scaduta && props.prenotazione?.id_utente  == authStore.utente.id_utente">
+    <div class = "bin" @click="elimina = true; aggiorna+= ' '" v-if = "!scaduta && props.prenotazione?.id_utente  == authStore.utente.id_utente && prenotazione?.flag == 0">
       <img src = "../../img/delete.png" style = "width: 20px;">
     </div>
 
@@ -375,6 +378,23 @@ async function elimina_prenotazione(){
     display: flex;
     
   }
+
+  .disabilitata{
+    border-radius: 8px;
+    background-color: rgb(253, 248, 184);
+    color: rgb(99, 83, 0);
+    width: 275px;
+    height: 50px;
+    position: absolute;
+    top: 55px;
+    left: 230px;
+    padding: 0px;
+    font-weight: 800;
+    display: flex;
+    text-align: center;
+    
+  }
+  
 
   .elimina{
       background: linear-gradient(

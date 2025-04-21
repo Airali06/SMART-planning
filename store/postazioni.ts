@@ -8,6 +8,7 @@ export const usePostazioni = defineStore("postazioni-store", {
     postazioni: [] as Array<Postazione>,
     categorie: [] as Array<Categoria>,
     occupate: [] as any,
+    disabilitate: [] as any,
   }),
   actions: {
     init() {},
@@ -127,6 +128,83 @@ export const usePostazioni = defineStore("postazioni-store", {
       );
       //console.log(postazione);
       return { ...postazione };
+    },
+
+    async abilita(id_postazione: string) {
+      const authStore = useAuth();
+      try {
+        const response = await $fetch(
+          authStore.address + "/abilitaPostazione.php",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id_postazione,
+            }),
+          } as any
+        );
+
+        console.log("Risposta dal server:", response);
+      } catch (error) {
+        console.error("Errore durante la richiesta:", error);
+      }
+      this.postazioni = [];
+      await this.getPostazioni();
+    },
+
+    async disabilita(id_postazione: string) {
+      const authStore = useAuth();
+      try {
+        const response = await $fetch(
+          authStore.address + "/disabilitaPostazione.php",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id_postazione,
+            }),
+          } as any
+        );
+
+        console.log("Risposta dal server:", response);
+      } catch (error) {
+        console.error("Errore durante la richiesta:", error);
+      }
+
+      this.postazioni = [];
+      await this.getPostazioni();
+    },
+
+    async getPostazioniDisabilitate() {
+      const authStore = useAuth();
+
+      if ((await authStore.controllaSessione()) == false) return;
+
+      try {
+        const response = Array<Postazione>(
+          await $fetch(authStore.address + "getPostazioniDisabilitate.php", {
+            //composizione dell messaggio di request
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json", //specifica tipologia di dato inviata
+            },
+            body: JSON.stringify({}),
+          })
+        ) as any;
+        //console.log(response[0]);
+
+        this.disabilitate = [...response[0]] as Array<Postazione>;
+        console.log(this.disabilitate);
+      } catch (e) {
+        console.log("errore" + e);
+      }
+
+      this.postazioni = [];
+      await this.getPostazioni();
     },
   },
 });

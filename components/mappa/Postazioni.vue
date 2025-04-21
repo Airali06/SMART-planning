@@ -58,6 +58,7 @@ onMounted(() => {
 
   nextTick(() => {
     selezionaCategoria(props.tipo as String);
+    selezionaDisabilitate()
     for (const element of postazioniStore.occupate) {
     console.log("element"+element);
     const cellaSVG = document.getElementById((element).toString());
@@ -141,6 +142,26 @@ onMounted(() => {
               //console.log("Elemento trovato:", "cellaSVG");
               if(cellaSVG)
               cellaSVG.style.fill = "rgba(54, 196, 252, 0.1)";
+            } else {
+              console.log("gh'è no");
+            }
+      }
+  
+  }
+
+  function selezionaDisabilitate(){//passa l'id della categoria
+  let cellaSVG;
+
+ 
+      for (const element of postazioniStore.postazioni) {
+            //console.log("element"+element.id_categoria);
+            cellaSVG = document.getElementById(element.id_postazione + "");
+            
+
+            if (element.stato == 1) {
+              //console.log(element.stato);
+              if(cellaSVG)
+              cellaSVG.style.fill = "rgba(255, 255, 0, 0.5)";
             } else {
               console.log("gh'è no");
             }

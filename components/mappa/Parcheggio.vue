@@ -47,7 +47,7 @@ onMounted(() => {
     }
    
   }
-  
+  selezionaDisabilitate();
   });
 });
 
@@ -101,6 +101,28 @@ function seleziona(id: number){
     }
 
     mostra.value = true;
+  }
+
+
+  
+  function selezionaDisabilitate(){//passa l'id della categoria
+  let cella;
+
+ 
+      for (const element of postazioniStore.postazioni) {
+            //console.log("element"+element.id_categoria);
+            cella = document.getElementById(element.id_postazione + "");
+            
+
+            if (element.stato == 1) {
+              //console.log(element.stato);
+              if(cella)
+              cella.style.backgroundColor = "rgba(255, 255, 0, 0.5)";
+            } else {
+              console.log("gh'è no");
+            }
+      }
+  
   }
 </script>
 
