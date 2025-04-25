@@ -1,7 +1,27 @@
 <script setup lang = "ts">
+import type { Utente } from '~/store/models/Utente';
+import { useDipendenti } from '~/store/dipendenti';
+
+const router = useRouter();
+const route = useRoute();
+const aggiorna = ref("");
+const dipendentiStore = useDipendenti();
+let utente = {} as Utente;
+let modifica = false;
+const password = ref("");
+const nome = ref("");
+const cognome = ref("");
+const id_coordinatore = ref("");
 let genere_selezionato = 0;
 let grado_selezionato = 0;
-const aggiorna = ref("");
+
+
+if(route.query.idDaModificare == null){
+  modifica = false;
+}else{
+  modifica = true;
+  utente = dipendentiStore.getDipendenteById(route.query.idDaModificare*1 as any) as Utente;
+}
 
 function selezionaGenere(n: number){
   genere_selezionato = n;

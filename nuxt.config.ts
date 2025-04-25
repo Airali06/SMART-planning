@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
+  plugins: ["~/plugins/vcalendar.ts"],
   modules: ["@pinia/nuxt", "@nuxt-alt/proxy"],
   proxy: {
     "/api": {

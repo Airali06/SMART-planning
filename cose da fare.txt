@@ -8,3 +8,4 @@ cose da fare
 -modifica utente
 -aggiungere tasto aggiorna in tutte le pagine
 -documentazione
+-inserimento parcheggio in mappa coordinatore

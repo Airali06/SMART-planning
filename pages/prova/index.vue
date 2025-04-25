@@ -2,6 +2,7 @@
 import { usePrenotazioni } from '~/store/prenotazioni';
 import  { useAuth } from '../../store/auth';
 const prenotazioniStore = usePrenotazioni();
+
 </script>
 
 <template>
@@ -16,6 +17,6 @@ const prenotazioniStore = usePrenotazioni();
         tipo="Parcheggio" 
         :add = true></OptionPostazione>
         <PrenotazioneAdmin :prenotazione="prenotazioniStore.prenotazioni[0]"></PrenotazioneAdmin>
-
+        <CalendarioElement></CalendarioElement>
     </div>
 </template>

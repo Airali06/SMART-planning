@@ -68,6 +68,33 @@ export const useDipendenti = defineStore("dipendenti-store", {
         console.log("errore" + e);
       }
     },
+
+    async insertUtente(utente: Utente, password: string) {
+      const authStore = useAuth();
+      try {
+        const response = Array<Prenotazione>(
+          await $fetch(authStore.address + "insertUtente.php", {
+            //composizione dell messaggio di request
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json", //specifica tipologia di dato inviata
+            },
+            body: JSON.stringify({
+              nome: utente.nome,
+              cognome: utente.cognome,
+              username: utente.username,
+              livello: utente.livello,
+              password: password,
+              id_coordinatore: utente.id_coordinatore,
+            }),
+          })
+        ) as any;
+        return response[0];
+      } catch (e) {
+        console.log("errore" + e);
+      }
+    },
+
     getDipendenteById(id: number) {
       const dipendente = this.dipendenti.find((obj) => obj.id_utente == id);
       console.log(dipendente);
