@@ -5,10 +5,11 @@ const prenotazioniStore = usePrenotazioni();
 </script>
 
 <template>
-  <div style="margin-left: 500px">
-    <DipendenteElement></DipendenteElement>
+  <div style="width: fit-content; justify-self: center;">
+    <!-- <DipendenteElement></DipendenteElement>
     <CalendarioProva></CalendarioProva>
     <CaricamentoElement></CaricamentoElement>
+    
     <CaricamentoPopup></CaricamentoPopup>
     <OptionPostazione tipo="Parcheggio" :add="true"></OptionPostazione>
     <PrenotazioneAdmin
@@ -17,7 +18,9 @@ const prenotazioniStore = usePrenotazioni();
     <CalendarioElement
       :occupati="['2025-04-28', '2025-04-30']"
       :prenotati="['2025-05-01', '2025-05-03']"
-    >
-    </CalendarioElement>
+    > </CalendarioElement>
+   -->
+    <Captcha></Captcha>
+
   </div>
 </template>

@@ -5,15 +5,25 @@ const router = useRouter();
 console.log("prova login "+ authStore.utente.id_utente);
 const id_utente = ref(); // 0 come id utente considerato come utente vuoto
 const password = ref('');
+const aggiorna = ref("");
+let captcha = false;
 
-if(authStore.utente.id_utente != 0){
-  router.push({ name: "home" });
+if(authStore.utente.id_utente != 0 && authStore.utente.id_utente != undefined){
+  console.log(authStore.utente.id_utente
+
+  );
+  captcha = true;
 }
 
 async function login(){
     id_utente.value = id_utente.value; //rimozione eventuali spazi
     await authStore.login(id_utente.value,password.value);
-    
+    captcha = true;
+    aggiorna.value += " ";
+}
+
+async function goHome(){
+  router.push({ name: "home" });
 }
 
 
@@ -23,7 +33,7 @@ async function login(){
 
 
 <template> 
-
+  <input type = "text" v-model = "aggiorna" style = "display:none">
 
   <head>
       <!-- Caricamento del font e dei CSS -->
@@ -32,6 +42,15 @@ async function login(){
       <link href="https://fonts.googleapis.com/css2?family=Sulphur+Point:wght@300;400;700&display=swap" rel="stylesheet">
       
     </head>
+
+    <div v-if = "captcha == true" style = "position: absolute; z-index: 200; width: 99%; top: 240px;">
+      <div style = "justify-self: center; width: fit-content; transform: scale(1.3);">
+        <Captcha @notifica = "goHome()" style = "justify-self: center;">
+        </Captcha>
+    </div>
+      
+    </div>
+
 
 
     <div class="login">

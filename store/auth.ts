@@ -99,7 +99,7 @@ export const useAuth = defineStore("auth-store", {
       console.log(this.sessione.controlCode);
 
       const router = useRouter();
-      router.push({ name: "home" });
+      //router.push({ name: "home" });
     },
 
     async controllaSessione() {
