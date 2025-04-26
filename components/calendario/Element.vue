@@ -1,8 +1,4 @@
-<template>
-  <VCalendar is-expanded :attributes="attributes" title-position="center" />
-</template>
-
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 
 const props = defineProps({
@@ -14,9 +10,36 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  evidenzia: "" as string,
 });
 
+import { defineEmits } from "vue";
+const emit = defineEmits(["notifica"]);
+const notifica = (data) => {
+  emit("notifica", data);
+};
+
 const attributes = ref([]);
+
+// Attributo per i giorni prenotati (blu)
+if (props.prenotati.length) {
+  attributes.value.push({
+    key: "prenotati",
+    dates: props.prenotati.map((date) => new Date(date)),
+    content: {
+      style: {
+        backgroundColor: "#00467c",
+        color: "white",
+        borderRadius: "30%",
+        padding: "0.5em",
+        textAlign: "center",
+      },
+    },
+    popover: {
+      label: "Prenotato",
+    },
+  });
+}
 
 // Attributo per i giorni occupati (rosso)
 if (props.occupati.length) {
@@ -38,23 +61,45 @@ if (props.occupati.length) {
   });
 }
 
-// Attributo per i giorni prenotati (blu)
-if (props.prenotati.length) {
+if (props.evidenzia) {
   attributes.value.push({
-    key: "prenotati",
-    dates: props.prenotati.map((date) => new Date(date)),
+    key: "occupati",
+    dates: new Date(props.evidenzia),
     content: {
       style: {
-        backgroundColor: "#3b82f6",
-        color: "white",
-        borderRadius: "50%",
+        backgroundColor: "#b5daff",
+        color: "#00467c",
+        borderRadius: "30%",
         padding: "0.5em",
         textAlign: "center",
       },
     },
     popover: {
-      label: "Prenotato",
+      label: "Occupato",
     },
   });
 }
+
+function inviaData(data: Date) {
+  const year = data.date.getFullYear();
+  const month = String(data.date.getMonth() + 1).padStart(2, "0");
+  const day = String(data.date.getDate()).padStart(2, "0");
+  let data_formattata = year + "-" + month + "-" + day;
+  console.log(data_formattata);
+  notifica(data_formattata);
+}
 </script>
+
+<template>
+  <VCalendar
+    expande
+    :attributes="attributes"
+    borderless
+    title-position="center"
+    @dayclick="inviaData"
+    style="display: block"
+    color="#00467c"
+  />
+</template>
+
+<style scoped></style>

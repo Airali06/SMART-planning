@@ -3,11 +3,9 @@ const router = useRouter();
 import { useAuth } from "../../store/auth";
 const authStore = useAuth();
 
-
-if (await authStore.utente.livello == 3) {
-    router.push({ name: "admin" });
+if ((await authStore.utente.livello) == 3) {
+  router.push({ name: "admin" });
 }
-
 
 import { usePrenotazioni } from "../../store/prenotazioni";
 import { usePostazioni } from "../../store/postazioni";
@@ -16,47 +14,46 @@ await prenotazioniStore.getPrenotazioni();
 const postazioniStore = usePostazioni();
 await postazioniStore.getPostazioni();
 await postazioniStore.getCategorie();
-console.log(prenotazioniStore.prenotazioni.length)
+console.log(prenotazioniStore.prenotazioni.length);
 
 await nextTick();
 
 const today = new Date();
-const yy = String(today.getFullYear()); 
-const mm = String(today.getMonth() + 1).padStart(2, '0');
-const dd = String(today.getDate()).padStart(2, '0');
-const formattedDate = yy+"-"+mm+"-"+dd;
+const yy = String(today.getFullYear());
+const mm = String(today.getMonth() + 1).padStart(2, "0");
+const dd = String(today.getDate()).padStart(2, "0");
+const formattedDate = yy + "-" + mm + "-" + dd;
 const aggiorna = ref("");
 
-
 let in_scadenza_oggi = await prenotazioniStore.filtraData(formattedDate);
-console.log("in scadenza oggi ",in_scadenza_oggi);
+console.log("in scadenza oggi ", in_scadenza_oggi);
 
-
-async function ricarica(){
+async function ricarica() {
   //filtrato.splice(0,filtrato.length);
   in_scadenza_oggi = await prenotazioniStore.filtraData(formattedDate);
   aggiorna.value += " ";
 }
-
 </script>
 
 <template>
+  <div
+    style="
+      position: relative;
+      margin-left: 50px;
+      width: 1250px;
+      justify-self: center;
+    "
+  >
+    <head>
+      <!-- Caricamento del font e dei CSS -->
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Sulphur+Point:wght@300;400;700&display=swap"
+        rel="stylesheet"
+      />
+    </head>
 
-  <div style = "margin-left: 300px; position: relative;">
-
-
-  <head>
-    <!-- Caricamento del font e dei CSS -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Sulphur+Point:wght@300;400;700&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-
-
- 
     <div class="home-1">
       <div
         class="z-planning"
@@ -68,88 +65,116 @@ async function ricarica(){
       <div class="prenota">Prenota</div>
 
       <div class="frame-1">
-
-          <div class="zoom">
-            <OptionPostazione
-              :add="true"
-              tipo="ScrivaniaStandard"
-              :style="{ transform: authStore.utente.livello == 2 ? 'scale(0.76)' : 'scale(1)' }"
-              @click="
-                router.push({ name: 'nuova_prenotazione', query: { option: 'A1', modifica : 0} })
-              "
-            ></OptionPostazione>
-          </div>
-
-          <div class="zoom">
-            <OptionPostazione
-              :add="true"
-              tipo="ScrivaniaMonitor"
-              :style="{ transform: authStore.utente.livello == 2 ? 'scale(0.76)' : 'scale(1)' }"
-              @click="
-                router.push({ name: 'nuova_prenotazione', query: { option: 'A2', modifica : 0} })"
-            ></OptionPostazione>
-          </div>
-
-          <div class="zoom">
-            <OptionPostazione
-              :add="true"
-              tipo="SalaRiunioni"
-              :style="{ transform: authStore.utente.livello == 2 ? 'scale(0.76)' : 'scale(1)' }"
-             
-              @click="
-                router.push({ name: 'nuova_prenotazione', query: { option: 'B', modifica : 0} })"
-            ></OptionPostazione>
-          </div>
-
-          <div class="zoom"
-            v-if = "authStore.utente.livello == 2">
-            <OptionPostazione 
-            v-if = "authStore.utente.livello == 2"
-            tipo="Parcheggio" 
-            :style="{ transform: authStore.utente.livello == 2 ? 'scale(0.76)' : 'scale(1)' }"
-            :add = "true"
+        <div class="zoom">
+          <OptionPostazione
+            :add="true"
+            tipo="ScrivaniaStandard"
+            :style="{
+              transform:
+                authStore.utente.livello == 2 ? 'scale(0.76)' : 'scale(1)',
+            }"
             @click="
-                router.push({ name: 'nuova_prenotazione', query: { option: 'C', modifica : 0} })"
-            
+              router.push({
+                name: 'nuova_prenotazione',
+                query: { option: 'A1', modifica: 0 },
+              })
+            "
+          ></OptionPostazione>
+        </div>
 
-           
-            ></OptionPostazione>
+        <div class="zoom">
+          <OptionPostazione
+            :add="true"
+            tipo="ScrivaniaMonitor"
+            :style="{
+              transform:
+                authStore.utente.livello == 2 ? 'scale(0.76)' : 'scale(1)',
+            }"
+            @click="
+              router.push({
+                name: 'nuova_prenotazione',
+                query: { option: 'A2', modifica: 0 },
+              })
+            "
+          ></OptionPostazione>
+        </div>
+
+        <div class="zoom">
+          <OptionPostazione
+            :add="true"
+            tipo="SalaRiunioni"
+            :style="{
+              transform:
+                authStore.utente.livello == 2 ? 'scale(0.76)' : 'scale(1)',
+            }"
+            @click="
+              router.push({
+                name: 'nuova_prenotazione',
+                query: { option: 'B', modifica: 0 },
+              })
+            "
+          ></OptionPostazione>
+        </div>
+
+        <div class="zoom" v-if="authStore.utente.livello == 2">
+          <OptionPostazione
+            v-if="authStore.utente.livello == 2"
+            tipo="Parcheggio"
+            :style="{
+              transform:
+                authStore.utente.livello == 2 ? 'scale(0.76)' : 'scale(1)',
+            }"
+            :add="true"
+            @click="
+              router.push({
+                name: 'nuova_prenotazione',
+                query: { option: 'C', modifica: 0 },
+              })
+            "
+          ></OptionPostazione>
         </div>
       </div>
     </div>
 
     <div class="in-scadenza-oggi">In scadenza oggi</div>
     <div class="riepilogo">
-
-      
       <div class="frame-2">
-        <div class = "scorrimento">
+        <div class="scorrimento">
           <PrenotazioneElement
-          v-for="prenotazione in in_scadenza_oggi"
-          :prenotazione= prenotazione
-          :key = aggiorna
-          @notifica="ricarica()"
-          
-          style="margin-top: 10px;"
-          > </PrenotazioneElement>
+            v-for="prenotazione in in_scadenza_oggi"
+            :prenotazione="prenotazione"
+            :key="aggiorna"
+            @notifica="ricarica()"
+            style="margin-top: 10px"
+          >
+          </PrenotazioneElement>
         </div>
-
       </div>
 
-      <div class="visualizza-tutte" @click="router.push({ name: 'account', query: { option: 1}})">visualizza tutte le prenotazioni</div>
+      <div
+        class="visualizza-tutte"
+        @click="router.push({ name: 'account', query: { option: 1 } })"
+      >
+        visualizza tutte le prenotazioni
+      </div>
     </div>
 
-    <div style = "position: absolute; left: 690px;  top: 385px; transform: scale(0.87);">
-      <CalendarioProva></CalendarioProva>
+    <div
+      style="
+        position: absolute;
+        left: 690px;
+        top: 140px;
+        transform: scale(0.87);
+      "
+    >
+      <CalendarioPrenotazioni></CalendarioPrenotazioni>
     </div>
     <!--<div class="frame-4"></div>-->
-  
-    
-<div @click = "router.push({ name: 'prova'})" style = "color:lightblue">prova</div>
 
-</div>
-
-
+    <div @click="router.push({ name: 'prova' })" style="color: lightblue">
+      prova
+    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -178,47 +203,47 @@ h5,
   -webkit-font-smoothing: antialiased;
 }
 
-.scorrimento{
-  overflow-y: auto; 
+.scorrimento {
+  overflow-y: auto;
   height: 80%;
   width: 515px;
 }
 
-.scorrimento::-webkit-scrollbar{
-   width: 15px;
-   border: 4px;
-  border-color: #CCE1F1;
+.scorrimento::-webkit-scrollbar {
+  width: 15px;
+  border: 4px;
+  border-color: #cce1f1;
 }
 
 .scorrimento::-webkit-scrollbar-track {
-  background: #CCE1F1; /* Colore di sfondo */
+  background: #cce1f1; /* Colore di sfondo */
   border-radius: 10px;
   border: 4px;
 }
 
 .scorrimento::-webkit-scrollbar-thumb {
-  background:#00345c;
+  background: #00345c;
   border-radius: 10px;
   border: 4px;
   border-color: #edccf1;
 }
 
 .scorrimento::-webkit-scrollbar-thumb:hover {
-  background:#001c31;
+  background: #001c31;
 }
 
 .overlay {
-    position: absolute;
+  position: absolute;
 
-    top: 0;
-    left: 300px;
-    width: 100vw;
-    height: 100vh; /* Azzurro semitrasparente */
-    z-index: 1000; /* Assicura che sia sopra gli altri elementi */
-    display: block;
-    justify-content: center;
-    justify-items: center;
-    align-items: center;
+  top: 0;
+  left: 300px;
+  width: 100vw;
+  height: 100vh; /* Azzurro semitrasparente */
+  z-index: 1000; /* Assicura che sia sopra gli altri elementi */
+  display: block;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
 }
 
 menu,
@@ -320,11 +345,9 @@ ul {
 }
 
 .frame-2 {
-
-  
   background: #ffffff;
   border-radius: 0.625rem;
-  
+
   width: 520px;
   height: 23.5rem;
   position: absolute;
@@ -336,8 +359,6 @@ ul {
   display: flex;
   justify-content: center;
   flex-direction: column;
-
-
 }
 
 .visualizza-tutte {
@@ -351,7 +372,7 @@ ul {
   text-align: center;
   color: #ffffff;
   padding: 7px;
-  cursor:pointer;
+  cursor: pointer;
   transition: transform 0.3s ease-in-out;
 }
 

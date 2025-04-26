@@ -230,5 +230,15 @@ export const usePrenotazioni = defineStore("prenotazioni-store", {
 
       await this.getPrenotazioni();
     },
+
+    getDatePrenotate() {
+      let date = [] as any;
+      this.prenotazioni.forEach((prenotazione) => {
+        if (prenotazione.data) {
+          date.push(prenotazione.data);
+        }
+      });
+      return date;
+    },
   },
 });

@@ -206,5 +206,41 @@ export const usePostazioni = defineStore("postazioni-store", {
       this.postazioni = [];
       await this.getPostazioni();
     },
+
+    async getDateOccupate(id_postazione: number) {
+      let date = [] as any;
+      let dateTemp = [] as any;
+      const authStore = useAuth();
+
+      if ((await authStore.controllaSessione()) == false) return;
+
+      try {
+        const response = Array<Postazione>(
+          await $fetch(authStore.address + "getDateOccupate.php", {
+            //composizione dell messaggio di request
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json", //specifica tipologia di dato inviata
+            },
+            body: JSON.stringify({
+              id_postazione: id_postazione * 1,
+            }),
+          })
+        ) as any;
+        //console.log(response[0]);
+
+        dateTemp = [...response[0]] as any;
+        console.log(dateTemp);
+      } catch (e) {
+        console.log("errore" + e);
+      }
+
+      dateTemp.forEach((data) => {
+        date.push(data.data);
+      });
+      console.log(date);
+
+      return date;
+    },
   },
 });

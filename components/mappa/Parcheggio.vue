@@ -1,200 +1,240 @@
-<script setup lang = "ts">
+<script setup lang="ts">
 import type { Postazione } from "../../store/models/Postazione";
 import { usePrenotazioni } from "../../store/prenotazioni";
 import { usePostazioni } from "../../store/postazioni";
 const mostra = ref(true);
 const selezionato = ref(0);
-const aggiorna =  ref("");
+const aggiorna = ref("");
 const prenotazioniStore = usePrenotazioni();
 await prenotazioniStore.getPrenotazioni();
 const postazioniStore = usePostazioni();
 await postazioniStore.getPostazioni();
 await postazioniStore.getCategorie();
 
+import { defineEmits } from "vue";
+const emit = defineEmits(["notifica"]);
+const cambio = (id) => {
+  emit("notifica", id);
+};
 
-import { onMounted, nextTick } from 'vue';
+import { onMounted, nextTick } from "vue";
 
 onMounted(() => {
   if (typeof window !== "undefined") {
-        // Puoi usare localStorage solo qui
+    // Puoi usare localStorage solo qui
 
-        const scelta = localStorage.getItem("scelta");
-        if (scelta) {
-          const parsed = JSON.parse(scelta);
-          selezionato.value = parsed;
-          if(selezionato.value*1 < 55){
-            selezionato.value = 55;
-          }
-          seleziona(selezionato.value);
-
-      } else {
-        console.log("localStorage non è disponibile nel server");
+    const scelta = localStorage.getItem("scelta");
+    if (scelta) {
+      const parsed = JSON.parse(scelta);
+      selezionato.value = parsed;
+      if (selezionato.value * 1 < 55) {
+        selezionato.value = 55;
       }
+      seleziona(selezionato.value);
+    } else {
+      console.log("localStorage non è disponibile nel server");
+    }
   }
-
 
   nextTick(() => {
     for (const element of postazioniStore.occupate) {
-    console.log("element"+element);
-    const img = document.getElementById((element).toString()+"occupato");
-    mostra.value = true;
-    if (img) {
-      console.log("Elemento trovato:", img);
-      img.style.display = "block";
-      
-    } else {
-      console.log("Elemento non trovato per id:", element);
+      console.log("element" + element);
+      const img = document.getElementById(element.toString() + "occupato");
+      mostra.value = true;
+      if (img) {
+        console.log("Elemento trovato:", img);
+        img.style.display = "block";
+      } else {
+        console.log("Elemento non trovato per id:", element);
+      }
     }
-   
-  }
-  selezionaDisabilitate();
+    selezionaDisabilitate();
   });
 });
 
-
-
-function seleziona(id: number){
-  
- 
-
+function seleziona(id: number) {
   selezionato.value = id;
-
 
   //da rivedere
   const postazione = postazioniStore.getPostazioneById(id) as Postazione;
   const categoria = postazioniStore.getCategoria(postazione as Postazione);
-  console.log("categoria",categoria);
+  console.log("categoria", categoria);
   //selezionaCategoria(categoria.id_categoria);
 
-
   if (typeof window !== "undefined") {
-        localStorage.setItem("scelta", JSON.stringify(selezionato.value));
-      } else {
-        console.log("localStorage non è disponibile nel server");
-      }
+    localStorage.setItem("scelta", JSON.stringify(selezionato.value));
+  } else {
+    console.log("localStorage non è disponibile nel server");
+  }
 
   console.log(id);
 
-  const cella = document.getElementById(id +"")
-  const contenitore = document.getElementById("contenitore");  
+  const cella = document.getElementById(id + "");
+  const contenitore = document.getElementById("contenitore");
   const Popup = document.getElementById("popup") as any;
-  
+
   mostra.value = true;
-  if(cella && Popup && contenitore){
+  if (cella && Popup && contenitore) {
+    nextTick(() => {
+      mostra.value = false;
+      const sottrai = contenitore.getBoundingClientRect();
+      const rect = cella.getBoundingClientRect();
+      Popup.style.position = "absolute";
+      Popup.style.top =
+        rect.top + window.scrollY - 130 - sottrai.height / 2 + "px";
+      Popup.style.left = rect.left + window.scrollX - 20 - sottrai.width + "px";
+      Popup.style.margin = "0"; // Rimuove tutti i margini
+      Popup.style.padding = "0";
+      Popup.style.boxSizing = "border-box";
+      aggiorna.value += " ";
 
-      nextTick(() => {
-        mostra.value = false;
-        const sottrai = contenitore.getBoundingClientRect();
-        const rect = cella.getBoundingClientRect();
-        Popup.style.position = "absolute";
-        Popup.style.top = (rect.top + window.scrollY -130) - sottrai.height/2 + "px";
-        Popup.style.left = (rect.left + window.scrollX-20) - sottrai.width  + "px";
-        Popup.style.margin = "0"; // Rimuove tutti i margini
-        Popup.style.padding = "0";
-        Popup.style.boxSizing = "border-box"; 
-        aggiorna.value+=" ";
-        
-        mostra.value = true;
-
-      });
-
-    }
-
-    mostra.value = true;
+      mostra.value = true;
+    });
   }
 
+  mostra.value = true;
+  cambio(id);
+}
 
-  
-  function selezionaDisabilitate(){//passa l'id della categoria
+function selezionaDisabilitate() {
+  //passa l'id della categoria
   let cella;
 
- 
-      for (const element of postazioniStore.postazioni) {
-            //console.log("element"+element.id_categoria);
-            cella = document.getElementById(element.id_postazione + "");
-            
+  for (const element of postazioniStore.postazioni) {
+    //console.log("element"+element.id_categoria);
+    cella = document.getElementById(element.id_postazione + "");
 
-            if (element.stato == 1) {
-              //console.log(element.stato);
-              if(cella)
-              cella.style.backgroundColor = "rgba(255, 255, 0, 0.5)";
-            } else {
-              console.log("gh'è no");
-            }
-      }
-  
+    if (element.stato == 1) {
+      //console.log(element.stato);
+      if (cella) cella.style.backgroundColor = "rgba(255, 255, 0, 0.5)";
+    } else {
+      console.log("gh'è no");
+    }
   }
+}
 </script>
 
-
-
-
 <template>
-
-    
-
-<div class="rectangle-147" style = "position: relative" id = "contenitore">
-
-
-
-
-    <PopupElement 
-        :id_postazione="selezionato"
-        :key = "0"
-        style = "z-index:100; position:fixed; top:0px; left:0px; scale: 2;" id = "popup"
-        v-if = "mostra == true"
-        >
-        <div class="x" @click="mostra = false">
-            <img src="../../img/remove.png" height="15px"/>
-        </div>
-
+  <div class="rectangle-147" style="position: relative" id="contenitore">
+    <PopupElement
+      :id_postazione="selezionato"
+      :key="0"
+      style="z-index: 100; position: fixed; top: 0px; left: 0px; scale: 2"
+      id="popup"
+      v-if="mostra == true"
+    >
+      <div class="x" @click="mostra = false">
+        <img src="../../img/remove.png" height="15px" />
+      </div>
     </PopupElement>
 
-
-    <table >
-        <tr>
-          <td class = "psinistra" id ="55" @click = "seleziona(55)"> <img src="../../img/car.png" style = "display: none" class = "sximg" id = "55occupato"/> </td>
-          <td rowspan = "5" style = "width: 145px" ></td>
-          <td class = "pdestra" id ="56" @click = "seleziona(56)"><img src="../../img/car.png" style = "display: none" class = "dximg" id = "56occupato"/>   </td>
-        </tr>
-        <tr>
-          
-          <td class = "psinistra" id ="57" @click = "seleziona(57)">  <img src="../../img/car.png" style = "display: none" class = "sximg" id = "57occupato"/></td> 
-          <td class = "pdestra" id ="58" @click = "seleziona(58)"><img src="../../img/car.png" style = "display: none" class = "dximg" id = "58occupato"/></td>
-        </tr>
-        <tr>
-          
-          <td class = "psinistra" id ="59" @click = "seleziona(59)"><img src="../../img/car.png" style = "display: none" class = "sximg" id = "59occupato"/></td>
-          <td class = "pdestra" id ="60" @click = "seleziona(60)"><img src="../../img/car.png" style = "display: none" class = "dximg" id = "60occupato"/></td>
-        </tr>
-        <tr>
-          
-          <td class = "psinistra" id ="61" @click = "seleziona(61)"><img src="../../img/car.png" style = "display: none" class = "sximg" id = "61occupato"/></td>
-          <td class = "pdestra" id ="62" @click = "seleziona(62)"><img src="../../img/car.png" style = "display: none" class = "dximg" id = "62occupato"/></td>
-        </tr>
-        <tr>
-          
-          <td class = "psinistra" id ="63" @click = "seleziona(63)"><img src="../../img/car.png" style = "display: none" class = "sximg" id = "63occupato"/></td>
-          <td class = "pdestra" id ="64" @click = "seleziona(64)"><img src="../../img/car.png" style = "display: none" class = "dximg" id = "64occupato"/></td>
-        </tr>
-      </table>
-</div>
-
+    <table>
+      <tr>
+        <td class="psinistra" id="55" @click="seleziona(55)">
+          <img
+            src="../../img/car.png"
+            style="display: none"
+            class="sximg"
+            id="55occupato"
+          />
+        </td>
+        <td rowspan="5" style="width: 145px"></td>
+        <td class="pdestra" id="56" @click="seleziona(56)">
+          <img
+            src="../../img/car.png"
+            style="display: none"
+            class="dximg"
+            id="56occupato"
+          />
+        </td>
+      </tr>
+      <tr>
+        <td class="psinistra" id="57" @click="seleziona(57)">
+          <img
+            src="../../img/car.png"
+            style="display: none"
+            class="sximg"
+            id="57occupato"
+          />
+        </td>
+        <td class="pdestra" id="58" @click="seleziona(58)">
+          <img
+            src="../../img/car.png"
+            style="display: none"
+            class="dximg"
+            id="58occupato"
+          />
+        </td>
+      </tr>
+      <tr>
+        <td class="psinistra" id="59" @click="seleziona(59)">
+          <img
+            src="../../img/car.png"
+            style="display: none"
+            class="sximg"
+            id="59occupato"
+          />
+        </td>
+        <td class="pdestra" id="60" @click="seleziona(60)">
+          <img
+            src="../../img/car.png"
+            style="display: none"
+            class="dximg"
+            id="60occupato"
+          />
+        </td>
+      </tr>
+      <tr>
+        <td class="psinistra" id="61" @click="seleziona(61)">
+          <img
+            src="../../img/car.png"
+            style="display: none"
+            class="sximg"
+            id="61occupato"
+          />
+        </td>
+        <td class="pdestra" id="62" @click="seleziona(62)">
+          <img
+            src="../../img/car.png"
+            style="display: none"
+            class="dximg"
+            id="62occupato"
+          />
+        </td>
+      </tr>
+      <tr>
+        <td class="psinistra" id="63" @click="seleziona(63)">
+          <img
+            src="../../img/car.png"
+            style="display: none"
+            class="sximg"
+            id="63occupato"
+          />
+        </td>
+        <td class="pdestra" id="64" @click="seleziona(64)">
+          <img
+            src="../../img/car.png"
+            style="display: none"
+            class="dximg"
+            id="64occupato"
+          />
+        </td>
+      </tr>
+    </table>
+  </div>
 </template>
 
 <style scoped>
-
-
 .x {
   padding: 3px;
-  background:rgba(0, 47, 84, 1);
+  background: rgba(0, 47, 84, 1);
 
   border-radius: 10px;
   align-items: center;
   position: absolute;
   top: 5px;
   height: 27px;
-  width:  27px;
+  width: 27px;
   scale: 0.4;
   display: flex;
   justify-content: center;
@@ -210,44 +250,45 @@ function seleziona(id: number){
   left: 237px;
   top: 284px;
   padding: 20px;
-  
 }
 
-table{
+table {
   width: 100%;
   height: 100%;
   border-collapse: separate;
   border-spacing: 8px;
 }
 
-td{
+td {
   height: 70px;
   width: 120px;
-  position: relative; 
+  position: relative;
   align-items: center;
 }
 
-.pdestra{
+.pdestra {
   border: 3px solid;
   padding-right: 20px;
-  border-color: #002F54;
+  border-color: #002f54;
   border-radius: 0 15px 15px 0;
   border-left: 2px solid transparent;
-}.pdestra:hover{
+}
+.pdestra:hover {
   background-color: #e3f2ff;
 }
 
-.psinistra{
+.psinistra {
   border: 3px solid;
   padding-left: 20px;
-  border-color: #002F54;
+  border-color: #002f54;
   border-radius: 15px 0 0 15px;
   border-right: 2px solid transparent;
-}.psinistra:hover{
+}
+.psinistra:hover {
   background-color: #e3f2ff;
 }
 
-.sximg{
+.sximg {
   height: 80px;
   transform: rotate(90deg);
   position: absolute;
@@ -255,12 +296,11 @@ td{
   left: 25px;
 }
 
-.dximg{
+.dximg {
   height: 80px;
   transform: rotate(-90deg);
   position: absolute;
   top: -4px;
   right: 25px;
 }
-
 </style>

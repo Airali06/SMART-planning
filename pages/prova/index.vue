@@ -2,10 +2,11 @@
 import { usePrenotazioni } from "~/store/prenotazioni";
 import { useAuth } from "../../store/auth";
 const prenotazioniStore = usePrenotazioni();
+let date = prenotazioniStore.getDatePrenotate();
 </script>
 
 <template>
-  <div style="width: fit-content; justify-self: center;">
+  <div style="width: fit-content; justify-self: center">
     <!-- <DipendenteElement></DipendenteElement>
     <CalendarioProva></CalendarioProva>
     <CaricamentoElement></CaricamentoElement>
@@ -15,12 +16,9 @@ const prenotazioniStore = usePrenotazioni();
     <PrenotazioneAdmin
       :prenotazione="prenotazioniStore.prenotazioni[0]"
     ></PrenotazioneAdmin>
-    <CalendarioElement
-      :occupati="['2025-04-28', '2025-04-30']"
-      :prenotati="['2025-05-01', '2025-05-03']"
-    > </CalendarioElement>
-   -->
-    <Captcha></Captcha>
-
+    
+  
+    <Captcha></Captcha> -->
+    <CalendarioPrenotazioni> </CalendarioPrenotazioni>
   </div>
 </template>

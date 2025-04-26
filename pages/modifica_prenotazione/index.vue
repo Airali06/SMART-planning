@@ -1,4 +1,4 @@
-<script setup lang = "ts">
+<script setup lang="ts">
 import { usePrenotazioni } from "../../store/prenotazioni";
 const prenotazioniStore = usePrenotazioni();
 import { usePostazioni } from "../../store/postazioni";
@@ -7,333 +7,374 @@ const postazioniStore = usePostazioni();
 import { useAuth } from "../../store/auth";
 const authStore = useAuth();
 
-
 const route = useRoute();
 const router = useRouter();
 const categoria = ref("A1");
-console.log("PARAMETRI: ",route.query)
+console.log("PARAMETRI: ", route.query);
 categoria.value = route.query.option as any;
-const data = ref(''/*new Date().toISOString().split('T')[0]*/); // Ottieni la data odierna in formato YYYY-MM-DD
+const data = ref("" /*new Date().toISOString().split('T')[0]*/); // Ottieni la data odierna in formato YYYY-MM-DD
 const aggiorna = ref("");
 const selezionato = ref(-1);
 const caricamento = ref(false);
 const errore = ref("");
 const idDaModificare = ref();
+const update = ref("");
 let prenotazioneDaModificare = {} as Prenotazione;
 
-if(route.query.idDaModificare == null){
-    router.push({ name: 'home'});
-    //DA AGGIUNGERE
-    //controllare se la prenotazione con quell'id esiste effettivamente
-}else{
+let date_occupate = [];
+let date = prenotazioniStore.getDatePrenotate();
 
-     idDaModificare.value = route.query.idDaModificare*1 as number;
-     console.log(idDaModificare.value);
-    
-    prenotazioneDaModificare = prenotazioniStore.getPrenotazioneById(idDaModificare.value) as Prenotazione;
-    data.value = prenotazioneDaModificare.data+"";
-    aggiorna.value += " ";
-    postazioniStore.checkPostazioniOccupate(new Date(data.value));
+if (route.query.idDaModificare == null) {
+  router.push({ name: "home" });
+  //DA AGGIUNGERE
+  //controllare se la prenotazione con quell'id esiste effettivamente
+} else {
+  idDaModificare.value = (route.query.idDaModificare * 1) as number;
+  console.log(idDaModificare.value);
 
-    if (typeof window !== "undefined") {
-        localStorage.setItem("scelta", JSON.stringify(prenotazioneDaModificare.id_postazione));
-      } else {
-        console.log("localStorage non è disponibile nel server");
-      }
+  prenotazioneDaModificare = prenotazioniStore.getPrenotazioneById(
+    idDaModificare.value
+  ) as Prenotazione;
+  data.value = prenotazioneDaModificare.data + "";
+  aggiorna.value += " ";
+  postazioniStore.checkPostazioniOccupate(new Date(data.value));
 
-      selezionato.value = prenotazioneDaModificare.id_postazione;
+  if (typeof window !== "undefined") {
+    localStorage.setItem(
+      "scelta",
+      JSON.stringify(prenotazioneDaModificare.id_postazione)
+    );
+  } else {
+    console.log("localStorage non è disponibile nel server");
+  }
 
+  selezionato.value = prenotazioneDaModificare.id_postazione;
 }
 
 await nextTick();
 const mappa = ref(null);
 
-
-
-
 //------------------MODIFICA PRENOTAZIONE------------------------------
-async function modificaPrenotazione(){
-
-
+async function modificaPrenotazione() {
   if (typeof window !== "undefined") {
-        // Puoi usare localStorage solo qui
+    // Puoi usare localStorage solo qui
 
-        const scelta = localStorage.getItem("scelta");
-        if (scelta) {
-          const parsed = JSON.parse(scelta);
-          selezionato.value = parsed;
-          console.log(selezionato.value);
-        }
-      } else {
-        console.log("localStorage non è disponibile nel server");
-      }
-      
-      //array che contiene le prenotazioni fatte per quella data ad eccezione di quella in modifica
-      let tempFiltrateData = prenotazioniStore.filtraData(data.value);
-      let index = tempFiltrateData.findIndex(item => item.id_prenotazione == prenotazioneDaModificare.id_prenotazione as any);
-        if (index !== -1) {
-            tempFiltrateData.splice(index, 1);
-        }
+    const scelta = localStorage.getItem("scelta");
+    if (scelta) {
+      const parsed = JSON.parse(scelta);
+      selezionato.value = parsed;
+      console.log(selezionato.value);
+    }
+  } else {
+    console.log("localStorage non è disponibile nel server");
+  }
 
-      /*if(tempFiltrateData.length > 0){
+  //array che contiene le prenotazioni fatte per quella data ad eccezione di quella in modifica
+  let tempFiltrateData = prenotazioniStore.filtraData(data.value);
+  let index = tempFiltrateData.findIndex(
+    (item) =>
+      item.id_prenotazione == (prenotazioneDaModificare.id_prenotazione as any)
+  );
+  if (index !== -1) {
+    tempFiltrateData.splice(index, 1);
+  }
+
+  /*if(tempFiltrateData.length > 0){
           console.log("-----------TROPPE PRENOTAZIONI------------")
           errore.value += "- hai già una prenotazione per questa data\n";
         }*/
 
-      if(data.value == ''){
-          console.log("-----------NESSUNA DATA SELEZIONATA------------")
-          errore.value += "- nessuna data selezionata\n"
-        }
-        
-        if(postazioniStore.postazioni.find(n => n.id_postazione == selezionato.value)?.stato+"" == "1"){
-          console.log("-----------postazione non disponibile------------")
-          errore.value += "- postazione non disponibile";
-        }
+  if (data.value == "") {
+    console.log("-----------NESSUNA DATA SELEZIONATA------------");
+    errore.value += "- nessuna data selezionata\n";
+  }
 
+  if (
+    postazioniStore.postazioni.find((n) => n.id_postazione == selezionato.value)
+      ?.stato +
+      "" ==
+    "1"
+  ) {
+    console.log("-----------postazione non disponibile------------");
+    errore.value += "- postazione non disponibile";
+  }
 
-        
-        let tempOccupate = [...postazioniStore.occupate];
-        index = tempOccupate.findIndex(item => item.id_postazione == prenotazioneDaModificare.id_postazione as any);
-        if (index !== -1) {
-            tempFiltrateData.splice(index, 1);
-        }
+  let tempOccupate = [...postazioniStore.occupate];
+  index = tempOccupate.findIndex(
+    (item) =>
+      item.id_postazione == (prenotazioneDaModificare.id_postazione as any)
+  );
+  if (index !== -1) {
+    tempFiltrateData.splice(index, 1);
+  }
 
-      
-      console.log("OCCUPATE",postazioniStore.occupate, selezionato.value)
-        if(tempOccupate.some(n => n === selezionato.value+'') == true){
-          console.log("---------------E' OCCUPATA--------------------")
-          errore.value += "- hai selezionato una postazione occupata\n";
-        }
+  console.log("OCCUPATE", postazioniStore.occupate, selezionato.value);
+  if (tempOccupate.some((n) => n === selezionato.value + "") == true) {
+    console.log("---------------E' OCCUPATA--------------------");
+    errore.value += "- hai selezionato una postazione occupata\n";
+  }
 
-        if(errore.value.length > 0){
-          return;
-        }
+  if (errore.value.length > 0) {
+    return;
+  }
 
-        prenotazioneDaModificare.data = data.value as any;
-        prenotazioneDaModificare.id_postazione = selezionato.value+1;
+  prenotazioneDaModificare.data = data.value as any;
+  prenotazioneDaModificare.id_postazione = selezionato.value + 1;
 
-      if(selezionato.value == -1)
-      return;
+  if (selezionato.value == -1) return;
 
-      caricamento.value = true;
-      
-      aggiorna.value += " ";
-      await prenotazioniStore.modificaPrenotazione(prenotazioneDaModificare);
- 
+  caricamento.value = true;
+
+  aggiorna.value += " ";
+  await prenotazioniStore.modificaPrenotazione(prenotazioneDaModificare);
 }
 
-async function occupate(){
-  const selectedDate = new Date(data.value); 
+async function occupate(data: string) {
+  const selectedDate = new Date(data);
+  //console.log(data);
   await postazioniStore.checkPostazioniOccupate(selectedDate);
   aggiorna.value += " ";
 }
 
-
+async function dateOccupate(id_postazione: string) {
+  date_occupate = [];
+  date_occupate = await postazioniStore.getDateOccupate(id_postazione);
+  console.log("DATE OCCUPATE", id_postazione, date_occupate);
+  update.value += " ";
+}
 </script>
 
 <template>
-<input type = "text" v-model = "aggiorna" style = "display: none;">
+  <input type="text" v-model="aggiorna" style="display: none" />
+  <input type="text" v-model="update" style="display: none" />
 
-<div class = "overlay" v-if = "caricamento">
-      <CaricamentoPopup
-      :caricamento=caricamento
+  <div class="overlay" v-if="caricamento">
+    <CaricamentoPopup
+      :caricamento="caricamento"
       messaggio_caricamento="Modifica prenotazione in corso"
-      :key = aggiorna
-      style = "margin-top: 300px;"
-      >
-      </CaricamentoPopup>
-</div>
+      :key="aggiorna"
+      style="margin-top: 300px"
+    >
+    </CaricamentoPopup>
+  </div>
 
-<div style = "margin-left: 300px; position: relative;">
-<div>
-  
-</div>
+  <div style="margin-left: 300px; position: relative">
+    <div></div>
 
+    <head>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Sulphur+Point:wght@300;400;700&display=swap"
+        rel="stylesheet"
+      />
+    </head>
 
-<head>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Sulphur+Point:wght@300;400;700&display=swap" rel="stylesheet">
-</head>
-
-
-
-
-        
-
-
-  <div class="prenota-1">
-
-    
-    <MappaParcheggio
-        :key = aggiorna
+    <div class="prenota-1">
+      <MappaParcheggio
+        @cambio="dateOccupate"
+        :key="aggiorna"
         style="z-index: 100; position: absolute; top"
-        v-if = "categoria == 'C'"
+        v-if="categoria == 'C'"
+      >
+      </MappaParcheggio>
+
+      <div class="map_container">
+        <img
+          v-if="categoria != 'C'"
+          src="../../img/mappa1.png"
+          width="703px"
+          style="position: absolute; z-index: 0; top: 25px"
+        />
+
+        <MappaPostazioni
+          ref="mappa"
+          @cambio="dateOccupate"
+          :key="aggiorna"
+          :tipo="categoria"
+          style="z-index: 100"
+          v-if="categoria != 'C'"
         >
-        </MappaParcheggio>
-
-
-
-
-
-    <div class="map_container" >
-
-      <img v-if = "categoria != 'C'"  src = "../../img/mappa1.png" width="703px" style = "position : absolute; z-index: 0; top: 25px;">
-
-        <MappaPostazioni ref = "mappa"
-        :key = aggiorna
-        :tipo="categoria"
-        style="z-index: 100"
-        v-if = "categoria != 'C'" 
-        >
-
         </MappaPostazioni>
 
-
-
-         <span class = "effettua-prenotazione" 
-         style = "  position: absolute;
-                    top: -150px;">
-            Modifica<br>
-            prenotazione
+        <span
+          class="effettua-prenotazione"
+          style="position: absolute; top: -150px"
+        >
+          Modifica<br />
+          prenotazione
         </span>
 
-         <div class="seleziona"
-
-            style = "position: absolute;
-                    left: 5px;
-                    top: -37px;
-                    width: 249px;
-                    height: 25px">
-            seleziona postazione</div>
-
-        <div  class = "nmodifiche"
-                    style = "position: absolute;
-                    left: 455px;
-                    top: -45px;
-                    width: 249px;
-                    height: 25px">
-            n modifiche <span style = "font-size: 60px;">{{prenotazioneDaModificare.n_modifiche}}/2</span>
+        <div
+          class="seleziona"
+          style="
+            position: absolute;
+            left: 5px;
+            top: -37px;
+            width: 249px;
+            height: 25px;
+          "
+        >
+          seleziona postazione
         </div>
-    </div>
 
+        <div
+          class="nmodifiche"
+          style="
+            position: absolute;
+            left: 455px;
+            top: -45px;
+            width: 249px;
+            height: 25px;
+          "
+        >
+          n modifiche
+          <span style="font-size: 60px"
+            >{{ prenotazioneDaModificare.n_modifiche }}/2</span
+          >
+        </div>
+      </div>
 
-
-
-    <div class="rectangle-6" 
-    :style="{ width: authStore.utente.livello == 2 ? '465px' : '350px', transform: authStore.utente.livello == 2 ? 'scale(0.9)' : 'scale(1)'}"
-    >
-
-      <div class="seleziona" 
-        style = "
-        position: absolute;
-        left: 5px;
-        top: -35px;
-        height: 25px">seleziona tipologia</div>
-    
+      <div
+        class="rectangle-6"
+        :style="{
+          width: authStore.utente.livello == 2 ? '465px' : '350px',
+          transform: authStore.utente.livello == 2 ? 'scale(0.9)' : 'scale(1)',
+        }"
+      >
+        <div
+          class="seleziona"
+          style="position: absolute; left: 5px; top: -35px; height: 25px"
+        >
+          seleziona tipologia
+        </div>
 
         <OptionPostazione
           :add="false"
           tipo="ScrivaniaStandard"
-          style = "scale: 0.77; height: 115px;"
-          @click = "categoria = 'A1'; aggiorna += ' '"
+          style="scale: 0.77; height: 115px"
+          @click="
+            categoria = 'A1';
+            aggiorna += ' ';
+          "
           :style="{ transform: categoria == 'A1' ? 'scale(1.26)' : 'scale(1)' }"
         ></OptionPostazione>
 
         <OptionPostazione
           :add="false"
           tipo="ScrivaniaMonitor"
-          style = "scale: 0.77; height: 115px;"
-          @click = "categoria = 'A2'; aggiorna += ' '"
+          style="scale: 0.77; height: 115px"
+          @click="
+            categoria = 'A2';
+            aggiorna += ' ';
+          "
           :style="{ transform: categoria == 'A2' ? 'scale(1.26)' : 'scale(1)' }"
-          
         ></OptionPostazione>
 
         <OptionPostazione
           :add="false"
           tipo="SalaRiunioni"
-          style = "scale: 0.77; height: 115px;"
-          @click = "categoria = 'B'; aggiorna += ' '"
-           :style="{ transform: categoria == 'B' ? 'scale(1.26)' : 'scale(1)' }"
+          style="scale: 0.77; height: 115px"
+          @click="
+            categoria = 'B';
+            aggiorna += ' ';
+          "
+          :style="{ transform: categoria == 'B' ? 'scale(1.26)' : 'scale(1)' }"
         ></OptionPostazione>
 
         <OptionPostazione
-        v-if="authStore.utente.livello == 2"
+          v-if="authStore.utente.livello == 2"
           :add="false"
           tipo="Parcheggio"
-          style = "scale: 0.77; height: 115px;"
-          @click = "categoria = 'C'; aggiorna += ' '"
-           :style="{ transform: categoria == 'C' ? 'scale(1.26)' : 'scale(1)' }"
+          style="scale: 0.77; height: 115px"
+          @click="
+            categoria = 'C';
+            aggiorna += ' ';
+          "
+          :style="{ transform: categoria == 'C' ? 'scale(1.26)' : 'scale(1)' }"
         ></OptionPostazione>
-      
+      </div>
+
+      <div
+        class="seleziona"
+        style="
+          position: absolute;
+          left: 890px;
+          top: 430px;
+          width: 249px;
+          height: 25px;
+        "
+      >
+        seleziona data
+
+        <div class="rectangle-calendario">
+          <div style="margin-left: 35px; width: fit-content">
+            <CalendarioElement
+              @notifica="occupate"
+              :prenotati="date"
+              :occupati="date_occupate"
+              :evidenzia="prenotazioneDaModificare.data"
+              :key="update"
+            ></CalendarioElement>
+          </div>
+        </div>
+      </div>
+
+      <button
+        class="conferma"
+        @click="modificaPrenotazione()"
+        v-if="prenotazioneDaModificare.n_modifiche < 2"
+      >
+        conferma modifiche
+      </button>
+      <button class="conferma" style="opacity: 0.7" v-else>
+        limite di modifiche raggiunto
+      </button>
     </div>
-   
-
-
-
-
-
-    <div class="seleziona"
-    style = "  position: absolute;
-    left: 890px;
-    top: 430px;
-    width: 249px;
-    height: 25px;">seleziona data
-
-    <input type = "date" v-model="data" 
-    class = "rectangle"
-    style = "margin-top: 40px; font-size: 25px; font-weight: 700; height: 50px; width: 340px;" 
-    @change="occupate()">
-    </div>
-
-    
-
-
-    
-
-
-    
-
-    <button class="conferma" @click="modificaPrenotazione()" v-if=" prenotazioneDaModificare.n_modifiche < 2">conferma modifiche</button>
-    <button class="conferma" style = "opacity: 0.7;" v-else>limite di modifiche raggiunto</button>
-
- 
- 
-
-    
-  
   </div>
 
-  
+  <div
+    v-if="errore != ''"
+    class="overlay"
+    style="position: absolute; left: 0px"
+  >
+    <div
+      v-if="errore != ''"
+      class="errore"
+      style="position: absolute; left: 710px; top: 300px"
+    >
+      <div style="display: flex; flex-direction: row">
+        <span style="font-size: 25px; font-weight: 700; margin-top: 5px"
+          >Prenotazione non valida!</span
+        >
+        <img
+          src="../../img/warning.png"
+          style="width: 35px; height: 35px; margin-left: 10px"
+        />
+      </div>
 
+      <div
+        style="
+          font-size: 16px;
+          width: 300px;
+          padding-left: 20px;
+          padding-right: 20px;
+        "
+      >
+        {{ errore }}
+      </div>
 
-</div>
-
-
-
-<div v-if = "errore != '' "class = "overlay" style = "position: absolute; left: 0px;">
-        <div v-if = "errore != ''" class = "errore" style = "position: absolute;left:710px; top: 300px">
-                <div style = "display: flex; flex-direction: row;">
-                  <span style = "font-size: 25px; font-weight: 700; margin-top: 5px;">Prenotazione non valida!</span>
-                  <img src = "../../img/warning.png" style = "width: 35px; height: 35px; margin-left: 10px;">
-                </div>
-
-
-            <div style = "font-size: 16px; width: 300px; padding-left: 20px;padding-right: 20px;">{{ errore }}</div>
-
-              <div class="x" @click="errore = ''">
-                <img src="../../img/remove.png" height="50px"/>
-              </div>
-        </div>
-</div>
-
-
+      <div class="x" @click="errore = ''">
+        <img src="../../img/remove.png" height="50px" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
-
-*{ font-family: "Sulphur Point", serif;
-    color: #002f54;
+* {
+  font-family: "Sulphur Point", serif;
+  color: #002f54;
 }
 
 .sulphur-point-light {
@@ -364,25 +405,27 @@ h3,
 h4,
 h5,
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    border: none;
-    text-decoration: none;
-    background: none;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: none;
+  text-decoration: none;
+  background: none;
 
-    -webkit-font-smoothing: antialiased;
+  -webkit-font-smoothing: antialiased;
 }
 
-menu, ol, ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+menu,
+ol,
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 }
-.errore{
+.errore {
   border-radius: 0.925rem;
-  
-  background:#ffffff;
+
+  background: #ffffff;
   box-shadow: 0rem 0rem 1.25rem 0rem rgba(0, 0, 0, 0.15);
   position: relative;
   padding: 2px;
@@ -413,7 +456,7 @@ menu, ol, ul {
 
 .x {
   padding: 5px;
-  background:rgba(0, 47, 84, 1);
+  background: rgba(0, 47, 84, 1);
 
   border-radius: 25px;
   align-items: center;
@@ -421,7 +464,7 @@ menu, ol, ul {
   top: -35px;
   right: -35px;
   height: 85px;
-  width:  85px;
+  width: 85px;
   scale: 0.4;
   display: flex;
   justify-content: center;
@@ -430,17 +473,17 @@ menu, ol, ul {
 }
 
 .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 105, 186, 0.2); /* Azzurro semitrasparente */
-    z-index: 1000; /* Assicura che sia sopra gli altri elementi */
-    display: block;
-    justify-content: center;
-    justify-items: center;
-    align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 105, 186, 0.2); /* Azzurro semitrasparente */
+  z-index: 1000; /* Assicura che sia sopra gli altri elementi */
+  display: block;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
 }
 
 .rectangle {
@@ -471,7 +514,6 @@ menu, ol, ul {
   z-index: -1;
 }
 
-
 .prenota-1,
 .prenota-1 * {
   box-sizing: border-box;
@@ -495,7 +537,6 @@ menu, ol, ul {
   box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15);
 }
 .rectangle-6 {
-  
   background: #ffffff;
   border-radius: 10px;
   width: 350px;
@@ -514,7 +555,8 @@ menu, ol, ul {
   font-size: 20px;
   line-height: 12px;
   font-weight: 700;
-}sk-2-6 {
+}
+sk-2-6 {
   width: 52px;
   height: 49px;
   position: absolute;
@@ -523,15 +565,14 @@ menu, ol, ul {
   object-fit: cover;
 }
 
-
-
 .nmodifiche {
   color: #00355c;
   text-align: left;
   font-size: 20px;
   line-height: 12px;
   font-weight: 700;
-}sk-2-6 {
+}
+sk-2-6 {
   width: 52px;
   height: 49px;
   position: absolute;
@@ -550,7 +591,7 @@ menu, ol, ul {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-align: left;
-  
+
   font-size: 30px;
   line-height: 24px;
   font-weight: 700;
@@ -561,7 +602,7 @@ menu, ol, ul {
   height: 29px;
 }
 
-.effettua-prenotazione{
+.effettua-prenotazione {
   background: linear-gradient(
     90deg,
     rgba(0, 105, 186, 1) 0%,
@@ -570,13 +611,10 @@ menu, ol, ul {
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  
+
   font-size: 50px;
   line-height: 40px;
   font-weight: 700;
-
-  
-
 
   text-align: left;
   width: 573px;
@@ -596,12 +634,25 @@ menu, ol, ul {
   left: 246px;
   top: 746px;
   color: #ffffff;
-  
+
   font-size: 25px;
   line-height: 12px;
   font-weight: 700;
-  cursor:pointer
- 
+  cursor: pointer;
 }
 
+.rectangle-calendario {
+  background: #ffffff;
+  margin-top: 12px;
+  border-radius: 10px;
+  height: fit-content;
+  width: 340px;
+  padding: 8px;
+  padding-bottom: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15);
+}
 </style>

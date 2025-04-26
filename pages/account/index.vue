@@ -11,57 +11,52 @@ const postazioniStore = usePostazioni();
 
 let filtrato = [] as Array<Prenotazione>;
 
-  const aggiorna = ref();
+const aggiorna = ref();
 const opzione = ref(0);
 const route = useRoute();
-if(route.query.option){//prendo i parametri passati alla pagina
+if (route.query.option) {
+  //prendo i parametri passati alla pagina
   opzione.value = route.query.option as any;
 }
 selezionaOpzione(opzione.value);
 
-function selezionaOpzione(n : number){
+function selezionaOpzione(n: number) {
   //sceglie cosa visualizzare (oggi, tutte, calendario)
   //0 = oggi
   //1 = tutte
   //2 = calendario
 
   const today = new Date();
-  const yy = String(today.getFullYear()); 
-  const mm = String(today.getMonth() + 1).padStart(2, '0');
-  const dd = String(today.getDate()).padStart(2, '0');
-  const formattedDate = yy+"-"+mm+"-"+dd;
+  const yy = String(today.getFullYear());
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const dd = String(today.getDate()).padStart(2, "0");
+  const formattedDate = yy + "-" + mm + "-" + dd;
   prenotazioniStore.ordinaData();
   filtrato = [];
 
-  opzione.value= n;
-  if(n == 0)
-  filtrato = prenotazioniStore.filtraData(formattedDate);
-  if(n == 1){
+  opzione.value = n;
+  if (n == 0) filtrato = prenotazioniStore.filtraData(formattedDate);
+  if (n == 1) {
     prenotazioniStore.ordinaData();
-  filtrato = prenotazioniStore.prenotazioni;
+    filtrato = prenotazioniStore.prenotazioni;
   }
-  if(n == 2)
-  filtrato = [];
-  aggiorna.value+=" ";
+  if (n == 2) filtrato = [];
+  aggiorna.value += " ";
 }
 
-async function ricarica(){
+async function ricarica() {
   //filtrato.splice(0,filtrato.length);
   filtrato = prenotazioniStore.prenotazioni;
   console.log(prenotazioniStore.prenotazioni);
   prenotazioniStore.ordinaData();
   selezionaOpzione(opzione.value);
-  aggiorna.value+=" ";
+  aggiorna.value += " ";
 }
-  
-
 </script>
 
-
 <template>
-
-<input type = "text" v-model = "aggiorna" style = "display:none">
-    <head>
+  <input type="text" v-model="aggiorna" style="display: none" />
+  <head>
     <!-- Caricamento del font e dei CSS -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -70,112 +65,147 @@ async function ricarica(){
       rel="stylesheet"
     />
   </head>
-    
-      
-      <div style="margin-left: auto; margin-right: auto;" >
-        <div class="header">
-    
-          <div style = "display: flex; display: box; width: fit-content; position: relative;">
-            <img class="profile-1" src="../../img/profilo.png" />
-            <img class="rectangle-27" src="../../img/rectangle.svg" />
 
+  <div style="margin-left: auto; margin-right: auto">
+    <div class="header">
+      <div
+        style="
+          display: flex;
+          display: box;
+          width: fit-content;
+          position: relative;
+        "
+      >
+        <img class="profile-1" src="../../img/profilo.png" />
+        <img class="rectangle-27" src="../../img/rectangle.svg" />
 
-            <div class = "informazioni">
-                <span style="font-size: 30px;">{{ authStore.utente.cognome +" "+ authStore.utente.nome}}</span>
-                <span>matricola</span>
-                <span>{{ authStore.utente.id_utente}}</span>
-                <span>password</span>
-                <span>********</span>
-
-            </div>
-          </div>
-    
+        <div class="informazioni">
+          <span style="font-size: 30px">{{
+            authStore.utente.cognome + " " + authStore.utente.nome
+          }}</span>
+          <span>matricola</span>
+          <span>{{ authStore.utente.id_utente }}</span>
+          <span>password</span>
+          <span>********</span>
         </div>
-    
-        <div style = "display: box; justify-items: center; width: 100%; margin-top: 27px; position: relative;">
-          <div class="menu">
-            <div class="menu-rect" 
-            :style="opzione == 0 ? 'background: linear-gradient(90deg,rgba(0, 105, 186, 1) 0%,rgba(0, 47, 84, 1) 100%); color: white': ''"
-            @click="selezionaOpzione(0)"
-            >in scadenza oggi</div>
+      </div>
+    </div>
 
-
-            <div class="menu-rect"
-            :style="opzione == 1 ? 'background: linear-gradient(90deg,rgba(0, 105, 186, 1) 0%,rgba(0, 47, 84, 1) 100%); color: white' : ''"
-            @click="selezionaOpzione(1)"
-            >tutte le prenotazioni</div>
-
-            <div class="menu-rect" 
-            :style="opzione == 2 ? 'background: linear-gradient(90deg,rgba(0, 105, 186, 1) 0%,rgba(0, 47, 84, 1) 100%); color: white' : ''"
-            @click="selezionaOpzione(2)"
-            >calendario</div>
-
-          </div>
-        
-     
-       
-    <div class = "area-prenotazioni" v-if = "opzione != 2">
-        <PrenotazioneElement @notifica = "ricarica()"
-        v-for = "prenotazione in filtrato"
-        :prenotazione="prenotazione"
-        style="margin: 10px; color: #00345c;"
-        :key = aggiorna
+    <div
+      style="
+        display: box;
+        justify-items: center;
+        width: 100%;
+        margin-top: 27px;
+        position: relative;
+      "
+    >
+      <div class="menu">
+        <div
+          class="menu-rect"
+          :style="
+            opzione == 0
+              ? 'background: linear-gradient(90deg,rgba(0, 105, 186, 1) 0%,rgba(0, 47, 84, 1) 100%); color: white'
+              : ''
+          "
+          @click="selezionaOpzione(0)"
         >
-        </PrenotazioneElement>
-        <div v-if = "filtrato.length == 0 && opzione != 2" 
-        style="align-self: center; justify-self: center; color: #00345c; font-size: 20px;"> nessuna prenotazione </div>
+          in scadenza oggi
+        </div>
 
+        <div
+          class="menu-rect"
+          :style="
+            opzione == 1
+              ? 'background: linear-gradient(90deg,rgba(0, 105, 186, 1) 0%,rgba(0, 47, 84, 1) 100%); color: white'
+              : ''
+          "
+          @click="selezionaOpzione(1)"
+        >
+          tutte le prenotazioni
+        </div>
+
+        <div
+          class="menu-rect"
+          :style="
+            opzione == 2
+              ? 'background: linear-gradient(90deg,rgba(0, 105, 186, 1) 0%,rgba(0, 47, 84, 1) 100%); color: white'
+              : ''
+          "
+          @click="selezionaOpzione(2)"
+        >
+          calendario
+        </div>
       </div>
 
-      <div style = "transform: scale(1.05); margin-top: 40px;" v-if = "opzione == 2">
-          <CalendarioProva :key = aggiorna></CalendarioProva>
+      <div class="area-prenotazioni" v-if="opzione != 2">
+        <PrenotazioneElement
+          @notifica="ricarica()"
+          v-for="prenotazione in filtrato"
+          :prenotazione="prenotazione"
+          style="margin: 10px; color: #00345c"
+          :key="aggiorna"
+        >
+        </PrenotazioneElement>
+        <div
+          v-if="filtrato.length == 0 && opzione != 2"
+          style="
+            align-self: center;
+            justify-self: center;
+            color: #00345c;
+            font-size: 20px;
+          "
+        >
+          nessuna prenotazione
         </div>
-    </div>
-  </div> 
-      
-    </template>
-    
-    
-    
-<style scoped>
+      </div>
 
-*{
+      <div
+        style="transform: scale(0.75); margin-top: -60px"
+        v-if="opzione == 2"
+      >
+        <CalendarioPrenotazioni :key="aggiorna"></CalendarioPrenotazioni>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+* {
   font-family: "Sulphur Point", serif;
-  
 }
 
-.area-prenotazioni{
-  overflow-y: auto; 
-  height: 430px; 
-  width: 560px; 
+.area-prenotazioni {
+  overflow-y: auto;
+  height: 430px;
+  width: 560px;
   margin-top: 30px;
 }
 
-.area-prenotazioni::-webkit-scrollbar{
-   width: 15px;
-   border: 4px;
-  border-color: #CCE1F1;
+.area-prenotazioni::-webkit-scrollbar {
+  width: 15px;
+  border: 4px;
+  border-color: #cce1f1;
 }
 
 .area-prenotazioni::-webkit-scrollbar-track {
-  background: #CCE1F1; /* Colore di sfondo */
+  background: #cce1f1; /* Colore di sfondo */
   border-radius: 10px;
   border: 4px;
 }
 
 .area-prenotazioni::-webkit-scrollbar-thumb {
-  background:#00345c;
+  background: #00345c;
   border-radius: 10px;
   border: 4px;
   border-color: #edccf1;
 }
 
 .area-prenotazioni::-webkit-scrollbar-thumb:hover {
-  background:#001c31;
+  background: #001c31;
 }
 
-
-.header{
+.header {
   display: box;
   justify-items: center;
   background: #ffffff;
@@ -199,7 +229,7 @@ async function ricarica(){
   margin-left: -30px;
 }
 .menu {
-  background: #CCE1F1;
+  background: #cce1f1;
   border-radius: 0.625rem;
   width: 580px;
   height: 35px;
@@ -209,19 +239,19 @@ async function ricarica(){
   padding: 10px;
   /*box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15);*/
 }
-.menu-rect{
-  color: #002F54;
+.menu-rect {
+  color: #002f54;
   text-align: center;
   font-family: "Sulphur Point", serif;
   font-style: normal;
   font-size: 16px;
-  line-height: 24px;  
+  line-height: 24px;
   font-weight: 1000;
   width: 178px;
   height: 35px;
 
   border-radius: 0.625rem;
-  background: #CCE1F1;
+  background: #cce1f1;
   position: relative;
   padding: 2px;
   z-index: 0;
@@ -230,27 +260,22 @@ async function ricarica(){
   align-items: center;
   align-content: center;
   justify-content: center;
-
 }
 
-
 .menu-rect::before {
-    content: "";
-    border: 0px;
-    position: absolute;
-    inset: 0;
-    border-radius: 10px;
-    padding: 0.2rem;
-    background: linear-gradient(90deg, rgba(0, 105, 186, 1), rgba(0, 47, 84, 1));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    z-index: -1;
-  }
-
-
-
+  content: "";
+  border: 0px;
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  padding: 0.2rem;
+  background: linear-gradient(90deg, rgba(0, 105, 186, 1), rgba(0, 47, 84, 1));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: -1;
+}
 
 .calendario {
   color: #002f54;
@@ -273,7 +298,7 @@ async function ricarica(){
   height: 30px;
 }
 
-.informazioni{
+.informazioni {
   color: #002f54;
   display: flex;
   flex-direction: column;
