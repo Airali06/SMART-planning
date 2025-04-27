@@ -78,8 +78,9 @@ async function confermaPrenotazione() {
   await prenotazioniStore.nuovaPrenotazione(data.value, selezionato.value);
 }
 
-async function occupate(data: string) {
-  const selectedDate = new Date(data);
+async function occupate(selDate: string) {
+  data.value = selDate;
+  const selectedDate = new Date(selDate);
   //console.log(data);
   await postazioniStore.checkPostazioniOccupate(selectedDate);
   aggiorna.value += " ";

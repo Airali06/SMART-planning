@@ -97,7 +97,7 @@ function cerca(){
     padding-left: 20px;
     display: block;
   overflow-y: auto; 
-  height: 500px;
+  height: 570px;
   width: 900px;
   margin-top: 40px;
 }

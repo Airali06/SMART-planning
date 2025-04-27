@@ -100,5 +100,16 @@ export const useDipendenti = defineStore("dipendenti-store", {
       console.log(dipendente);
       return { ...dipendente };
     },
+
+    getCoordinatori() {
+      let coordinatori = [] as Array<Utente>;
+
+      this.dipendenti.forEach((utente) => {
+        if (utente.livello == 2) {
+          coordinatori.push(utente);
+        }
+      });
+      return coordinatori;
+    },
   },
 });

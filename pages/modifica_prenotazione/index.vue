@@ -128,13 +128,14 @@ async function modificaPrenotazione() {
   aggiorna.value += " ";
   await prenotazioniStore.modificaPrenotazione(prenotazioneDaModificare);
 }
-
-async function occupate(data: string) {
-  const selectedDate = new Date(data);
+async function occupate(selDate: string) {
+  data.value = selDate;
+  const selectedDate = new Date(selDate);
   //console.log(data);
   await postazioniStore.checkPostazioniOccupate(selectedDate);
   aggiorna.value += " ";
 }
+
 
 async function dateOccupate(id_postazione: string) {
   date_occupate = [];

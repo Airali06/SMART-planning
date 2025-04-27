@@ -83,9 +83,15 @@ const route = useRoute();
 
         <span style="cursor:pointer"  @click="router.push({ name: 'admin'})">home </span>
         
-        <span style="cursor:pointer"  @click="router.push({path:'/admin/gestione_prenotazioni'})">gestione prenotazioni </span>
+        <span style="cursor:pointer"  @click="router.push({path:'/admin/gestione_prenotazioni'})">gestione prenotazioni</span>
 
-        <span style="cursor:pointer"  @click="router.push({path:'/admin/gestione_postazioni'})">gestione postazioni </span>
+        <span style="cursor:pointer"  @click="router.push({path:'/admin/gestione_postazioni'})">gestione postazioni</span>
+      
+        <span style="cursor:pointer"  @click="router.push({path:'/admin/nuovo_dipendente'})">nuovo dipendente</span>
+      
+        
+      
+      
       </div>
 
 

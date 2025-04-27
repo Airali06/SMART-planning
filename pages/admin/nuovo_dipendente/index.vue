@@ -1,26 +1,34 @@
 <script setup lang = "ts">
 import type { Utente } from '~/store/models/Utente';
 import { useDipendenti } from '~/store/dipendenti';
-
+import { useAuth } from '~/store/auth';
+const authStore = useAuth();
 const router = useRouter();
 const route = useRoute();
 const aggiorna = ref("");
 const dipendentiStore = useDipendenti();
+await dipendentiStore.getDipendentiCoordinatore(authStore.utente.id_utente);
 let utente = {} as Utente;
 let modifica = false;
 const password = ref("");
 const nome = ref("");
 const cognome = ref("");
-const id_coordinatore = ref("");
+const id_coordinatore = ref(0);
+let caricamento = false;
 let genere_selezionato = 0;
-let grado_selezionato = 0;
-
+let livello_selezionato = 1;
+let coordinatori = [] as Array<Utente>;
+  coordinatori = dipendentiStore.getCoordinatori();
 
 if(route.query.idDaModificare == null){
   modifica = false;
 }else{
   modifica = true;
   utente = dipendentiStore.getDipendenteById(route.query.idDaModificare*1 as any) as Utente;
+  nome.value = utente.nome +"";
+  cognome.value = utente.cognome +"";
+  livello_selezionato = utente.livello;
+  id_coordinatore.value = utente.id_coordinatore as number;
 }
 
 function selezionaGenere(n: number){
@@ -28,35 +36,71 @@ function selezionaGenere(n: number){
   aggiorna.value+= " ";
 }
 
-function selezionaGrado(n: number){
-  grado_selezionato = n;
+function selezionaLivello(n: number){
+  livello_selezionato = n;
   aggiorna.value+= " ";
 }
+
+async function conferma(){
+  console.log(nome.value, cognome.value, password.value, id_coordinatore.value, genere_selezionato, livello_selezionato);
+  utente.nome = nome.value;
+  utente.cognome = cognome.value;
+  utente.livello = livello_selezionato;
+  utente.id_coordinatore = id_coordinatore.value;
+  utente.username = nome.value + " "+ cognome.value;
+  caricamento = true;
+  aggiorna.value += " ";
+  await dipendentiStore.insertUtente(utente, password.value);
+  await dipendentiStore.getDipendentiCoordinatore(authStore.utente.id_utente);
+  caricamento = false;
+  aggiorna.value += " ";
+  router.push({ name: "admin" });
+
+}
+
+
 </script>
 <template>
    <input type = "text" v-model = "aggiorna" style = "display: none">
 
 
-    <div style = "justify-self: center;">
+    <div style = "justify-self: center; margin-top: 70px; padding-left: 30px;">
+
+      <div class="overlay" v-if="caricamento">
+          <CaricamentoPopup
+            :caricamento="caricamento"
+            messaggio_caricamento="Inserimento utente in corso"
+            :key="aggiorna"
+            style="margin-top: 300px"
+          >
+          </CaricamentoPopup>
+      </div>
 
 
+      <div
+      class="titolo"
+      >
+        Nuovo utente
+      </div>
 
 
-        nouvo dipendente
-        <div class="rectangle" style = "width: 600px; height: 470px; padding-top: 10px;">
+       
+        <div class="rectangle" style = "width: 600px; height: 460px; padding-top: 10px;">
+
+          <div style = "position: absolute; left: -122px; top: 110px; width: fit-content;">
+              <img src = "../../../img/profiloM2.png" v-if = "genere_selezionato == 0" width="250px">
+              <img src = "../../../img/profiloF2.png" v-if = "genere_selezionato == 1" width="250px">
+          </div>
 
     <div style = "transform: scale(1); margin-top: 5px;">
 
-      <div style = "position: absolute; left: -330px; top: 80px; width: fit-content;">
-        <img src = "../../../img/profiloM2.png" v-if = "genere_selezionato == 0" width="250px">
-        <img src = "../../../img/profiloF2.png" v-if = "genere_selezionato == 1" width="250px">
-      </div>
+      
 
           <span class = "etichetta">
             nome
           </span>
             <div class = "rectangle-1" style = "padding: 3px;">
-                <input type = "text" class = "input" >
+                <input type = "text" class = "input"  v-model ="nome">
             </div>
 
 
@@ -64,23 +108,17 @@ function selezionaGrado(n: number){
             cognome
           </span>
             <div class = "rectangle-1" style = "padding: 3px;">
-                <input type = "text" class = "input" >
+                <input type = "text" class = "input" v-model =" cognome">
             </div>
 
           <span class = "etichetta">
             password
           </span>
             <div class = "rectangle-1" style = "padding: 3px;">
-                <input type = "text" class = "input" >
+                <input type = "text" class = "input" v-model="password">
             </div>
 
-          <span class = "etichetta">
-            matricola coordinatore
-          </span>
-            <div class = "rectangle-1" style = "padding: 3px;">
-                <input type = "text" class = "input" >
-            </div>
-
+         
             <span class = "etichetta">
               genere
             </span>
@@ -98,26 +136,53 @@ function selezionaGrado(n: number){
           </div>
 
             <span class = "etichetta">
-              grado
+              livello
             </span>
 
               <div class="rectangle" style = "display: flex; flex-direction: row; margin-top: -5px;width: 245px; padding: 5px;">
                   <div class="menu-rect" 
-                  :style="grado_selezionato == 0 ? 'background: linear-gradient(90deg,rgba(0, 105, 186, 1) 0%,rgba(0, 47, 84, 1) 100%); color: white': ''"
-                  @click="selezionaGrado(0)"
+                  :style="livello_selezionato == 1 ? 'background: linear-gradient(90deg,rgba(0, 105, 186, 1) 0%,rgba(0, 47, 84, 1) 100%); color: white': ''"
+                  @click="selezionaLivello(1)"
                   >dipendente</div>
 
 
                   <div class="menu-rect" style = "margin-left: 7px;"
-                  :style="grado_selezionato == 1 ? 'background: linear-gradient(90deg,rgba(0, 105, 186, 1) 0%,rgba(0, 47, 84, 1) 100%); color: white' : ''"
-                  @click="selezionaGrado(1)"
+                  :style="livello_selezionato == 2 ? 'background: linear-gradient(90deg,rgba(0, 105, 186, 1) 0%,rgba(0, 47, 84, 1) 100%); color: white' : ''"
+                  @click="selezionaLivello(2)"
                   >coordinatore</div>
           </div>
+
+          <span class = "etichetta" v-if = "livello_selezionato < 2">
+            coordinatore
+          </span>
+            <div class = "rectangle-1" style = "padding: 3px;" v-if = "livello_selezionato < 2">
+              <select v-model="id_coordinatore" style = "width: 220px; font-size: 19px; font-weight: 700; border: none; margin-left: 10px; height: 30px; padding-left: 10px;">
+
+                    <option value = "0">
+                        --------
+                    </option>
+
+                    <option 
+                      v-for="coordinatore in coordinatori" 
+                      :key="aggiorna" 
+                      :value="coordinatore.id_coordinatore"
+                    >
+                      {{ coordinatore.username }}
+                    </option>
+                  </select>
+            </div>
+
             
             
             <input type = "text" class = "input" style = "width: 40px; height: 50px;">
         </div>
-    </div>
+
+        
+      <div class = "conferma" style = "width: 200px; height: 30px;" @click = "conferma()"> conferma</div>
+    
+</div>
+
+
   </div>
 </template>
 
@@ -127,6 +192,23 @@ function selezionaGrado(n: number){
 * {
   font-family: "Sulphur Point", serif;
   color: #002f54;
+}
+
+.titolo {
+  background: linear-gradient(
+    90deg,
+    rgb(0, 89, 156) 0%,
+    rgb(0, 41, 73) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: left;
+  font-size: 3.5rem;
+  line-height: 3.5rem;
+  font-weight: 700;
+  justify-self: center;
+  margin: 30px;
 }
 
 .menu-rect{
@@ -153,6 +235,23 @@ function selezionaGrado(n: number){
 
 }
 
+.conferma{
+  background: linear-gradient(90deg,rgba(0, 105, 186, 1) 0%,rgba(0, 47, 84, 1) 100%);
+  color: #ffffff;
+  border-radius: 0.825rem;
+  font-weight: 700;
+  text-align: center;
+  width: 350px;
+  transform: scale(1);;
+  height: 30px;
+  padding: 3px;
+  position: absolute;
+  left: 230px;
+  bottom: -15px;
+  font-size: 21px;
+}
+
+
 .menu-rect::before {
     content: "";
     border: 0px;
@@ -168,6 +267,20 @@ function selezionaGrado(n: number){
     z-index: -1;
 
   }
+
+  .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 105, 186, 0.2); /* Azzurro semitrasparente */
+  z-index: 1000; /* Assicura che sia sopra gli altri elementi */
+  display: block;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+}
 
 .rectangle {
   margin-top: 5px;
