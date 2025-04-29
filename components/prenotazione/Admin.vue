@@ -246,7 +246,8 @@ async function cambiaStato(){
     </div>
 
     <div @click="router.push({path:'/dipendenti/visualizza_dipendente', query: { utente: utente.id_utente} })" v-if = "elimina == false && caricamento == false">
-      <img src = "../../img/profilo.png" width="80px" style = "position: absolute; top: 20px; left: 50px">
+      <img v-if = "utente.genere == 'M' " src = "../../img/profilo.png" width="80px" style = "position: absolute; top: 20px; left: 50px">
+      <img v-if = "utente.genere == 'F' " src = "../../img/profiloF2.png" width="80px" style = "position: absolute; top: 20px; left: 50px">
       <div style = "position: absolute; width: 140px; left: 20px; bottom: 25px; text-align: center;">{{ utente.username }}</div>
     </div>
 

@@ -1,10 +1,8 @@
 cose da fare
 
--aggiunta calendario
+
 -sistemare i controlli su modifica prenotazione
--implementare captcha
 -implementare  modifica password
--nuovo utente
 -modifica utente
 -aggiungere tasto aggiorna in tutte le pagine
 -documentazione

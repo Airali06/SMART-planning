@@ -10,12 +10,13 @@ const dipendentiStore = useDipendenti();
 await dipendentiStore.getDipendentiCoordinatore(authStore.utente.id_utente);
 let utente = {} as Utente;
 let modifica = false;
+let errore = "";
 const password = ref("");
 const nome = ref("");
 const cognome = ref("");
 const id_coordinatore = ref(0);
 let caricamento = false;
-let genere_selezionato = 0;
+let genere_selezionato = "M";
 let livello_selezionato = 1;
 let coordinatori = [] as Array<Utente>;
   coordinatori = dipendentiStore.getCoordinatori();
@@ -29,9 +30,10 @@ if(route.query.idDaModificare == null){
   cognome.value = utente.cognome +"";
   livello_selezionato = utente.livello;
   id_coordinatore.value = utente.id_coordinatore as number;
+  genere_selezionato = utente.genere+"";
 }
 
-function selezionaGenere(n: number){
+function selezionaGenere(n: string){
   genere_selezionato = n;
   aggiorna.value+= " ";
 }
@@ -43,14 +45,28 @@ function selezionaLivello(n: number){
 
 async function conferma(){
   console.log(nome.value, cognome.value, password.value, id_coordinatore.value, genere_selezionato, livello_selezionato);
+  
+
+  if(authStore.testaPassword(password.value) == false){
+    errore = "deve contenere:\nminimo 8 caratteri\n maiuscole/minuscole\n numeri\n caratteri speciali"
+    console.log("errore password");
+    aggiorna.value += " ";
+    return;
+  }
+  
   utente.nome = nome.value;
   utente.cognome = cognome.value;
+  utente.genere = genere_selezionato;
   utente.livello = livello_selezionato;
   utente.id_coordinatore = id_coordinatore.value;
   utente.username = nome.value + " "+ cognome.value;
   caricamento = true;
   aggiorna.value += " ";
-  await dipendentiStore.insertUtente(utente, password.value);
+  if(modifica == false)
+    await dipendentiStore.insertUtente(utente, password.value);
+  if(modifica == false)
+    await dipendentiStore.updateUtente(utente, password.value);
+
   await dipendentiStore.getDipendentiCoordinatore(authStore.utente.id_utente);
   caricamento = false;
   aggiorna.value += " ";
@@ -88,8 +104,8 @@ async function conferma(){
         <div class="rectangle" style = "width: 600px; height: 460px; padding-top: 10px;">
 
           <div style = "position: absolute; left: -122px; top: 110px; width: fit-content;">
-              <img src = "../../../img/profiloM2.png" v-if = "genere_selezionato == 0" width="250px">
-              <img src = "../../../img/profiloF2.png" v-if = "genere_selezionato == 1" width="250px">
+              <img src = "../../../img/profiloM2.png" v-if = "genere_selezionato == 'M'" width="250px">
+              <img src = "../../../img/profiloF2.png" v-if = "genere_selezionato == 'F'" width="250px">
           </div>
 
     <div style = "transform: scale(1); margin-top: 5px;">
@@ -124,14 +140,14 @@ async function conferma(){
             </span>
             <div class="rectangle" style = "display: flex; flex-direction: row; margin-top: -5px;width: 245px; padding: 5px;">
                   <div class="menu-rect" 
-                  :style="genere_selezionato == 0 ? 'background: linear-gradient(90deg,rgba(0, 105, 186, 1) 0%,rgba(0, 47, 84, 1) 100%); color: white': ''"
-                  @click="selezionaGenere(0)"
+                  :style="genere_selezionato == 'M' ? 'background: linear-gradient(90deg,rgba(0, 105, 186, 1) 0%,rgba(0, 47, 84, 1) 100%); color: white': ''"
+                  @click="selezionaGenere('M')"
                   >M</div>
 
 
                   <div class="menu-rect" style = "margin-left: 7px;"
-                  :style="genere_selezionato == 1 ? 'background: linear-gradient(90deg,rgba(0, 105, 186, 1) 0%,rgba(0, 47, 84, 1) 100%); color: white' : ''"
-                  @click="selezionaGenere(1)"
+                  :style="genere_selezionato =='F' ? 'background: linear-gradient(90deg,rgba(0, 105, 186, 1) 0%,rgba(0, 47, 84, 1) 100%); color: white' : ''"
+                  @click="selezionaGenere('F')"
                   >F</div>
           </div>
 
@@ -179,11 +195,56 @@ async function conferma(){
 
         
       <div class = "conferma" style = "width: 200px; height: 30px;" @click = "conferma()"> conferma</div>
-    
+
+
+
+
+
+  
 </div>
 
 
   </div>
+
+
+
+  <div
+    v-if="errore != ''"
+    class="overlay"
+    style="position: absolute; left: 0px"
+  >
+    <div
+      v-if="errore != ''"
+      class="errore"
+      style="justify-self: center; margin-top: 300px;"
+    >
+      <div style="display: flex; flex-direction: row">
+        <span style="font-size: 25px; font-weight: 700; margin-top: 5px"
+          >Password non valida!</span
+        >
+        <img
+          src="../../../img/warning.png"
+          style="width: 35px; height: 35px; margin-left: 10px"
+        />
+      </div>
+
+      <div
+        style="
+          font-size: 16px;
+          width: 300px;
+          padding-left: 20px;
+          padding-right: 20px;
+        "
+      >
+        {{ errore }}
+      </div>
+
+      <div class="x" @click="errore = ''; aggiorna+= ' '">
+        <img src="../../../img/remove.png" height="50px" />
+      </div>
+    </div>
+  </div>
+    
 </template>
 
 <style scoped>
@@ -192,6 +253,54 @@ async function conferma(){
 * {
   font-family: "Sulphur Point", serif;
   color: #002f54;
+}
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 105, 186, 0.2); /* Azzurro semitrasparente */
+  z-index: 1000; /* Assicura che sia sopra gli altri elementi */
+  display: block;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+}
+
+.x {
+  padding: 5px;
+  background: rgba(0, 47, 84, 1);
+
+  border-radius: 25px;
+  align-items: center;
+  position: absolute;
+  top: -35px;
+  right: -35px;
+  height: 85px;
+  width: 85px;
+  scale: 0.4;
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  z-index: 1000;
+}
+
+.errore {
+  border-radius: 0.925rem;
+  background: #ffffff;
+  box-shadow: 0rem 0rem 1.25rem 0rem rgba(0, 0, 0, 0.15);
+  position: relative;
+  padding: 2px;
+  z-index: 0;
+  width: 400px;
+  height: 200px;
+  display: block;
+  justify-items: center;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  display: block;
 }
 
 .titolo {

@@ -79,6 +79,7 @@ export const useAuth = defineStore("auth-store", {
           id_utente: dati.id_utente,
           nome: dati.nome,
           cognome: dati.cognome,
+          genere: dati.genere,
           username: dati.username,
           livello: dati.livello * 1,
           id_coordinatore: dati.id_coordinatore,
@@ -186,6 +187,7 @@ export const useAuth = defineStore("auth-store", {
             nome: "",
             username: "",
             cognome: "",
+            genere: "",
             livello: 0,
             id_coordinatore: 0,
           } as Utente),
@@ -225,6 +227,34 @@ export const useAuth = defineStore("auth-store", {
       } else {
         console.log("localStorage non è disponibile nel server");
       }
+    },
+
+    testaPassword(password: string) {
+      if (password.length < 8) {
+        return false;
+      }
+
+      // Controllo lettera maiuscola
+      if (!/[A-Z]/.test(password)) {
+        return false;
+      }
+
+      // Controllo lettera minuscola
+      if (!/[a-z]/.test(password)) {
+        return false;
+      }
+
+      // Controllo numero
+      if (!/[0-9]/.test(password)) {
+        return false;
+      }
+
+      // Controllo carattere speciale
+      if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+        return false;
+      }
+
+      return true;
     },
   },
 });

@@ -82,6 +82,7 @@ export const useDipendenti = defineStore("dipendenti-store", {
             body: JSON.stringify({
               nome: utente.nome,
               cognome: utente.cognome,
+              genere: utente.genere,
               username: utente.username,
               livello: utente.livello,
               password: password,
@@ -90,6 +91,32 @@ export const useDipendenti = defineStore("dipendenti-store", {
           })
         ) as any;
         return response[0];
+      } catch (e) {
+        console.log("errore" + e);
+      }
+    },
+
+    async updateUtente(utente: Utente, password: string) {
+      const authStore = useAuth();
+      try {
+        const response = Array<Prenotazione>(
+          await $fetch(authStore.address + "updateUtente.php", {
+            //composizione dell messaggio di request
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json", //specifica tipologia di dato inviata
+            },
+            body: JSON.stringify({
+              nome: utente.nome,
+              cognome: utente.cognome,
+              genere: utente.genere,
+              username: utente.username,
+              livello: utente.livello,
+              password: password,
+              id_coordinatore: utente.id_coordinatore,
+            }),
+          })
+        ) as any;
       } catch (e) {
         console.log("errore" + e);
       }

@@ -23,9 +23,15 @@ const router = useRouter();
                 <div class = "button" @click="router.push({path:'/dipendenti/visualizza_dipendente', query: { utente: props.dipendnente?.id_utente} })"> visualizza prenotazioni</div>
             </div>
 
-            <img src = "../../img/profilo.png" style = "position: absolute; left: -70px; top: 43px; height: 140px;">
+            <img v-if = "dipendnente?.genere == 'M' " src = "../../img/profilo.png" style = "position: absolute; left: -70px; top: 43px; height: 140px;">
+            <img v-if = "dipendnente?.genere == 'F' " src = "../../img/profiloF2.png" style = "position: absolute; left: -70px; top: 43px; height: 140px;">
             <img src = "../../img/rectangle.svg" style = "margin-left: 35px; width: 310px; margin-top: 8px; margin-right: 12px;">
-        </div>
+        
+        
+              <div class = "modifica"  @click="router.push({ path:'/admin/nuovo_dipendente', query: { idDaModificare : props.dipendnente?.id_utente} })">
+                <img src="../../img/edit.png" style ="width: 30px;">
+              </div>
+          </div>
 
 
 </template>
@@ -59,6 +65,38 @@ const router = useRouter();
   display: block;
   cursor:pointer;
   width: 200px;
+  
+}
+
+.modifica{
+  background: linear-gradient(
+    90deg,
+    rgb(0, 120, 211) 0%,
+    rgb(0, 58, 102) 100%
+  );
+  height: 30px;
+  width: 40px;
+  margin-top: 5px;
+  border: 0px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-align: center;
+  color: white;
+  border-radius: 16px;
+  font-family: "Sulphur Point", serif;
+  font-weight: 400;
+  font-style: normal;
+  justify-self: center;
+  font-size: 17px;
+  display: block;
+  cursor:pointer;
+  position: absolute;
+  left: -60px;
+  top: 140px;
+  transition: transform 0.3s ease-in-out;
+}
+.modifica:hover {
+  transform: scale(1.08);
 }
 
 .contenitore {

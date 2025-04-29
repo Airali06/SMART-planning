@@ -3,6 +3,7 @@ export interface Utente {
   nome: String;
   username: String;
   cognome: String;
+  genere: String;
   livello: number;
   id_coordinatore: number;
 }

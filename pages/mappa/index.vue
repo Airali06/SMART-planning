@@ -3,36 +3,59 @@ import { usePrenotazioni } from "../../store/prenotazioni";
 const prenotazioniStore = usePrenotazioni();
 import { usePostazioni } from "../../store/postazioni";
 const postazioniStore = usePostazioni();
-
+import { useAuth } from "~/store/auth";
+const authStore = useAuth();
 
 const aggiorna = ref("");
 const selectedDate = new Date(); 
 await postazioniStore.checkPostazioniOccupate(selectedDate);
 const giorni = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
 let data = giorni[selectedDate.getDay()] +"\t-\t" +selectedDate.getDate()+"/"+(selectedDate.getMonth()as number*1+1)+"/"+ selectedDate.getFullYear();
+let selezionato = 0;
+let mostra = true;
+if (typeof window !== "undefined") {
+    selezionato = localStorage.getItem("scelta") as any;
+    if(selezionato >= 55){
+        mostra = false;
+    }
+}
+
+if(authStore.utente.livello == 1){
+  mostra = true;
+}
 
 
 await nextTick();
 const mappa = ref(null);
+
+
 </script>
 
 <template>
-
+<input type = "text" v-model = "aggiorna" style = "display: none;">
 <div style = "margin-left: 300px; position: relative;">
 
 
   <div class="contnteiner1">
 
+          <MappaParcheggio 
+            style="z-index: 100; position: absolute; top"
+            v-if="mostra == false && authStore.utente.livello >= 2"
+            
+            >
+            </MappaParcheggio>
+
     <div class="map_container" >
 
-      <img src = "../../img/mappa1.png" width="703px" style = "position : absolute; z-index: 0; top: 25px;">
+      <img src = "../../img/mappa1.png" width="703px" style = "position : absolute; z-index: 0; top: 25px;" v-if = "mostra">
 
         <MappaPostazioni ref = "mappa"
-        :key = aggiorna
         style="z-index: 100"
+        v-if="mostra == true"
         >
 
         </MappaPostazioni>
+
 
 
 
@@ -40,6 +63,52 @@ const mappa = ref(null);
             Mappa          
         </span>
         <span class = "data">{{ data }}</span>
+
+
+
+        <div class="rectangle-6" 
+    style = "width: 150px; height: 453px; position: absolute; top: 0px; left: 750px"
+    v-if="authStore.utente.livello >= 2"
+    >
+
+      <div class="seleziona" 
+        style = "
+        position: absolute;
+        left: 5px;
+        top: -35px;
+        height: 25px;">seleziona tipologia</div>
+    
+
+        <OptionPostazione
+          :add="false"
+          tipo="ScrivaniaStandard"
+          style = "scale: 0.72; height: 118px;"
+          @click = "mostra = true; aggiorna += ' '"
+        ></OptionPostazione>
+
+        <OptionPostazione
+          :add="false"
+          tipo="ScrivaniaMonitor"
+          style = "scale: 0.72; height: 116px;"
+          @click = "mostra = true; aggiorna += ' '"
+          
+        ></OptionPostazione>
+
+        <OptionPostazione
+          :add="false"
+          tipo="SalaRiunioni"
+          style = "scale: 0.72; height: 118px;"
+          @click = "mostra = true; aggiorna += ' '"
+        ></OptionPostazione>
+
+        <OptionPostazione
+          :add="false"
+          tipo="Parcheggio"
+          style = "scale: 0.72; height: 116px;"
+          @click = "mostra = false; aggiorna += ' '"
+         ></OptionPostazione>
+      
+    </div>
 
     </div>
 
@@ -58,6 +127,8 @@ const mappa = ref(null);
     color: #002f54;
 }
 
+
+
 .sulphur-point-light {
   font-family: "Sulphur Point", serif;
   font-weight: 300;
@@ -75,6 +146,18 @@ const mappa = ref(null);
   font-weight: 700;
   font-style: normal;
 }
+
+
+.rectangle-6 {
+  background: #ffffff;
+  border-radius: 10px;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15);
+}
+
 
 .data{
     position:absolute; 
