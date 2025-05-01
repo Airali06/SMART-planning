@@ -5,6 +5,7 @@ export const useAuth = defineStore("auth-store", {
       id_utente: 0,
       nome: "",
       username: "",
+      genere: "",
       cognome: "",
       livello: 0,
       id_coordinatore: 0,
@@ -255,6 +256,28 @@ export const useAuth = defineStore("auth-store", {
       }
 
       return true;
+    },
+
+    async updateUtente(password: string) {
+      const authStore = useAuth();
+      try {
+        const response = (await $fetch(
+          authStore.address + "updatePassword.php",
+          {
+            //composizione dell messaggio di request
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json", //specifica tipologia di dato inviata
+            },
+            body: JSON.stringify({
+              id_utente: this.utente.id_utente,
+              password: password,
+            }),
+          }
+        )) as any;
+      } catch (e) {
+        console.log("errore" + e);
+      }
     },
   },
 });

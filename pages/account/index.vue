@@ -8,12 +8,15 @@ import type { Prenotazione } from "~/store/models/Prenotazione";
 const prenotazioniStore = usePrenotazioni();
 prenotazioniStore.ordinaData();
 const postazioniStore = usePostazioni();
-
+let modifica_password = false;
 let filtrato = [] as Array<Prenotazione>;
-
+const password0 = ref("");
+const password1 = ref("");
 const aggiorna = ref();
 const opzione = ref(0);
 const route = useRoute();
+let errore = "";
+
 if (route.query.option) {
   //prendo i parametri passati alla pagina
   opzione.value = route.query.option as any;
@@ -52,6 +55,27 @@ async function ricarica() {
   selezionaOpzione(opzione.value);
   aggiorna.value += " ";
 }
+
+async function updatePassword(){
+  errore = "";
+    if(password0.value != password1.value){
+      errore = "le password non corrispondono";
+      password0.value = "";
+      password1.value = "";
+      aggiorna.value += " ";
+      return;
+    }
+
+    if(!authStore.testaPassword(password0.value)){
+      errore = "deve contenere maiuscole, minuscole, caratteri speciali, numeri"
+      aggiorna.value += " ";
+      return;
+    }
+    console.log("passo")
+    modifica_password = false;
+    aggiorna.value += " ";
+    await authStore.updateUtente(password0.value);
+}
 </script>
 
 <template>
@@ -72,7 +96,7 @@ async function ricarica() {
         style="
           display: flex;
           display: box;
-          width: fit-content;
+          width: fit-content; 
           position: relative;
         "
       >
@@ -86,7 +110,10 @@ async function ricarica() {
           <span>matricola</span>
           <span>{{ authStore.utente.id_utente }}</span>
           <span>password</span>
-          <span>********</span>
+            <div style = "display: flex; flex-direction: row;">
+              <span>********</span>
+              <div @click = "modifica_password = true; aggiorna+= ' '" style = "background: #00345c; padding: 2px; height: 26px; border-radius: 10px; width: 26px; position: absolute; right: 40px; bottom: 10px;"><img src = "../../img/edit.png" width="25px"></div>
+            </div>
         </div>
       </div>
     </div>
@@ -168,6 +195,59 @@ async function ricarica() {
       </div>
     </div>
   </div>
+
+
+
+  <div
+ v-if = "modifica_password"    
+    class="overlay"
+    style="position: absolute; left: 0px"
+  >
+
+    <div
+      class="password"
+      style="justify-self: center; margin-top: 300px;"
+    >
+      <div style="display: flex; flex-direction: row">
+
+        <div class="nuova-password">
+            <span style = "font-size: 25px;">nuova</span>
+            <span style="font-size: 35px; font-weight: 700; margin-top: -35px;"
+              >Password</span
+            >
+        </div>
+
+        <img
+          src="../../img/key.png"
+          style="width: 55px; height: 55px; margin-left: 10px"
+        />
+      </div>
+
+      
+      <div class = "rectangle-1" style = "padding: 3px; margin-top: 25px; ">
+        <label style = "color:#00345c; position: absolute; top: -22px">nuova password</label>
+          <input type = "text" class = "input" v-model="password0">
+      </div>
+
+
+       
+      <div class = "rectangle-1" style = "padding: 3px; margin-top: 25px; margin-bottom: 6px;">
+        <label style = "color:#00345c; position: absolute; top: -22px">conferma password</label> 
+          <input type = "text" class = "input" v-model="password1">
+      </div>
+            <span style = "width: 250px; display: flex; text-align: center; color: #8a1717;">{{ errore }}</span>
+      <div class = "conferma" @click = "updatePassword()">
+        conferma
+      </div>
+
+      
+
+      <div class="x" @click="errore = ''; password0 = ''; password1 = ''; modifica_password = false; aggiorna+= ' '">
+        <img src="../../img/remove.png" height="50px" />
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <style scoped>
@@ -180,6 +260,140 @@ async function ricarica() {
   height: 430px;
   width: 560px;
   margin-top: 30px;
+}
+
+.conferma{
+  background: linear-gradient(90deg,rgba(0, 105, 186, 1) 0%,rgba(0, 47, 84, 1) 100%);
+  color: #ffffff;
+  border-radius: 0.825rem;
+  font-weight: 700;
+  text-align: center;
+  width: 200px;
+  height: 30px;
+  padding: 3px;
+  font-size: 18px;
+  margin-top: 6px;
+  cursor: pointer;
+}
+
+.password {
+  border-radius: 0.925rem;
+  background: #ffffff;
+  box-shadow: 0rem 0rem 1.25rem 0rem rgba(0, 0, 0, 0.15);
+  position: relative;
+  padding: 2px;
+  z-index: 0;
+  width: 320px;
+  height: 350px;
+  display: block;
+  justify-items: center;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  display: block;
+}
+
+.rectangle-1{
+  margin-top: -5px;
+  border-radius: 0.625rem;
+  background: #ffffff;
+  box-shadow: 0rem 0rem 1.25rem 0rem rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 1;
+  width: 200px;
+}
+
+.rectangle-1::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 0.625rem;
+  padding: 0.125rem; 
+  background: linear-gradient(
+    to bottom, 
+    white 0%, 
+    white 20%, 
+    white 50%, 
+    rgba(0, 47, 84, 1) 50%, 
+    rgba(0, 105, 186, 1) 100%
+  ); 
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: -1;
+  width: 200px;
+}
+
+.input{
+    border-radius: 20px;
+  padding-left: 20px;
+  color: #00355C;
+  font-weight: 700;
+  font-size: 20px;
+  border: 2px solid transparent;
+  background: none;
+  width: 170px;
+
+}
+.input:focus{
+    background-color: #eef6fc;
+    border-color: none; 
+    border-width: 2px;
+    transition: border 0.2s ease-in-out;
+    outline: none; 
+    width: 170px;
+}
+
+.nuova-password{
+  background: linear-gradient(
+    90deg,
+    rgb(0, 89, 156) 0%,
+    rgb(0, 41, 73) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: left;
+  line-height: 3.5rem;
+  font-weight: 700;
+  justify-self: center;
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 105, 186, 0.2); /* Azzurro semitrasparente */
+  z-index: 1000; /* Assicura che sia sopra gli altri elementi */
+  display: block;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+}
+
+.x {
+  padding: 5px;
+  background: rgba(0, 47, 84, 1);
+
+  border-radius: 25px;
+  align-items: center;
+  position: absolute;
+  top: -35px;
+  right: -35px;
+  height: 85px;
+  width: 85px;
+  scale: 0.4;
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  z-index: 1000;
 }
 
 .area-prenotazioni::-webkit-scrollbar {
@@ -307,4 +521,6 @@ async function ricarica() {
   right: 105px;
   font-weight: 700;
 }
+
+
 </style>
