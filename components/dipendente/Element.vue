@@ -11,17 +11,19 @@ const router = useRouter();
 
 <template>
 
-        <div class = "contenitore">
+        <div class = "contenitore" v-if = "authStore.utente.id_utente != dipendnente?.id_utente">
 
             <div style = "
                           position: absolute; 
                           z-index: 10; 
                           display: flex; 
                           flex-direction: column;
-                          top: 63px; left: 120px">
+                          top: 45px; left: 120px">
                 <span style = "font-size: 24px; font-weight: 700;">{{ props.dipendnente?.username }}</span>
                 <span>matricola</span>
                 <span style = "font-size: 18px; font-weight: 700; margin-top: -5px">{{ props.dipendnente?.id_utente }}</span>
+                <span style = "font-size: 23px; font-weight: 700; color:" v-if = "dipendnente?.livello == 2">coordinatore</span>
+                <span style = "font-size: 23px; font-weight: 700; color:" v-if = "dipendnente?.livello == 1">dipendente</span>
                 <div class = "button" @click="router.push({path:'/dipendenti/visualizza_dipendente', query: { utente: props.dipendnente?.id_utente} })"> visualizza prenotazioni</div>
             </div>
 

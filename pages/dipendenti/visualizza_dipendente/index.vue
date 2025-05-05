@@ -23,6 +23,7 @@ if(route.query.utente != ""){
 
 if( dipendente.livello == 1){
 coordinatore = await dipendentiStore.loadDipendenteById(dipendente.id_coordinatore);
+aggiorna.value += " ";
 }
 
 

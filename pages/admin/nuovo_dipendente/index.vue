@@ -50,10 +50,11 @@ if(!(modifica && password.value.trim() == ""))
   if(authStore.testaPassword(password.value) == false){
     errore = "deve contenere:\nminimo 8 caratteri\n maiuscole/minuscole\n numeri\n caratteri speciali"
     console.log("errore password");
-    aggiorna.value += " ";
+    aggiorna.value+= " ";
     return;
   }
   
+  console.log(id_coordinatore.value)
   utente.nome = nome.value;
   utente.cognome = cognome.value;
   utente.genere = genere_selezionato;
@@ -187,7 +188,7 @@ if(!(modifica && password.value.trim() == ""))
                     <option 
                       v-for="coordinatore in coordinatori" 
                       :key="aggiorna" 
-                      :value="coordinatore.id_coordinatore"
+                      :value="coordinatore.id_utente"
                     >
                       {{ coordinatore.username }}
                     </option>
