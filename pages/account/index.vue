@@ -5,6 +5,8 @@ const authStore = useAuth();
 import { usePrenotazioni } from "../../store/prenotazioni";
 import { usePostazioni } from "../../store/postazioni";
 import type { Prenotazione } from "~/store/models/Prenotazione";
+import { useDipendenti } from "~/store/dipendenti";
+const dipendentiStore = useDipendenti();
 const prenotazioniStore = usePrenotazioni();
 prenotazioniStore.ordinaData();
 const postazioniStore = usePostazioni();
@@ -16,7 +18,11 @@ const aggiorna = ref();
 const opzione = ref(0);
 const route = useRoute();
 let errore = "";
+let coordinatore = {} as any; 
 
+if(authStore.utente.livello == 1){
+coordinatore = await dipendentiStore.loadDipendenteById(authStore.utente.id_coordinatore);
+}
 if (route.query.option) {
   //prendo i parametri passati alla pagina
   opzione.value = route.query.option as any;
@@ -100,7 +106,8 @@ async function updatePassword(){
           position: relative;
         "
       >
-        <img class="profile-1" src="../../img/profilo.png" />
+        <img v-if = "authStore.utente.genere == 'M'" class="profile-1" src="../../img/profilo.png" />
+        <img v-if = "authStore.utente.genere == 'F'"  class="profile-1" src="../../img/profiloF2.png" />
         <img class="rectangle-27" src="../../img/rectangle.svg" />
 
         <div class="informazioni">
@@ -112,9 +119,17 @@ async function updatePassword(){
           <span>password</span>
             <div style = "display: flex; flex-direction: row;">
               <span>********</span>
-              <div @click = "modifica_password = true; aggiorna+= ' '" style = "background: #00345c; padding: 2px; height: 26px; border-radius: 10px; width: 26px; position: absolute; right: 40px; bottom: 10px;"><img src = "../../img/edit.png" width="25px"></div>
+              <div @click = "modifica_password = true; aggiorna+= ' '" style = "background: #00345c; padding: 2px; height: 26px; border-radius: 10px; width: 26px; position: absolute; right: 40px; bottom: 15px;"><img src = "../../img/edit.png" width="25px"></div>
             </div>
-        </div>
+            <span style = "position: absolute; bottom: -33px; width: 300px; display:flex; flex-direction:column" v-if = "authStore.utente.livello == 1"> 
+                <span style = "display:flex"> coordinatore</span> <span> {{coordinatore?.username}} </span> 
+            </span>
+
+            <span style = "position: absolute; font-size: 25px; bottom: -30px; width: 300px; display:flex; flex-direction:column; color: #4292cf" v-if = "authStore.utente.livello == 2"> 
+                coordinatore 
+            </span>
+
+          </div>
       </div>
     </div>
 
@@ -517,8 +532,8 @@ async function updatePassword(){
   display: flex;
   flex-direction: column;
   position: absolute;
-  top: 55px;
-  right: 105px;
+  top: 45px;
+  left: 290px;
   font-weight: 700;
 }
 

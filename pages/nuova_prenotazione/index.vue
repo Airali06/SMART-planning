@@ -18,6 +18,8 @@ const update = ref("");
 const selezionato = ref(-1);
 const caricamento = ref(false);
 const errore = ref("");
+const oggi = new Date();
+const oggiData = new Date(oggi.getFullYear(), oggi.getMonth(), oggi.getDate());
 
 let date_occupate = [];
 let date = prenotazioniStore.getDatePrenotate();
@@ -39,7 +41,12 @@ async function confermaPrenotazione() {
     console.log("localStorage non è disponibile nel server");
   }
 
-  if (prenotazioniStore.filtraData(data.value).length > 0) {
+  
+  if(new Date(oggiData) > new Date(data.value)){
+    errore.value += "- data non valida\n";
+  }
+
+  if (prenotazioniStore.filtraData(data.value).length > 0 && authStore.utente.livello == 1) {
     console.log("-----------TROPPE PRENOTAZIONI------------");
     errore.value += "- hai già una prenotazione per questa data\n";
   }

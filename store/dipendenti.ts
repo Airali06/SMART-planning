@@ -106,6 +106,7 @@ export const useDipendenti = defineStore("dipendenti-store", {
             "Content-Type": "application/json", //specifica tipologia di dato inviata
           },
           body: JSON.stringify({
+            id_utente: utente.id_utente,
             nome: utente.nome,
             cognome: utente.cognome,
             genere: utente.genere,
@@ -118,6 +119,33 @@ export const useDipendenti = defineStore("dipendenti-store", {
       } catch (e) {
         console.log("errore" + e);
       }
+    },
+
+    async loadDipendenteById(id: number) {
+      const authStore = useAuth();
+      let utente = {} as Utente;
+      try {
+        const response = (await $fetch(
+          authStore.address + "getUtenteById.php",
+          {
+            //composizione dell messaggio di request
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json", //specifica tipologia di dato inviata
+            },
+            body: JSON.stringify({
+              id_utente: id,
+            }),
+          }
+        )) as any;
+        console.log(response);
+
+        utente = response[0];
+        console.log(utente);
+      } catch (e) {
+        console.log("errore" + e);
+      }
+      return utente;
     },
 
     getDipendenteById(id: number) {

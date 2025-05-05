@@ -1,5 +1,7 @@
 <script setup lang = "ts">
 import type { Utente } from '~/store/models/Utente';
+import { useAuth} from '~/store/auth';
+ const authStore = useAuth();
 const props = defineProps({
   dipendnente: {} as PropType<Utente>,
 });
@@ -28,7 +30,7 @@ const router = useRouter();
             <img src = "../../img/rectangle.svg" style = "margin-left: 35px; width: 310px; margin-top: 8px; margin-right: 12px;">
         
         
-              <div class = "modifica"  @click="router.push({ path:'/admin/nuovo_dipendente', query: { idDaModificare : props.dipendnente?.id_utente} })">
+              <div v-if = "authStore.utente.livello == 3" class = "modifica"  @click="router.push({ path:'/admin/nuovo_dipendente', query: { idDaModificare : props.dipendnente?.id_utente} })">
                 <img src="../../img/edit.png" style ="width: 30px;">
               </div>
           </div>

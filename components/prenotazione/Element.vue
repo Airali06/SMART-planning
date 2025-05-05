@@ -19,7 +19,6 @@ let caricamento = false;
 const aggiorna = ref("");
 const scaduta = ref(false);
 
-
 const oggi = ref(new Date().toISOString().split('T')[0]);
 
 if(new Date(oggi.value+ "T00:00:00") > new Date(props.prenotazione?.data+ "T00:00:00")){
@@ -85,7 +84,7 @@ async function elimina_prenotazione(){
         
         <div class = "data"><span>{{ data }}</span></div>
         <div class = "time"><span>giornata intera</span></div>
-        <div class = "content" v-if = " prenotazione?.flag == 0"><span style = "margin:10px" >info prenotazione</span></div>
+        <div class = "content" v-if = " prenotazione?.flag == 0"><span style = "margin:10px" >{{ categoria.descrizione }}</span></div>
         <div class = "disabilitata" v-if = " prenotazione?.flag >= 1">
           <span style = "width:max-content; text-align: center;" v-if="prenotazione?.flag == 1">questa prenotazione è stata disabilitata</span>
           <span style = "width:max-content; text-align: center;" v-if="prenotazione?.flag == 2">la postazione non è al momento disponibile</span>

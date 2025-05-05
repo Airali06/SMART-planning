@@ -7,6 +7,7 @@ const id_utente = ref(); // 0 come id utente considerato come utente vuoto
 const password = ref('');
 const aggiorna = ref("");
 let captcha = false;
+let errore = false;
 
 if(authStore.utente.id_utente != 0 && authStore.utente.id_utente != undefined){
   console.log(authStore.utente.id_utente
@@ -17,9 +18,15 @@ if(authStore.utente.id_utente != 0 && authStore.utente.id_utente != undefined){
 
 async function login(){
     id_utente.value = id_utente.value; //rimozione eventuali spazi
-    await authStore.login(id_utente.value,password.value);
+    let response = await authStore.login(id_utente.value,password.value);
+    if ( response == true){
     captcha = true;
+    errore = false;
     aggiorna.value += " ";
+  }else{
+    errore = true;
+    aggiorna.value += " ";
+  }
 }
 
 async function goHome(){
@@ -83,6 +90,8 @@ async function goHome(){
         
         </div>
         <div class="password">password</div>
+
+        <div v-if = "errore" style = "color:#bb0000; font-size: 13px; position: absolute; top: 370px; left: 82px">username o password non validi</div>
   
         <button class="accedi" @click="login()">accedi</button>
       </div>

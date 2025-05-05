@@ -19,6 +19,10 @@ const caricamento = ref(false);
 const errore = ref("");
 const idDaModificare = ref();
 const update = ref("");
+const oggi = new Date();
+const oggiData = new Date(oggi.getFullYear(), oggi.getMonth(), oggi.getDate());
+
+
 let prenotazioneDaModificare = {} as Prenotazione;
 
 let date_occupate = [];
@@ -69,6 +73,12 @@ async function modificaPrenotazione() {
     console.log("localStorage non è disponibile nel server");
   }
 
+
+  if(new Date(oggiData) > new Date(data.value)){
+    errore.value += "- data non valida\n";
+  }
+
+
   //array che contiene le prenotazioni fatte per quella data ad eccezione di quella in modifica
   let tempFiltrateData = prenotazioniStore.filtraData(data.value);
   let index = tempFiltrateData.findIndex(
@@ -79,10 +89,14 @@ async function modificaPrenotazione() {
     tempFiltrateData.splice(index, 1);
   }
 
-  /*if(tempFiltrateData.length > 0){
+
+ 
+  if(authStore.utente.livello == 1){
+  if(tempFiltrateData.length > 0){
           console.log("-----------TROPPE PRENOTAZIONI------------")
           errore.value += "- hai già una prenotazione per questa data\n";
-        }*/
+        }
+    }
 
   if (data.value == "") {
     console.log("-----------NESSUNA DATA SELEZIONATA------------");
@@ -99,17 +113,16 @@ async function modificaPrenotazione() {
     errore.value += "- postazione non disponibile";
   }
 
+  
   let tempOccupate = [...postazioniStore.occupate];
-  index = tempOccupate.findIndex(
-    (item) =>
-      item.id_postazione == (prenotazioneDaModificare.id_postazione as any)
-  );
-  if (index !== -1) {
-    tempFiltrateData.splice(index, 1);
+  index = tempOccupate.findIndex(  (id) => id == prenotazioneDaModificare.id_postazione+'')
+  console.log(index)
+  if (index != -1) {
+    tempOccupate.splice(index, 1);
   }
 
-  console.log("OCCUPATE", postazioniStore.occupate, selezionato.value);
-  if (tempOccupate.some((n) => n === selezionato.value + "") == true) {
+  console.log("OCCUPATE", tempOccupate, selezionato.value);
+  if (tempOccupate.some((n) => n+"" == selezionato.value + "") == true) {
     console.log("---------------E' OCCUPATA--------------------");
     errore.value += "- hai selezionato una postazione occupata\n";
   }

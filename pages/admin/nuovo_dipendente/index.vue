@@ -46,7 +46,7 @@ function selezionaLivello(n: number){
 async function conferma(){
   console.log(nome.value, cognome.value, password.value, id_coordinatore.value, genere_selezionato, livello_selezionato);
   
-
+if(!(modifica && password.value.trim() == ""))
   if(authStore.testaPassword(password.value) == false){
     errore = "deve contenere:\nminimo 8 caratteri\n maiuscole/minuscole\n numeri\n caratteri speciali"
     console.log("errore password");
@@ -64,7 +64,7 @@ async function conferma(){
   aggiorna.value += " ";
   if(modifica == false)
     await dipendentiStore.insertUtente(utente, password.value);
-  if(modifica == false)
+  if(modifica == true)
     await dipendentiStore.updateUtente(utente, password.value);
 
   await dipendentiStore.getDipendentiCoordinatore(authStore.utente.id_utente);
@@ -93,10 +93,16 @@ async function conferma(){
       </div>
 
 
-      <div
+      <div v-if = "modifica == false"
       class="titolo"
       >
         Nuovo utente
+      </div>
+
+      <div v-if = "modifica == true"
+      class="titolo"
+      >
+        Modifica utente
       </div>
 
 

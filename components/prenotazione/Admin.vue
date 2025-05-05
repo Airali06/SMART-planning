@@ -9,6 +9,7 @@ import { useDipendenti } from "~/store/dipendenti";
 const props = defineProps({
   prenotazione: {} as PropType<Prenotazione>,
 });
+
 const dipendentiStore = useDipendenti();
 const authStore = useAuth();
 const router = useRouter();

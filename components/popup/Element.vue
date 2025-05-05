@@ -5,14 +5,20 @@ const postazioniStore = usePostazioni();
 const props = defineProps({
    id_postazione: Number,
 });
-
-
-
+const aggiorna = ref("");
+let postazione = postazioniStore.getPostazioneById(props.id_postazione as number) as Postazione;
+let categoria = postazioniStore.getCategoria(postazioniStore.postazioni[props.id_postazione as any]);
+console.log(categoria)
+console.log(postazione)
+aggiorna.value += "";
 </script>
 
 <template>
 
+  
+
     <div style = "position: relative;">
+        <input type ="text" v-model = "aggiorna" style = "display: none">
         <img src = "../../img/popup.png" height="65px">
 
 
@@ -22,7 +28,7 @@ const props = defineProps({
         </div>
 
         <div class = "descrizione">
-            descrizione
+            {{ postazioniStore.getCategoria(postazioniStore.postazioni[props.id_postazione as any]).descrizione }}
         </div>
 
 

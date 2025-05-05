@@ -12,6 +12,7 @@ prenotazioniStore.ordinaData();
 const dipendentiStore = useDipendenti();
 const route = useRoute();
 const aggiorna = ref();
+let coordinatore = {} as Utente;
 let prenotazioniDipendente = [] as Array<Prenotazione>;
 let dipendente = {} as Utente;
 if(route.query.utente != ""){
@@ -19,6 +20,11 @@ if(route.query.utente != ""){
     dipendente = dipendentiStore.getDipendenteById(route.query.utente as any) as Utente;
     console.log(prenotazioniDipendente, "PRENOTAZIONI DIPENDENTE")
 }
+
+if( dipendente.livello == 1){
+coordinatore = await dipendentiStore.loadDipendenteById(dipendente.id_coordinatore);
+}
+
 
 async function ricarica(){
   prenotazioniDipendente = await dipendentiStore.getPrenotazioniDipendente(route.query.utente as any) as any;
@@ -40,16 +46,33 @@ async function ricarica(){
         <div class="header">
     
           <div style = "display: flex; display: box; width: fit-content; position: relative;">
-            <img class="profile-1" src="../../../img/profilo.png" />
-            <img class="rectangle-27" src="../../../img/rectangle.svg" />
+            <div>
+              <img v-if = "dipendente.genere == 'M'" class="profile-1" src="../../../img/profilo.png" />
+              <img v-else  class="profile-1" src="../../../img/profiloF2.png" />
+              
+              <img class="rectangle-27" src="../../../img/rectangle.svg" />
 
+                <div v-if = "authStore.utente.livello == 3" class = "modifica"  @click="router.push({ path:'/admin/nuovo_dipendente', query: { idDaModificare : dipendente.id_utente} })">
+                  <img src="../../../img/edit.png" style ="width: 40px;">
+                </div>
+
+            </div>
 
             <div class = "informazioni">
-                <span style="font-size: 30px;">{{ dipendente.cognome +" "+ dipendente.nome}}</span>
+                <span style="font-size: 25px;">{{ dipendente.cognome +" "+ dipendente.nome}}</span>
                 <span>matricola</span>
                 <span>{{ dipendente.id_utente}}</span>
                 <span>password</span>
                 <span>********</span>
+                <span style = "font-size: 22px;display:flex;color: #4292cf" v-if ="dipendente.livello == 2"> 
+                coordinatore 
+                </span>
+                <span v-if ="dipendente.livello == 1"> 
+                coordinatore 
+                </span>
+                <span v-if ="dipendente.livello == 1"> 
+                {{ coordinatore?.username }}
+                </span>
 
             </div>
           </div>
@@ -83,7 +106,7 @@ async function ricarica(){
     
     
     
-<style scooped>
+<style scoped>
 
 *{
   font-family: "Sulphur Point", serif;
@@ -101,6 +124,37 @@ async function ricarica(){
    width: 15px;
    border: 4px;
   border-color: #CCE1F1;
+}
+
+.modifica{
+  background: linear-gradient(
+    90deg,
+    rgb(0, 120, 211) 0%,
+    rgb(0, 58, 102) 100%
+  );
+  height: 45px;
+  width: 55px;
+  margin-top: 5px;
+  border: 0px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-align: center;
+  color: white;
+  border-radius: 20px;
+  font-family: "Sulphur Point", serif;
+  font-weight: 400;
+  font-style: normal;
+  justify-self: center;
+  font-size: 17px;
+  display: block;
+  cursor:pointer;
+  position: absolute;
+  left: 0px;
+  top: 150px;
+  transition: transform 0.3s ease-in-out;
+}
+.modifica:hover {
+  transform: scale(1.08);
 }
 
 .area-prenotazioni::-webkit-scrollbar-track {
@@ -224,8 +278,8 @@ async function ricarica(){
   display: flex;
   flex-direction: column;
   position: absolute;
-  top: 55px;
-  right: 105px;
+  top: 50px;
+  left: 290px;
   font-weight: 700;
 }
 </style>
