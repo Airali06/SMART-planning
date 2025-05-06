@@ -31,6 +31,7 @@ if(route.query.idDaModificare == null){
   livello_selezionato = utente.livello;
   id_coordinatore.value = utente.id_coordinatore as number;
   genere_selezionato = utente.genere+"";
+  password.value = await dipendentiStore.getPasswordUtente(utente.id_utente);
 }
 
 function selezionaGenere(n: string){
@@ -46,13 +47,18 @@ function selezionaLivello(n: number){
 async function conferma(){
   console.log(nome.value, cognome.value, password.value, id_coordinatore.value, genere_selezionato, livello_selezionato);
   
-if(!(modifica && password.value.trim() == ""))
+if( nome.value.trim() == "" || cognome.value.trim() == ""){
+  errore = "non sono ammessi campi vuoti";
+    console.log("errore password");
+    aggiorna.value+= " ";
+    return;
+}
   if(authStore.testaPassword(password.value) == false){
     errore = "deve contenere:\nminimo 8 caratteri\n maiuscole/minuscole\n numeri\n caratteri speciali"
     console.log("errore password");
     aggiorna.value+= " ";
-    return;
-  }
+    return;}
+  
   
   console.log(id_coordinatore.value)
   utente.nome = nome.value;

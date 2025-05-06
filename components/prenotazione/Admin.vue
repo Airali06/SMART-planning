@@ -116,7 +116,7 @@ async function cambiaStato(){
         
         <div class = "data"><span>{{ data }}</span></div>
         <div class = "time"><span>giornata intera</span></div>
-        <div class = "content"><span style = "margin:10px">info prenotazione</span></div>
+        <div class = "content"><span style = "margin:10px">{{ categoria.descrizione }}</span></div>
  
         
     </div>

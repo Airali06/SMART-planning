@@ -164,5 +164,29 @@ export const useDipendenti = defineStore("dipendenti-store", {
       });
       return coordinatori;
     },
+
+    async getPasswordUtente(id: number) {
+      const authStore = useAuth();
+      let utente = "";
+      try {
+        const response = (await $fetch(authStore.address + "getPassword.php", {
+          //composizione dell messaggio di request
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json", //specifica tipologia di dato inviata
+          },
+          body: JSON.stringify({
+            id_utente: id,
+          }),
+        })) as any;
+        console.log(response);
+
+        utente = response[0].password;
+        console.log(utente);
+      } catch (e) {
+        console.log("errore" + e);
+      }
+      return utente;
+    },
   },
 });

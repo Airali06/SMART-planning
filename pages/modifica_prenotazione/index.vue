@@ -98,6 +98,14 @@ async function modificaPrenotazione() {
         }
     }
 
+    if(authStore.utente.livello == 2){
+  if(tempFiltrateData.length > 2){
+          console.log("-----------TROPPE PRENOTAZIONI------------")
+          errore.value += "- hai già 3 prenotazioni per questa data\n";
+        }
+    }
+
+
   if (data.value == "") {
     console.log("-----------NESSUNA DATA SELEZIONATA------------");
     errore.value += "- nessuna data selezionata\n";

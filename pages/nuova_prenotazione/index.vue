@@ -51,6 +51,12 @@ async function confermaPrenotazione() {
     errore.value += "- hai già una prenotazione per questa data\n";
   }
 
+  console.log(prenotazioniStore.filtraData(data.value).length);
+  if (prenotazioniStore.filtraData(data.value).length > 2 && authStore.utente.livello == 2) {
+    console.log("-----------TROPPE PRENOTAZIONI------------");
+    errore.value += "- hai già 3 prenotazioni per questa data\n";
+  }
+
   if (data.value == "") {
     console.log("-----------NESSUNA DATA SELEZIONATA------------");
     errore.value += "- nessuna data selezionata\n";
