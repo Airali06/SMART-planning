@@ -41,6 +41,7 @@ postazione = postazioniStore.getPostazioneById(scelta as any) as Postazione;
 
 async function cambiaStato(){
 caricamento.value = true;
+
   if(postazione.stato*1 as number == 1){
     await postazioniStore.abilita(postazione.id_postazione+"");
   }else if(postazione.stato*1 as number == 0){

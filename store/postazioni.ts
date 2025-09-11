@@ -141,7 +141,7 @@ export const usePostazioni = defineStore("postazioni-store", {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              id_postazione,
+              id_postazione: id_postazione,
             }),
           } as any
         );
@@ -165,7 +165,7 @@ export const usePostazioni = defineStore("postazioni-store", {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              id_postazione,
+              id_postazione: id_postazione,
             }),
           } as any
         );
