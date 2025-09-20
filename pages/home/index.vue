@@ -59,7 +59,7 @@ async function ricarica() {
         class="z-planning"
         style="position: absolute; left: 9.6875rem; top: 5.625rem"
       >
-        Z-Planning
+        SMART-planning
       </div>
 
       <div class="prenota">Prenota</div>
