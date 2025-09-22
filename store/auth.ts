@@ -23,7 +23,7 @@ export const useAuth = defineStore("auth-store", {
         casuale al momento del login.
       */
     },
-    address: "http://127.0.0.1/Z-planning/api/",
+    address: "http://127.0.0.1/SMART-planning_db/api/",
   }),
   actions: {
     init() {

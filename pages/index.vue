@@ -96,7 +96,7 @@ async function goHome(){
         <button class="accedi" @click="login()">accedi</button>
       </div>
   
-      <div class="z-planning">Z-Planning</div>
+      <div class="z-planning">SMART-planning</div>
     </div>
   </template>
   
@@ -308,7 +308,7 @@ a, button, select, h1, h2, h3, h4, h5, * {
   -webkit-text-fill-color: transparent;
   text-align: center;
   font-family: "Sulphur Point", sans-serif;
-  font-size: 4.375rem;
+  font-size: 3.375rem;
   line-height: 5.5rem;
   font-weight: 700;
   position: absolute;

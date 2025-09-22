@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   modules: ["@pinia/nuxt", "@nuxt-alt/proxy"],
   proxy: {
     "/api": {
-      target: "http://127.0.0.1/Z-planning/api/",
+      target: "http://127.0.0.1/SMART-planning_db/api/",
       pathRewrite: { "^/api": "" },
       changeOrigin: true,
     },
